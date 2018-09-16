@@ -31,5 +31,7 @@ def parse_json(in_str):
         in_exprs.append(expr)
         in_str = in_str[index:].lstrip()
 
+    retstring = ""
     for i in range(len(in_exprs)):
-        print(json.dumps([len(in_exprs) - i - 1, in_exprs[i]], separators=(",", ":")))
+        retstring += (json.dumps([len(in_exprs) - i - 1, in_exprs[i]], separators=(",", ":"))) + '\n'
+    return retstring
