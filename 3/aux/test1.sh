@@ -6,7 +6,8 @@
 # ./test.sh path/to/2
 
 ./$1 > /dev/null &
-pid=$!
+
+# wait for server to start
 sleep 1
 
 if [[ $2 -eq 0 ]];
@@ -20,5 +21,4 @@ else
 	nc localhost 8000 < sample-inputs/$2.txt | diff - expected-output/$2.txt
 fi
 
-sleep 6
-kill $pid
+kill %1
