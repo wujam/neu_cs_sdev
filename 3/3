@@ -1,6 +1,6 @@
 #!/usr/bin/python3.6
 import asyncio
-import parse_json
+import aux.parse_json
 
 async def handle_json(reader, writer):
     """
