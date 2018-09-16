@@ -1,0 +1,37 @@
+#!/usr/bin/python3.6
+import asyncio
+import parse_json
+
+async def handle_json(reader, writer):
+    """
+    Server handler
+    reader: asyncio.StreamReader
+    writer: asyncio.StreamWriter
+
+    """
+    data = await reader.read()
+    message = data.decode()
+    addr = writer.get_extra_info('peername')
+    print("Received %r from %r" % (message, addr))
+    parsed = parse_json.parse_json(data)
+    print("Sending: %r" % (parsed))
+    writer.write(data)
+    await writer.drain()
+    print("Close client socket")
+    writer.close()
+
+loop = asyncio.get_event_loop()
+coro = asyncio.start_server(handle_json, "127.0.0.1", 10050, loop=loop)
+server = loop.run_until_complete(coro)
+
+print('serving on {}'.format(server.sockets[0].getsockname()))
+try:
+    loop.run_forever()
+except KeyboardInterrupt:
+    pass
+
+server.close()
+loop.run_until_complete(server.wait_closed())
+loop.close()
+
+
