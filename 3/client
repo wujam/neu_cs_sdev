@@ -1,7 +1,7 @@
 #!/usr/bin/python3.6
 import json
 import sys
-#import spreadsheet
+from server_for_your_2spread import Spreadsheet, InvalidFormulaException
 
 spreadsheets = {}
 
@@ -109,7 +109,11 @@ for line in sys.stdin:
         if (not valid_jf_spread(spread_array)):
             pass;
 
-        spreadsheet.load_spreadsheet(jf_spread_to_dict(spread_array))
+        spread = Spreadsheet()
+
+        spread.load_spreadsheet(jf_spread_to_dict(spread_array))
+
+        spreadsheets['name'] = spread
 
     elif cmd[0] == "set":
         ## enforce the langth of the list for set commands
@@ -129,7 +133,7 @@ for line in sys.stdin:
             # no need to check if the cell references are valid because our spreadsheets are infinite
             # catch InvalidformulaException
                 try:
-                    spreadsheet['name'].set_value_at(x, y, jf_to_string(json_formula))
+                    spreadsheets['name'].set_value_at(x, y, jf_to_string(json_formula))
                 # replace with name in import
                 except InvalidFormulaException:
                     pass
