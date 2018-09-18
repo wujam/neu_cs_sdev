@@ -14,9 +14,9 @@ def valid_jf(jf):
     elif isinstance(jf, list) and len(jf) == 3:
 
         # check if it's a list reference
-        if (jf[0] == ">"):
+        if jf[0] == ">":
             # fail if the references aren't natural numbers
-            if (isinstance(jf[1], int) and isinstance(jf[2], int)):
+            if isinstance(jf[1], int) and isinstance(jf[2], int):
                 if jf[1] >= 0 and jf[2] >= 0:
                     return True
                 else:
@@ -24,8 +24,8 @@ def valid_jf(jf):
             else:
                 return False
         # check if it's a "+" or "*" operation
-        elif jf[[1] == "*" or jf[1] == "+":
-            return (valid_jf(jf[0]) and valid_jf(jf[1]))
+        elif jf[1] == "*" or jf[1] == "+":
+            return valid_jf(jf[0]) and valid_jf(jf[1])
         else:
             return False
     else:
@@ -33,7 +33,7 @@ def valid_jf(jf):
 
 def jf_to_string(jf):
     # check if jf is a number
-    if (isinstance(jf, (int, float)):
+    if isinstance(jf, (int, float)):
         return str(jf)
 
     # check if jf is a list and it's length
@@ -44,7 +44,7 @@ def jf_to_string(jf):
             return "[{},{}]".format(jf[1], jf[2])
 
         # check if it's a "+" or "*" operation
-        elif (jf[[1] == "*" or jf[1] == "+"):
+        elif (jf[1] == "*" or jf[1] == "+"):
             return "{} {} {}".format(jf_to_string(jf[0]), jf[1], jf_to_string(jf[2]))
         else:
             raise ValueError('bad jf being converted to string')
@@ -128,11 +128,11 @@ for line in sys.stdin:
                 
             # no need to check if the cell references are valid because our spreadsheets are infinite
             # catch InvalidformulaException
-            try:
-                print(spreadsheet['name'].set_value_at(x, y, jf_to_string(json_formula)))
-            # replace with name in import
-            except InvalidFormulaException:
-                pass
+                try:
+                    spreadsheet['name'].set_value_at(x, y, jf_to_string(json_formula))
+                # replace with name in import
+                except InvalidFormulaException:
+                    pass
 
     elif cmd[0] == "at":
         ## enforce the langth of the list for at commands
