@@ -3,7 +3,7 @@
 # format should be:
 # ./test.sh path/to/3 test_number
 # or
-# ./test.sh path/to/2
+# ./test.sh path/to/3
 
 ./$1 > /dev/null &
 
