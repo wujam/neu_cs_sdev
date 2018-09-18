@@ -38,4 +38,4 @@ class BasicSpreadSheet(SpreadSheetOp):
         return val_total
     
     def replace(position, formula):
-        _sheet_inst.formulas[position[0]][position[1]] = formula
+        BasicSpreadSheet._sheet_inst.formulas[position[0]][position[1]] = formula
