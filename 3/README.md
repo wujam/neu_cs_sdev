@@ -6,3 +6,6 @@ Contains
  - client: a python program that exercises the spread component we will receive
  - tests: a folder with one test case for client
  - aux: folder with tests and testing scripts
+  - test3: folder with tests for 3, includes a server runner
+  - testspread: basic test for spread, verifies that the spec's functionality works
+  - give-2spread.pdf: the pdf we were given
