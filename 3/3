@@ -13,7 +13,10 @@ async def handle_json(reader, writer):
     message = data.decode()
     addr = writer.get_extra_info('peername')
     print("Received %r from %r" % (message, addr))
-    parsed = parse_json.parse_json(message)
+    parsed_list = parse_json.parse_json(message)
+    parsed = ""
+    for item in parsed_list:
+        parsed += item + '\n'
     print("Sending: %r" % (parsed))
     writer.write(parsed.encode())
     await writer.drain()

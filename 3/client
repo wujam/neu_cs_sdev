@@ -1,0 +1,150 @@
+#!/usr/bin/python3.6
+import json
+import sys
+#import spreadsheet
+
+spreadsheets = {}
+
+def valid_jf(jf):
+    # check if jf is a number
+    if isinstance(jf, (int, float)):
+        return True
+
+    # check if jf is a list and it's length
+    elif isinstance(jf, list) and len(jf) == 3:
+
+        # check if it's a list reference
+        if (jf[0] == ">"):
+            # fail if the references aren't natural numbers
+            if (isinstance(jf[1], int) and isinstance(jf[2], int)):
+                if jf[1] >= 0 and jf[2] >= 0:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        # check if it's a "+" or "*" operation
+        elif jf[[1] == "*" or jf[1] == "+":
+            return (valid_jf(jf[0]) and valid_jf(jf[1]))
+        else:
+            return False
+    else:
+        return False
+
+def jf_to_string(jf):
+    # check if jf is a number
+    if (isinstance(jf, (int, float)):
+        return str(jf)
+
+    # check if jf is a list and it's length
+    elif isinstance(jf, list) and len(jf) == 3:
+
+        # check if it's a list reference
+        if (jf[0] == ">"):
+            return "[{},{}]".format(jf[1], jf[2])
+
+        # check if it's a "+" or "*" operation
+        elif (jf[[1] == "*" or jf[1] == "+"):
+            return "{} {} {}".format(jf_to_string(jf[0]), jf[1], jf_to_string(jf[2]))
+        else:
+            raise ValueError('bad jf being converted to string')
+    else:
+        raise ValueError('bad jf being converted to string')
+
+def valid_jf_spread(jf_spread):
+    # check dimensions of json array structure
+    # check if everything is a valid jf
+    
+    # check if jf_spread is and length > 0
+    if isinstance(jf_spread, list) and len(jf_spread) > 0:
+        # check if first row is a list
+        if not isinstance(jf_spread[0], list):
+            return False
+        # get the row length
+        row_len = len(jf_spread(0))
+
+        # make sure row length isn't 0
+        if row_len == 0:
+            return False
+
+        # make sure every row is the same length
+        for row in jf_spread:
+            if (not isinstance(row, list)) or len(row) != row_len:
+                return False
+
+            for jf in row:
+                if not valid_jf(jf):
+                    return False
+        return True
+    else:
+        return False
+
+def jf_spread_to_dict(jf_spread):
+    jf_dict = {}
+    rows = len(jf_spread)
+    columns = len(jf_spread[0])
+
+    for row in range(rows):
+        for column in range(columns):
+            jf_dict[(row,column)] = jf_to_string(jf_spread[row, column])
+
+for line in sys.stdin:
+    cmd = json.loads(line)
+
+    #TODO possibly change this to work on multi line inputs
+
+    ## make sure the given json is a non empty list
+    if type(cmd) is not list or len(cmd) == 0:
+        pass
+
+    if cmd[0] == "sheet":
+        ## enforce the langth of the list for sheet commands
+        if len(cmd) != 3:
+            pass
+
+        name = cmd[1]
+        spread_array = cmd[2]
+
+        # enforce that a rectangle of values is given
+        if (not valid_jf_spread(spread_array)):
+            pass;
+
+        spreadsheet.load_spreadsheet(jf_spread_to_dict(spread_array))
+
+    elif cmd[0] == "set":
+        ## enforce the langth of the list for set commands
+        if len(cmd) != 5:
+            pass
+
+        name = cmd[1]
+        x = cmd[2]
+        y = cmd[3]
+        json_formula = cmd[4]
+
+        # check if spread exists in spreadsheets and replace the cell
+        if name in spreadsheets.keys():
+            # verify if the JF formatted correctly
+            if valid_jf(json_formula):
+                
+            # no need to check if the cell references are valid because our spreadsheets are infinite
+            # catch InvalidformulaException
+            try:
+                print(spreadsheet['name'].set_value_at(x, y, jf_to_string(json_formula)))
+            # replace with name in import
+            except InvalidFormulaException:
+                pass
+
+    elif cmd[0] == "at":
+        ## enforce the langth of the list for at commands
+        if len(cmd) != 4:
+            pass
+
+        name = cmd[1]
+        x = cmd[2]
+        y = cmd[3]
+
+        # use value at function for the spreadsheet if it exists
+        if name in spreadsheets.keys():
+            print(json.dumps(spreadsheets['name'].get_value_at(x,y)))
+    else:
+        pass
