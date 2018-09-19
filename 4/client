@@ -61,17 +61,20 @@ def valid_jf_spread(jf_spread):
         return False
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = socket.gethostname()
+host = 'localhost'
 port = 8000
 
-s.connect((host, port))
-signup_name = ""
+sock.connect((host, port))
+signup_name = "jawu-srpo\n"
 sock.send(signup_name.encode("utf-8"))
-v_name = sock.recv().decode()
+internal_name = sock.recv(1024).decode()
+
+#TODO remove this test print
+print(internal_name, end='')
 
 send_buf = []
 
-while(1):
+while True:
     parsed_list = parse_json.parse_json(sys.stdin.readline())
 
     for i in range(len(parsed_list)):
@@ -79,6 +82,8 @@ while(1):
 
     for json_obj in parsed_list:
         cmd = json_obj
+        #TODO remove test print
+        print (cmd)
 
         ## make sure the given json is a non empty list
         if type(cmd) is not list or len(cmd) == 0:
@@ -87,17 +92,21 @@ while(1):
         if cmd[0] == "sheet":
             ## enforce the langth of the list for sheet commands
             if len(cmd) != 3:
+                print("len is wrong")
                 continue
 
             name = cmd[1]
             spread_array = cmd[2]
 
             # enforce that a rectangle of values is given
-            if (not valid_jf_spread(spread_array)):
+            if not valid_jf_spread(spread_array):
+                #TODO remove test print
+                print("invalid spread")
                 continue
 
             # dump json to string and send
             send_buf.append(json_obj)
+            print(send_buf)
 
         elif cmd[0] == "set":
             ## enforce the langth of the list for set commands
@@ -111,8 +120,10 @@ while(1):
 
             # check if spread exists in spreadsheets and replace the cell
             # verify if the JF formatted correctly
-            if name in spreadsheets.keys() and valid_jf(json_formula):
+            #if name in spreadsheets.keys() and valid_jf(json_formula):
+            if valid_jf(json_formula):
                 send_buf.append(json_obj)
+                print(send_buf)
             else:
                 continue
 
@@ -128,8 +139,10 @@ while(1):
 
             send_buf.append(json_obj)
             sock.send(json.dumps(send_buf).encode())
+            # TODO remove test print
+            print("send buf:", send_buf)
             send_buf = []
-            print(sock.recv().decode())
+            print(sock.recv(1024).decode())
 
         else:
             continue
