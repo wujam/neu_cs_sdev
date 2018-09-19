@@ -2,6 +2,7 @@
 import json
 import sys
 from server_for_your_2spread import Spreadsheet, InvalidFormulaException
+import aux.parse_json as parse_json
 
 spreadsheets = {}
 
@@ -61,7 +62,7 @@ def valid_jf_spread(jf_spread):
         if not isinstance(jf_spread[0], list):
             return False
         # get the row length
-        row_len = len(jf_spread(0))
+        row_len = len(jf_spread[0])
 
         # make sure row length isn't 0
         if row_len == 0:
@@ -86,10 +87,17 @@ def jf_spread_to_dict(jf_spread):
 
     for row in range(rows):
         for column in range(columns):
-            jf_dict[(row,column)] = jf_to_string(jf_spread[row, column])
+            jf_dict[(column,row)] = jf_spread[row][column]
+    return jf_dict
 
-for line in sys.stdin:
-    cmd = json.loads(line)
+parsed_list = parse_json.parse_json(sys.stdin.read())
+
+
+for i in range(len(parsed_list)):
+    parsed_list[i] = json.loads(parsed_list[i])[1]
+
+for json_obj in parsed_list:
+    cmd = json_obj
 
     #TODO possibly change this to work on multi line inputs
 
@@ -113,7 +121,7 @@ for line in sys.stdin:
 
         spread.load_spreadsheet(jf_spread_to_dict(spread_array))
 
-        spreadsheets['name'] = spread
+        spreadsheets[name] = spread
 
     elif cmd[0] == "set":
         ## enforce the langth of the list for set commands
@@ -133,7 +141,7 @@ for line in sys.stdin:
             # no need to check if the cell references are valid because our spreadsheets are infinite
             # catch InvalidformulaException
                 try:
-                    spreadsheets['name'].set_value_at(x, y, jf_to_string(json_formula))
+                    spreadsheets[name].set_formula_at(x, y, json_formula)
                 # replace with name in import
                 except InvalidFormulaException:
                     pass
@@ -148,7 +156,8 @@ for line in sys.stdin:
         y = cmd[3]
 
         # use value at function for the spreadsheet if it exists
+        #print (x, y)
         if name in spreadsheets.keys():
-            print(json.dumps(spreadsheets['name'].get_value_at(x,y)))
+            print(json.dumps(spreadsheets[name].get_value_at(x,y)))
     else:
         pass
