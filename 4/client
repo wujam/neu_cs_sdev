@@ -3,6 +3,7 @@ import json
 import sys
 import socket
 import aux.parse_json as parse_json
+import argparse
 
 spreadsheets = {}
 
@@ -35,7 +36,7 @@ def valid_jf(jf):
 def valid_jf_spread(jf_spread):
     # check dimensions of json array structure
     # check if everything is a valid jf
-    
+
     # check if jf_spread is and length > 0
     if isinstance(jf_spread, list) and len(jf_spread) > 0:
         # check if first row is a list
@@ -60,8 +61,13 @@ def valid_jf_spread(jf_spread):
     else:
         return False
 
+# read arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("hostname")
+args = parser.parse_args()
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = sys.argv[1]
+host = args.hostname
 port = 8000
 
 sock.connect((host, port))
@@ -76,7 +82,7 @@ while True:
 
     for i in range(len(parsed_list)):
         parsed_list[i] = json.loads(parsed_list[i])[1]
-    
+
     for json_obj in parsed_list:
         cmd = json_obj
 
