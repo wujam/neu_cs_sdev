@@ -71,9 +71,10 @@ host = args.hostname
 port = 8000
 
 sock.connect((host, port))
-signup_name = "jawu-srpo\n"
+signup_name = '"jawu-srpo"'
 sock.send(signup_name.encode("utf-8"))
 internal_name = sock.recv(1024).decode()
+print(internal_name)
 
 send_buf = []
 
