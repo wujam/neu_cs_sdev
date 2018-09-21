@@ -71,7 +71,7 @@ sock.connect((host, port))
 signup_name = '"jawu-srpo"'
 sock.send(signup_name.encode("utf-8"))
 internal_name = sock.recv(1024).decode()
-print(internal_name)
+print(internal_name, end='')
 
 send_buf = []
 
@@ -156,7 +156,7 @@ while True:
             send_buf.append(json_obj)
             sock.send(json.dumps(send_buf).encode())
             send_buf = []
-            print(sock.recv(1024).decode())
+            print(sock.recv(1024).decode(), end='')
 
         else:
             continue
