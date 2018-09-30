@@ -1,0 +1,8 @@
+{
+	"type": "array",
+	"items": [
+		{ "type": "string", "pattern": "occupied?"},
+		{ "$ref": "worker.json"},
+		{ "$ref": "direction.json"}
+	]
+}
