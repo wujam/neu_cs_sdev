@@ -5,16 +5,27 @@ import aux.parse_json as parse_json
 import argparse
 from aux.board import Board
 
+"""
+A systems level test harness that tests a board
+Takes in multple lines of JSON commands and runs the board accordingly
+prints outputs from the board commands
+"""
+
 # initialize the xboard stuff
 board = Board()
 
 # takes in a worker and returns a tuple of the player number and worker number
-def parse_worker(worker):
+"""
+parses the fields in a worker string
+@return a tuple containing the player_num and the worker_num
+"""
+def parse_worker(worker: str) -> (int, int):
     player_name = worker[:-1]
     worker_num = int(worker[-1])
     player_num = players.index(player_name) + 1
     return player_num, worker_num
 
+# used to parse directions into x and y differences
 direction_map = {
 "PUT": 0,
 "SOUTH": 1,
@@ -23,47 +34,62 @@ direction_map = {
 "WEST": -1
 }
 
-# takes in a direction and retuns a tuple of the x and y difference
-def parse_direction(direction):
+"""
+parses a direction
+@return tuple of the x and y differences produces by the direction
+"""
+def parse_direction(direction: [str, str]) -> (int, int):
     return direction_map[direction[0]], direction_map[direction[1]]
 
-# moves a worker in the given direction
-def handle_move(worker, direction):
+"""
+moves a worker in the given direction
+"""
+def handle_move(worker: str, direction: [str, str]):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     board.set_worker(x + dx, y + dy, player_num, worker_num)
     print("[]")
 
-# builds a floor in the given direction
-def handle_build(worker, direction):
+"""
+builds a floor in the given direction
+"""
+def handle_build(worker: str, direction: [str, str]):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     board.add_floor(x + dx, y + dy) 
     print("[]")
- 
-# determines if there is a neighboring cell in the given direction
-def handle_neighbor(worker, direction):
+
+"""
+determines if there is a neighboring cell in the given direction
+"""
+def handle_neighbor(worker: str, direction: [str, str]):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     print("yes" if (x + dx) in range(0,6) and (y + dy) in range(0,6) else "no")
 
-# determines if the cell in the given direction is occupied
-def handle_occupy(worker, direction):
+"""
+determines if the cell in the given direction is occupied
+"""
+def handle_occupy(worker: str, direction: [str, str]):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     print("yes" if (x + dx, y + dy) in board.get_worker_positions() else "no")
-
-# gets the height of the cell in the given direction
-def handle_height(worker, direction):
+ 
+"""
+gets the height of the cell in the given direction
+"""
+def handle_height(worker: str, direction: [str, str]):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     print(board.get_floor_height(x + dx, y + dy))
 
+
+# dict of string to function to switch on the command string
 handle_message = {
     "move": handle_move,
     "build": handle_build,
