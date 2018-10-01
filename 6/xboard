@@ -1,2 +1,186 @@
-#!/usr/bin/env python
+#!/usr/bin/python3.6
+import json
+import sys
+import aux.parse_json as parse_json
+import argparse
+import aux.board as board
 
+# initialize the xboard stuff
+board = Board()
+
+# takes in a worker and returns a tuple of the player number and worker number
+def parse_worker(worker):
+    player_name = worker[:-1]
+    worker_num = int(worker[-1])
+    player_num = players.index(player_name)
+    return player_num, worker_num
+
+direction_map = 
+{
+"PUT": 0,
+"SOUTH": -1,
+"NORTH": 1,
+"EAST": 1,
+"WEST": -1
+}
+
+# takes in a direction and retuns a tuple of the x and y difference
+def parse_direction(direction):
+    return direction_map[direction[0]], direction_map[direction[1]]
+
+# moves a worker in the given direction
+def handle_move(worker, direction):
+    player_num, worker_num = parse_worker(worker)
+    dx, dy = parse_direction(direction)
+    x, y = board.get_worker_position(player_num, worker_num)
+    board.set_worker(x + dx, y + dy, player_num, worker_num)
+
+# builds a floor in the given direction
+def handle_build(worker, direction):
+    player_num, worker_num = parse_worker(worker)
+    dx, dy = parse_direction(direction)
+    x, y = board.get_worker_position(player_num, worker_num)
+    board.add_floor(x + dx, y + dy) 
+ 
+# determines if there is a neighboring cell in the given direction
+def handle_neighbor(worker, direction):
+    player_num, worker_num = parse_worker(worker)
+    dx, dy = parse_direction(direction)
+    x, y = board.get_worker_position(player_num, worker_num)
+    return (x + dx) in range(0,6), (y + dy) in range(0,6)
+
+# determines if the cell in the given direction is occupied
+def handle_occupy(worker, direction):
+    player_num, worker_num = parse_worker(worker)
+    dx, dy = parse_direction(direction)
+    x, y = board.get_worker_position(player_num, worker_num)
+    return (x + dx, y + dy) in board.get_worker_positions()
+
+# gets the height of the cell in the given direction
+def handle_height(worker, direction):
+    player_num, worker_num = parse_worker(worker)
+    dx, dy = parse_direction(direction)
+    x, y = board.get_worker_position(player_num, worker_num)
+    return board.get_floor_height(x + dx, y + dy)
+
+in_buffer = []
+
+players = []
+
+def parse_line():
+    parsed_list = parse_json.parse_json(sys.stdin.readline())
+    in_buffer = in_buffer + parsed_list
+
+# read first line
+parse_line()
+
+# deal with the board json array, should be the first input
+board_array = parsed_list.pop(0)
+
+# append rows if the baord is a short board
+for i in range(6 - len(board_array)):
+    board_array.append([0]*6)
+
+# backfill incomplete rows 
+for i in range(6):
+    board_array[i].append([0] * (6 - len(board_array[i])))
+
+for i in range(6):
+    for j in range(6):
+
+        # differentiate between number or string for the cell
+        if isinstance(board_array[j][i], int):
+            board.set_floor_height(i, j, board_array[j][i])
+        elif isinstance(board_array[j][i], str):
+            height = int(board_array[j][i][0])
+            board.set_floor_height(i, j, height)
+            player_name = board_array[j][i][1:-1]
+            worker_num = int(board_array[j][i][-1])
+
+            # determine if player exists already or not
+            if player_name not in players:
+                players.append(player_name)
+
+            # determine which player (1 or 2)
+            player_num = players.index(player_name)
+            board.set_worker(i, j, player_num, worker_num)
+        else:
+            raise raise ValueError("bad initial board")
+
+# loop for every line of input
+while True:
+    parse_line()
+
+    for json_obj in in_buffer:
+        if cmd[0] == "sheet":
+            # enforce the length of the list for sheet commands
+            if len(cmd) != 3:
+                continue
+
+            name = cmd[1]
+            spread_array = cmd[2]
+
+            # validate input types in the set cmd
+            if not isinstance(name, str):
+                continue
+
+            # enforce that a rectangle of values is given
+            if not valid_jf_spread(spread_array):
+                continue
+
+            # dump json to string and send
+            send_buf.append(json_obj)
+
+        elif cmd[0] == "set":
+            # enforce the length of the list for set commands
+            if len(cmd) != 5:
+                continue
+
+            name = cmd[1]
+            x = cmd[2]
+            y = cmd[3]
+            json_formula = cmd[4]
+
+            # validate types in the set cmd
+            if not (isinstance(name, str) and isinstance(x, int)
+                    and isinstance(y, int)):
+                continue
+
+            # make sure given positions are non negative
+            if x < 0 or y < 0:
+                continue
+
+            # check if spread exists in spreadsheets and replace the cell
+            # verify if the JF formatted correctly
+            #if name in spreadsheets.keys() and valid_jf(json_formula):
+            if valid_jf(json_formula):
+                send_buf.append(json_obj)
+            else:
+                continue
+
+
+        elif cmd[0] == "at":
+            # enforce the length of the list for at commands
+            if len(cmd) != 4:
+                continue
+
+            name = cmd[1]
+            x = cmd[2]
+            y = cmd[3]
+
+            # validate types in the set cmd
+            if not (isinstance(name, str) and isinstance(x, int)
+                    and isinstance(y, int)):
+                continue
+
+            # make sure given positions are non negative
+            if x < 0 or y < 0:
+                continue
+
+            send_buf.append(json_obj)
+            sock.send(json.dumps(send_buf).encode())
+            send_buf = []
+            print(sock.recv(1024).decode(), end='')
+
+        else:
+            continue
