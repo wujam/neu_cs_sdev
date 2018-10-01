@@ -63,6 +63,14 @@ def handle_height(worker, direction):
     x, y = board.get_worker_position(player_num, worker_num)
     return board.get_floor_height(x + dx, y + dy)
 
+handle_message = {
+    "move": handle_move,
+    "build": handle_build,
+    "neighbors": handle_neighbor,
+    "occupied?": handle_occupy,
+    "height": handle_height
+}
+
 in_buffer = []
 
 players = []
@@ -112,75 +120,8 @@ while True:
     parse_line()
 
     for json_obj in in_buffer:
-        if cmd[0] == "sheet":
-            # enforce the length of the list for sheet commands
-            if len(cmd) != 3:
-                continue
-
-            name = cmd[1]
-            spread_array = cmd[2]
-
-            # validate input types in the set cmd
-            if not isinstance(name, str):
-                continue
-
-            # enforce that a rectangle of values is given
-            if not valid_jf_spread(spread_array):
-                continue
-
-            # dump json to string and send
-            send_buf.append(json_obj)
-
-        elif cmd[0] == "set":
-            # enforce the length of the list for set commands
-            if len(cmd) != 5:
-                continue
-
-            name = cmd[1]
-            x = cmd[2]
-            y = cmd[3]
-            json_formula = cmd[4]
-
-            # validate types in the set cmd
-            if not (isinstance(name, str) and isinstance(x, int)
-                    and isinstance(y, int)):
-                continue
-
-            # make sure given positions are non negative
-            if x < 0 or y < 0:
-                continue
-
-            # check if spread exists in spreadsheets and replace the cell
-            # verify if the JF formatted correctly
-            #if name in spreadsheets.keys() and valid_jf(json_formula):
-            if valid_jf(json_formula):
-                send_buf.append(json_obj)
-            else:
-                continue
-
-
-        elif cmd[0] == "at":
-            # enforce the length of the list for at commands
-            if len(cmd) != 4:
-                continue
-
-            name = cmd[1]
-            x = cmd[2]
-            y = cmd[3]
-
-            # validate types in the set cmd
-            if not (isinstance(name, str) and isinstance(x, int)
-                    and isinstance(y, int)):
-                continue
-
-            # make sure given positions are non negative
-            if x < 0 or y < 0:
-                continue
-
-            send_buf.append(json_obj)
-            sock.send(json.dumps(send_buf).encode())
-            send_buf = []
-            print(sock.recv(1024).decode(), end='')
-
+        if cmd[0] in handle_message.keys():
+            handle_message[cmd[0]](cmd[1], cmd[2])
         else:
+            # TODO print error message
             continue
