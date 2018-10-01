@@ -3,7 +3,7 @@ import json
 import sys
 import aux.parse_json as parse_json
 import argparse
-import aux.board as board
+from aux.board import Board
 
 # initialize the xboard stuff
 board = Board()
@@ -11,12 +11,11 @@ board = Board()
 # takes in a worker and returns a tuple of the player number and worker number
 def parse_worker(worker):
     player_name = worker[:-1]
-    worker_num = int(worker[-1])
+    worker_num = int(worker[-1]) - 1
     player_num = players.index(player_name)
     return player_num, worker_num
 
-direction_map = 
-{
+direction_map = {
 "PUT": 0,
 "SOUTH": -1,
 "NORTH": 1,
@@ -71,16 +70,19 @@ handle_message = {
     "height": handle_height
 }
 
+# the buffer of json objects from the input
 in_buffer = []
 
+# players for this board
 players = []
 
 def parse_line():
     parsed_list = parse_json.parse_json(sys.stdin.readline())
     in_buffer = in_buffer + parsed_list
 
-# read first line
-parse_line()
+# read first json object
+while len(in_buffer) == 0:
+    parse_line()
 
 # deal with the board json array, should be the first input
 board_array = parsed_list.pop(0)
@@ -113,7 +115,7 @@ for i in range(6):
             player_num = players.index(player_name)
             board.set_worker(i, j, player_num, worker_num)
         else:
-            raise raise ValueError("bad initial board")
+            raise ValueError("bad initial board")
 
 # loop for every line of input
 while True:
