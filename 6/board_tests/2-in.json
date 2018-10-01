@@ -1,0 +1,19 @@
+[[1,2,3,2,2,4],
+[1,1,"1a1",1,1,1],
+[2,2,2,"2a2",3,2],
+[1,1,1,1,1,1],
+[2,2,2,2,2,2],
+[3,3,3,"2b2",3,"2b2"]
+]
+["move", "a2", ["EAST","PUT"]]
+["height", "a2", ["PUT","PUT"]]
+["neighbors", "b2", ["EAST", "PUT"]]
+["neighbors", "b2", ["PUT", "SOUTH"]]
+["move", "b2", ["WEST", "PUT"]]
+["height", "b2", ["WEST", "PUT"]]
+["neighbors", "b2", ["EAST", "PUT"]]
+["move", "b2", ["PUT", "NORTH"]]
+["neighbors", "b2", ["EAST", "PUT"]]
+["move", "b2", ["WEST", "PUT"]]
+["move", "b2", ["PUT", "NORTH"]]
+["occupied?", "b2", ["EAST", "NORTH"]]

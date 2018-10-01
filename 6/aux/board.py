@@ -22,7 +22,8 @@ class Board:
     sets squares to 0 heights 
     """
     def __init__(self):
-        squares = [[0] * 6] * 6
+        for i in range(6):
+            self.squares.append([0] * 6)
 
     """
     Sets the position of a worker
@@ -32,14 +33,14 @@ class Board:
     worker: represents which worker of the player is being placed, between [0,2)
     """
     def set_worker(self, x: int, y: int, player: int, worker: int):
-        if player == 0 and worker == 0:
-            p1worker1 = (x, y)
-        elif player == 1 and worker == 1:
-            p1worker2 = (x, y)
-        elif player == 2 and worker == 0:
-            p2worker1 = (x, y)
+        if player == 1 and worker == 1:
+            self.p1worker1 = (x, y)
+        elif player == 1 and worker == 2:
+            self.p1worker2 = (x, y)
         elif player == 2 and worker == 1:
-            p2worker2 = (x, y)
+            self.p2worker1 = (x, y)
+        elif player == 2 and worker == 2:
+            self.p2worker2 = (x, y)
         else:
             raise ValueError(f"Player {player} and/or Worker {worker} out of range")
 
@@ -49,9 +50,9 @@ class Board:
     y: the vertical position of the building, between [0,6)
     """
     def add_floor(self, x: int, y: int):
-        if squares[x][y] > 3:
+        if self.squares[x][y] > 3:
             raise ValueError(f"Building at {x}, {y} cannot be added to")
-        squares[x][y] = squares[x][y] + 1
+        self.squares[x][y] = self.squares[x][y] + 1
 
     """
     @return the number of floors in a building
@@ -59,7 +60,7 @@ class Board:
     y: the vertical position of the building, between [0,6)
     """
     def get_floor_height(self, x: int, y: int) -> int:
-        return squares[x][y]
+        return self.squares[x][y]
 
     """
     set the number of floors in a building
@@ -70,7 +71,7 @@ class Board:
     def set_floor_height(self, x: int, y: int, height: int) -> int:
         if height not in range(0,5):
             raise ValueError(f"Building at {x}, {y} cannot be set to {height}")
-        squares[x][y] = height
+        self.squares[x][y] = height
 
     """
     @return the position of the specified worker
@@ -78,14 +79,14 @@ class Board:
     worker: represents which worker of the player is being placed, between [0,2)
     """
     def get_worker_position(self, player: int, worker: int) -> (int, int):
-        if player == 0 and worker == 0:
-            return p1worker1
-        elif player == 1 and worker == 1:
-            return p1worker2
-        elif player == 2 and worker == 0:
-            return p2worker1
+        if player == 1 and worker == 1:
+            return self.p1worker1
+        elif player == 1 and worker == 2:
+            return self.p1worker2
         elif player == 2 and worker == 1:
-            return p2worker2
+            return self.p2worker1
+        elif player == 2 and worker == 2:
+            return self.p2worker2
         else:
             raise ValueError(f"Player {player} and/or Worker {worker} out of range")
 
@@ -95,7 +96,7 @@ class Board:
             The exact ordering is P1 Worker 1, P1 Worker 2, P2 Worker 1, P2 worker 2.
     """
     def get_worker_positions(self) -> []:
-        return [p1worker1, p1worker2, p2worker1, p2worker2]
+        return [self.p1worker1, self.p1worker2, self.p2worker1, self.p2worker2]
 
     """
     Get a 6x6 2d list of the building heights. The outer list is the horizontal positions,
@@ -104,4 +105,4 @@ class Board:
             cells or columns.
     """
     def get_building_heights(self) -> []:
-        return copy.deepcopy(squares)
+        return copy.deepcopy(self.squares)

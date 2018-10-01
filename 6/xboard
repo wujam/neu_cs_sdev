@@ -11,14 +11,14 @@ board = Board()
 # takes in a worker and returns a tuple of the player number and worker number
 def parse_worker(worker):
     player_name = worker[:-1]
-    worker_num = int(worker[-1]) - 1
-    player_num = players.index(player_name)
+    worker_num = int(worker[-1])
+    player_num = players.index(player_name) + 1
     return player_num, worker_num
 
 direction_map = {
 "PUT": 0,
-"SOUTH": -1,
-"NORTH": 1,
+"SOUTH": 1,
+"NORTH": -1,
 "EAST": 1,
 "WEST": -1
 }
@@ -33,6 +33,7 @@ def handle_move(worker, direction):
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     board.set_worker(x + dx, y + dy, player_num, worker_num)
+    print("[]")
 
 # builds a floor in the given direction
 def handle_build(worker, direction):
@@ -40,27 +41,28 @@ def handle_build(worker, direction):
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
     board.add_floor(x + dx, y + dy) 
+    print("[]")
  
 # determines if there is a neighboring cell in the given direction
 def handle_neighbor(worker, direction):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
-    return (x + dx) in range(0,6), (y + dy) in range(0,6)
+    print("yes" if (x + dx) in range(0,6) and (y + dy) in range(0,6) else "no")
 
 # determines if the cell in the given direction is occupied
 def handle_occupy(worker, direction):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
-    return (x + dx, y + dy) in board.get_worker_positions()
+    print("yes" if (x + dx, y + dy) in board.get_worker_positions() else "no")
 
 # gets the height of the cell in the given direction
 def handle_height(worker, direction):
     player_num, worker_num = parse_worker(worker)
     dx, dy = parse_direction(direction)
     x, y = board.get_worker_position(player_num, worker_num)
-    return board.get_floor_height(x + dx, y + dy)
+    print(board.get_floor_height(x + dx, y + dy))
 
 handle_message = {
     "move": handle_move,
@@ -70,19 +72,10 @@ handle_message = {
     "height": handle_height
 }
 
-# the buffer of json objects from the input
-in_buffer = []
-
 # players for this board
 players = []
 
-def parse_line():
-    parsed_list = parse_json.parse_json(sys.stdin.readline())
-    in_buffer = in_buffer + parsed_list
-
-# read first json object
-while len(in_buffer) == 0:
-    parse_line()
+parsed_list = parse_json.parse_json(sys.stdin.read())
 
 # deal with the board json array, should be the first input
 board_array = parsed_list.pop(0)
@@ -93,7 +86,7 @@ for i in range(6 - len(board_array)):
 
 # backfill incomplete rows 
 for i in range(6):
-    board_array[i].append([0] * (6 - len(board_array[i])))
+    board_array[i] = board_array[i] + [0] * (6 - len(board_array[i]))
 
 for i in range(6):
     for j in range(6):
@@ -112,18 +105,15 @@ for i in range(6):
                 players.append(player_name)
 
             # determine which player (1 or 2)
-            player_num = players.index(player_name)
+            player_num = players.index(player_name) + 1
             board.set_worker(i, j, player_num, worker_num)
         else:
-            raise ValueError("bad initial board")
+            raise ValueError(f"bad initial board: {board_array}")
 
 # loop for every line of input
-while True:
-    parse_line()
-
-    for json_obj in in_buffer:
-        if cmd[0] in handle_message.keys():
-            handle_message[cmd[0]](cmd[1], cmd[2])
-        else:
-            # TODO print error message
-            continue
+for cmd in parsed_list:
+    if cmd[0] in handle_message.keys():
+        handle_message[cmd[0]](cmd[1], cmd[2])
+    else:
+        # TODO print error message
+        continue
