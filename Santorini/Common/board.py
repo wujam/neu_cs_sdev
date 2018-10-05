@@ -7,8 +7,32 @@ A high level process for using this class should be:
 2. Set initial worker positions
 3. Set worker positions/building heights as game progresses
 4. Get data as game progresses
+5. Query board to check if game is over
 """
+
+"""
+A worker is (x,y)
+  where x and y and are its x and y positions on the board
+  x and y are integers where positive x represents east and
+  positive y represents south
+
+A building is an int that respresents it's height on the board
+
+Building Heights on the board are in range [0,4]
+  a 0 height building has no floors built yet or equivalently is 'not a building'
+  a 1-4 height building is one with that many floors built
+"""
+
 class Board:
+    # the length and width of the board
+    BOARD_DIMENSION = 6
+
+    # starting height of a building
+    BASE_BUILDING_HEIGHT = 0
+
+    # highest height of a builing
+    MAX_BUILDING_HEIGHT = 4
+
     # worker objects that contain a tuple of the x and y position on the board
     p1worker1 = None
     p1worker2 = None
@@ -16,14 +40,15 @@ class Board:
     p2worker2 = None
 
     # a 6x6 2d list that containes buildings
-    squares = []
+    squares = None
 
     """
     sets squares to 0 heights 
     """
     def __init__(self):
-        for i in range(6):
-            self.squares.append([0] * 6)
+        self.squares = []
+        for i in range(self.BOARD_DIMENSION):
+            self.squares.append([self.BASE_BUILDING_HEIGHT] * self.BOARD_DIMENSION)
 
     """
     Sets the position of a worker
@@ -50,7 +75,7 @@ class Board:
     y: the vertical position of the building, between [0,6)
     """
     def add_floor(self, x: int, y: int):
-        if self.squares[x][y] > 3:
+        if self.squares[x][y] == self.MAX_BUILDING_HEIGHT:
             raise ValueError(f"Building at {x}, {y} cannot be added to")
         self.squares[x][y] = self.squares[x][y] + 1
 
@@ -69,7 +94,9 @@ class Board:
     height: the height to set the floor to
     """
     def set_floor_height(self, x: int, y: int, height: int) -> int:
-        if height not in range(0,5):
+        # have to add 1 to the python range function here because it is not inclusive
+        # on the upper bound
+        if height not in range(self.BASE_BUILDING_HEIGHT, self.MAX_BUILDING_HEIGHT + 1):
             raise ValueError(f"Building at {x}, {y} cannot be set to {height}")
         self.squares[x][y] = height
 
