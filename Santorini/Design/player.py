@@ -61,8 +61,10 @@ class Player:
     @worker: the worker number of the worker to set
     @direction_to_move: tuple of an int within [-1, 1] and [-1, 1]. The first number specifies the x direction to move,
                         and the second number represents the y direction to move. Positive x is east, positive y is south.
+                        cannot be (0, 0)
     @direction_to_build: tuple of an int within [-1, 1] and [-1, 1]. The numbers specify the direction to build relative
                          to the new position of the worker. If the move is game winning, this should be specified as (0,0).
+                         cannot be (0, 0)
     """
     def move_worker_and_build(self, worker_number, direction_to_move, direction_to_build):
         pass

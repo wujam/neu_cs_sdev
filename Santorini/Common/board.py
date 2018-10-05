@@ -11,10 +11,12 @@ A high level process for using this class should be:
 """
 
 """
-A worker is (x,y)
+A worker is (x,y) or None
   where x and y and are its x and y positions on the board
   x and y are integers where positive x represents east and
   positive y represents south
+  
+  A workeer is None if it is not set yet
 
 A building is an int that respresents it's height on the board
 
@@ -101,7 +103,7 @@ class Board:
         self.squares[x][y] = height
 
     """
-    @return the position of the specified worker
+    @return the position of the specified worker, None if not set yet
     player: represents which player the worker belongs to, between [0,2)
     worker: represents which worker of the player is being placed, between [0,2)
     """
