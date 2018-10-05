@@ -1,9 +1,10 @@
 #!/usr/bin/python3.6
-import json
 import sys
+sys.path.append('../Santorini')
+import json
 import aux.parse_json as parse_json
 import argparse
-from aux.board import Board
+from Common.board import Board
 
 """
 A systems level test harness that tests a board
