@@ -69,8 +69,6 @@ class Board:
     raises ValueError: If the height at the specified Building is at maximum
     """
     def add_floor(self, x: int, y: int):
-        if self.squares[x][y] == self.MAX_BUILDING_HEIGHT:
-            raise ValueError(f"Building at {x}, {y} cannot be added to")
         self.set_floor_height(x, y, self.squares[x][y] + 1)
 
     """
@@ -87,7 +85,7 @@ class Board:
     y: the vertical position of the Building, between [0,6)
     height: the height to set the floor to, between [0,4]
     """
-    def set_floor_height(self, x: int, y: int, height: int) -> int:
+    def set_floor_height(self, x: int, y: int, height: int):
         self.squares[x][y] = height
 
     """
