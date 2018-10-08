@@ -6,11 +6,14 @@ and determines if the move is valid.
 Refer to external documentation on what a valid worker move is.
 """
 class RuleChecker:
+
+    board = None
+
     """
     @board a Board class to validate moves against
     """
     def __init__(self, board):
-        self._board = board
+        self.board = board
 
     """
     determines if a move is valid based on the phase of the game, player turn, and the given move
@@ -26,16 +29,16 @@ class RuleChecker:
 
     """
     def is_move_valid(self, player_number: int, worker_number: int, direction_to_move: (int, int), direction_to_build: (int, int)) -> bool:
-        if (!self._workers_are_placed()):
+        if (not self._workers_are_placed()):
             return False 
 
         # TODO: is a move valid if the game is over?
 
-        # worker move bounds checkin:e bog
+        # worker move bounds checking
         worker_position = self.board.get_worker_position(player_number, worker_number)
         new_worker_position = self._add_pos_and_move(worker_position, direction_to_move)
 
-        if (not self._position_in_bounds(new_worker_position):
+        if (not self._position_in_bounds(new_worker_position)):
             return False
 
         # height move checking
@@ -46,13 +49,13 @@ class RuleChecker:
 
         # worker move collision checking
         worker_positions = self.board.get_worker_positions()
-        worker_positinos = worker_positions[0] + worker_positions[1]
+        worker_positions = worker_positions[0] + worker_positions[1]
         if (new_worker_position in worker_positions):
             return False
 
         # building bounds checking
         build_position = self._add_pos_and_move(new_worker_position, direction_to_build)
-        if (not self._position_in_bounds(build_position):
+        if (not self._position_in_bounds(build_position)):
             return False
 
         # building build checking
@@ -70,7 +73,8 @@ class RuleChecker:
     @return: True if all workers have been placed, False otherwise
     """
     def _workers_are_placed(self) -> bool:
-        return None not in self.board.get_workers()
+        print(self.board.get_worker_positions())
+        return not any(None in workers for workers in self.board.get_worker_positions())
 
     """
     determines if a position is a valid position within the bounds of the board
@@ -86,7 +90,7 @@ class RuleChecker:
     @position: tuple of two ints (x,y)
     @move: tuple of two ints (x,y)
     """
-    def _add_pos_and_move(self, position: (int., int), move: (int, int)) -> (int, int):
+    def _add_pos_and_move(self, position: (int, int), move: (int, int)) -> (int, int):
         return tuple(sum(i) for i in zip(position, move))
 
     """
