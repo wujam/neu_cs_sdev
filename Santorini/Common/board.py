@@ -37,7 +37,7 @@ class Board:
     # the second Player 2 in this documentation.
     # a Player is a list of two Workers, where the first of the list is considered
     # Worker 1 and the second is Worker 2
-    players = [[None, None], [None, None]]
+    players = None
 
     # a 6x6 2d list that containes Buildings
     squares = None
@@ -47,6 +47,7 @@ class Board:
     """
     def __init__(self):
         self.squares = []
+        self.players = [[None, None], [None, None]]
         for i in range(self.BOARD_DIMENSION):
             self.squares.append([self.BASE_BUILDING_HEIGHT] * self.BOARD_DIMENSION)
 
