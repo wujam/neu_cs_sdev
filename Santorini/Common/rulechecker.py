@@ -46,6 +46,7 @@ class RuleChecker:
 
         # worker move collision checking
         worker_positions = self.board.get_worker_positions()
+        worker_positinos = worker_positions[0] + worker_positions[1]
         if (new_worker_position in worker_positions):
             return False
 
