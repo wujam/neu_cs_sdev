@@ -1,0 +1,3 @@
+[["0aplay1", "0aplay2", "0bplay1", "1bplay2"]]
+["move", "aplay1", ["PUT", "SOUTH"]]
+["+build", ["WEST", "NORTH"]]

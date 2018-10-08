@@ -1,0 +1,136 @@
+#!/usr/bin/python3.6
+import sys
+# allows an import from a directory above the parent directory
+sys.path.append('../Santorini')
+import json
+import aux.parse_json as parse_json
+import argparse
+from Common.board import Board
+from Common.rulechecker import RuleChecker
+
+"""
+A systems level test harness that tests a rulechecker
+Takes in multple lines of JSON commands and runs the board accordingly
+prints outputs from the rulechecker commands
+"""
+
+# initialize board
+board = Board()
+
+# initialize rulechecker
+rulechecker = RuleChecker(board)
+
+"""
+parses the fields in a worker string
+@return a tuple containing the player_num and the worker_num
+"""
+def parse_worker(worker: str) -> (int, int):
+    player_name = worker[:-1]
+    worker_num = int(worker[-1])
+    player_num = players.index(player_name) + 1
+    return player_num, worker_num
+
+# used to parse directions into x and y differences
+direction_map = {
+"PUT": 0,
+"SOUTH": 1,
+"NORTH": -1,
+"EAST": 1,
+"WEST": -1
+}
+
+"""
+parses a direction
+@return tuple of the x and y differences produces by the direction
+"""
+def parse_direction(direction: [str, str]) -> (int, int):
+    return direction_map[direction[0]], direction_map[direction[1]]
+
+"""
+makes sure a direction is valid: the x and y are both between [-1, 1] and 
+the the direction is not (0, 0)
+@return True if the direction is valid, False otherwise
+"""
+def verify_direction(direction: [int, int]) -> (int, int):
+    return [val in range(-1, 2) for val in direction] and direction is not (0, 0)
+
+"""
+verifies if moving a worker in the given direction is valid or not
+"""
+def handle_move(worker: str, direction: [str, str]):
+    player_num, worker_num = parse_worker(worker)
+    dx, dy = parse_direction(direction)
+    valid = verify_direction(direction) and\
+            rulechecker.is_move_valid(player_num, worker_num, (dx, dy))
+    if valid:
+        print(json.dumps("yes"))
+    else:
+        print(json.dumps("no"))
+
+"""
+verifies if moving a worker and building in the given directions is valid or not
+"""
+def handle_move_and_build(worker: str, move_direction: [str, str], build_direction: [str, str]):
+    player_num, worker_num = parse_worker(worker)
+    move_dx, move_dy = parse_direction(move_direction)
+    build_dx, build_dy = parse_direction(build_direction)
+    valid = verify_direction(move_direction) and verify_direction(build_direction) and\
+            rulechecker.is_move_and_build_valid(player_num, worker_num, (move_dx, move_dy),
+                                                (build_dx, build_dy))
+    if valid:
+        print(json.dumps("yes"))
+    else:
+        print(json.dumps("no"))
+
+# players for this board
+players = []
+
+parsed_list = parse_json.parse_json(sys.stdin.read())
+
+# deal with the board json array, should be the first input
+board_array = parsed_list.pop(0)
+
+# append rows if the baord is a short board
+for i in range(6 - len(board_array)):
+    board_array.append([0]*6)
+
+# backfill incomplete rows 
+for i in range(6):
+    board_array[i] = board_array[i] + [0] * (6 - len(board_array[i]))
+
+for i in range(6):
+    for j in range(6):
+
+        # differentiate between number or string for the cell
+        if isinstance(board_array[j][i], int):
+            board.set_floor_height(i, j, board_array[j][i])
+        elif isinstance(board_array[j][i], str):
+            height = int(board_array[j][i][0])
+            board.set_floor_height(i, j, height)
+            player_name = board_array[j][i][1:-1]
+            worker_num = int(board_array[j][i][-1])
+
+            # determine if player exists already or not
+            if player_name not in players:
+                players.append(player_name)
+
+            # determine which player (1 or 2)
+            player_num = players.index(player_name) + 1
+            board.set_worker(i, j, player_num, worker_num)
+        else:
+            raise ValueError(f"bad initial board: {board_array}")
+
+# get move command
+move_cmd = parsed_list.pop(0)
+worker = move_cmd[1]
+move_dir = move_cmd[2]
+
+# if a build wasn't given just check the move
+if (not parsed_list):
+    handle_move(worker, move_dir)
+    # rulechecker.is_move_only_valid(...)
+# otherwise check the move and the build
+else:
+    build_cmd = parsed_list.pop(0)
+    build_dir = build_cmd[1]
+    handle_move_and_build(worker, move_dir, build_dir)
