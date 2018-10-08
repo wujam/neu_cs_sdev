@@ -35,8 +35,6 @@ class RuleChecker:
         if (not self._workers_are_placed()):
             return False
 
-        # TODO: is a move valid if the game is over?
-
         # worker move bounds checking
         worker_position = self.board.get_worker_position(player_number, worker_number)
         new_worker_position = self._add_pos_and_move(worker_position, direction_to_move)
@@ -47,12 +45,12 @@ class RuleChecker:
         # height move checking
         old_height = self.board.get_floor_height(*worker_position)
         new_height = self.board.get_floor_height(*new_worker_position)
-        if (new_height not in range(0, old_height + 2)):
+        if (new_height not in range(0, min(old_height + 2, self.board.MAX_BUILDING_HEIGHT))):
             return False
 
         # worker move collision checking
-        worker_positions = self.board.get_worker_positions()
-        worker_positions = worker_positions[0] + worker_positions[1]
+        players = self.board.get_worker_positions()
+        worker_positions = self._flatten(players)
         if (new_worker_position in worker_positions):
             return False
 
@@ -63,20 +61,29 @@ class RuleChecker:
 
         # building build checking
         build_building_height = self.board.get_floor_height(*build_position)
-        if (build_building_height >= self.board.MAX_BUILDING_HEIGHT):
+        if (build_building_height + 1 > self.board.MAX_BUILDING_HEIGHT):
             return False
 
-        # building build collision with worker checking
-        if (build_position in worker_positions):
+        # building build collision with new worker positions
+        players[player_number - 1][worker_number - 1] = new_worker_position
+        new_worker_positions = self._flatten(players)
+        if (build_position in new_worker_positions):
             return False
+
         return True
+
+    """
+    returns a flattened list from a list of lists
+    @return flattened list
+    """
+    def _flatten(self, list_of_lists: [[]]) -> []:
+        return [val for sublist in list_of_lists for val in sublist]
 
     """
     determines if all the workers on the board have been placed
     @return: True if all workers have been placed, False otherwise
     """
     def _workers_are_placed(self) -> bool:
-        print(self.board.get_worker_positions())
         return not any(None in workers for workers in self.board.get_worker_positions())
 
     """
