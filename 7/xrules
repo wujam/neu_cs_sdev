@@ -14,6 +14,9 @@ Takes in multple lines of JSON commands and runs the board accordingly
 prints outputs from the rulechecker commands
 """
 
+# players for this board
+players = []
+
 # initialize board
 board = Board()
 
@@ -82,55 +85,60 @@ def handle_move_and_build(worker: str, move_direction: [str, str], build_directi
     else:
         print(json.dumps("no"))
 
-# players for this board
-players = []
-
 parsed_list = parse_json.parse_json(sys.stdin.read())
 
-# deal with the board json array, should be the first input
-board_array = parsed_list.pop(0)
+def set_board_and_players(board_array):
+    # reset players
+    global players
+    players = []
 
-# append rows if the baord is a short board
-for i in range(6 - len(board_array)):
-    board_array.append([0]*6)
+    # append rows if the baord is a short board
+    for i in range(6 - len(board_array)):
+        board_array.append([0]*6)
 
-# backfill incomplete rows 
-for i in range(6):
-    board_array[i] = board_array[i] + [0] * (6 - len(board_array[i]))
+    # backfill incomplete rows 
+    for i in range(6):
+        board_array[i] = board_array[i] + [0] * (6 - len(board_array[i]))
 
-for i in range(6):
-    for j in range(6):
+    for i in range(6):
+        for j in range(6):
 
-        # differentiate between number or string for the cell
-        if isinstance(board_array[j][i], int):
-            board.set_floor_height(i, j, board_array[j][i])
-        elif isinstance(board_array[j][i], str):
-            height = int(board_array[j][i][0])
-            board.set_floor_height(i, j, height)
-            player_name = board_array[j][i][1:-1]
-            worker_num = int(board_array[j][i][-1])
+            # differentiate between number or string for the cell
+            if isinstance(board_array[j][i], int):
+                board.set_floor_height(i, j, board_array[j][i])
+            elif isinstance(board_array[j][i], str):
+                height = int(board_array[j][i][0])
+                board.set_floor_height(i, j, height)
+                player_name = board_array[j][i][1:-1]
+                worker_num = int(board_array[j][i][-1])
 
-            # determine if player exists already or not
-            if player_name not in players:
-                players.append(player_name)
+                # determine if player exists already or not
+                if player_name not in players:
+                    players.append(player_name)
 
-            # determine which player (1 or 2)
-            player_num = players.index(player_name) + 1
-            board.set_worker(i, j, player_num, worker_num)
-        else:
-            raise ValueError(f"bad initial board: {board_array}")
+                # determine which player (1 or 2)
+                player_num = players.index(player_name) + 1
+                board.set_worker(i, j, player_num, worker_num)
+            else:
+                raise ValueError(f"bad initial board: {board_array}")
+    return board_array
 
-# get move command
-move_cmd = parsed_list.pop(0)
-worker = move_cmd[1]
-move_dir = move_cmd[2]
+while parsed_list:
+    # get the baord_array (should be the first json item in a sequence)
+    board_array = parsed_list.pop(0)
 
-# if a build wasn't given just check the move
-if (not parsed_list):
-    handle_move(worker, move_dir)
-    # rulechecker.is_move_only_valid(...)
-# otherwise check the move and the build
-else:
-    build_cmd = parsed_list.pop(0)
-    build_dir = build_cmd[1]
-    handle_move_and_build(worker, move_dir, build_dir)
+    set_board_and_players(board_array)
+
+    # get the move command which should be after the board_array
+    move_cmd = parsed_list.pop(0)
+    worker = move_cmd[1]
+    move_dir = move_cmd[2]
+
+    # make sure we aren't at the end of the list and if the next cmd is a "+board" then check move and build
+    if parsed_list and parsed_list[0][0] == "+build":
+            build_cmd = parsed_list.pop(0)
+            build_dir = build_cmd[1]
+            handle_move_and_build(worker, move_dir, build_dir)
+    # otherwise just check a board
+    else:
+        handle_move(worker, move_dir)
