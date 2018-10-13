@@ -15,8 +15,9 @@ def PlacementStrategy:
               currently on the board.
     @return: A tuple of 2 ints (x,y) each from [0,5] representing the position
              that this strategy component chooses to place the next worker.
-             Returns None if a placement isn't possible for the implementation
-             of the placement strategy.
     """
     def get_worker_placement(self, players):
-        pass
+        our_workers = players[0]
+        opp_workers = players[1]
+
+       # do stuff 

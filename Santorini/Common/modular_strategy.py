@@ -1,9 +1,10 @@
 """
-A sub-strategy that determines the next move to make outside of the start up phase
+A Strategy object determines moves based on a game state.
 """
-def TurnStrategy:
-    def __init__(self):
-        pass
+def ModularStrategy:
+    def __init__(self, turn_strategy, placement_strategy):
+        self.turn_strategy = turn_strategy
+        self.placement_strategy = placement_strategy
 
     """
     This function should give back the 'best' move to make with the given
@@ -26,8 +27,20 @@ def TurnStrategy:
              [-1,1], but cannot be (0,0).
              A directiontobuild is a tuple of two ints (x,y) each in the range
              [-1,1]. Can be (0,0) only if the move is a winning move.
-             Returns None if the Strategy predicts that all possible moves cannot
-             deliver above their minima for the heuristic they represent.
     """
     def get_move(self, buildings, players):
-        pass
+        self.turn_strategy.get_move(buildings, players)
+
+    """
+    Get a worker placement from this strategy component given a game state.
+    @players: a list of two Players, as defined above. The first Player
+              in the list is a list of the workers this player is representing,
+              and the second Player is a list of workers the opposing player is
+              representing. These lists will not necessarily contain 2 workers,
+              but the workers contained in both lists represent all the workers
+              currently on the board.
+    @return: A tuple of 2 ints (x,y) each from [0,5] representing the position
+             that this strategy component chooses to place the next worker.
+    """
+    def get_worker_placement(self, players):
+        self.placement_strategy.get_worker_placement(players)

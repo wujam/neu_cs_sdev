@@ -1,7 +1,7 @@
 """
 A sub-strategy that determines the best placement to make during the start-up phase
 """
-def PlacementStrategy:
+def DiagonalPlacementStrategy:
     def __init__(self):
         pass
 
@@ -15,8 +15,16 @@ def PlacementStrategy:
               currently on the board.
     @return: A tuple of 2 ints (x,y) each from [0,5] representing the position
              that this strategy component chooses to place the next worker.
-             Returns None if a placement isn't possible for the implementation
-             of the placement strategy.
+             The position chosen will be a free positoin on the x=y diagonal.
+             Will return None if there are no free spaces on the diagonal.
     """
     def get_worker_placement(self, players):
-        pass
+        #flatten list
+        workers = [worker for player in players for worker in player]
+
+        return next(placement for placement in zip(range(6), range(6))
+               if (placement not in workers), None)
+
+
+
+        

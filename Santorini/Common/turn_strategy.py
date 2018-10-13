@@ -26,8 +26,15 @@ def TurnStrategy:
              [-1,1], but cannot be (0,0).
              A directiontobuild is a tuple of two ints (x,y) each in the range
              [-1,1]. Can be (0,0) only if the move is a winning move.
-             Returns None if the Strategy predicts that all possible moves cannot
-             deliver above their minima for the heuristic they represent.
     """
-    def get_move(self, buildings, players):
-        pass
+    def get_move(self, buildings, players, lookaheads):
+    # List of tuples of (Turn, Turns)
+    # A Turn is (PlayerNum, WorkerNum, WorkerMoveDirection, BuildingMoveDirection)
+    turn_tree =  
+
+
+    def _get_all_worker_moves(players):
+        
+
+
+    def _get_worker_moves(worker, players):

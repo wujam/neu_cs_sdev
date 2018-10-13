@@ -2,7 +2,7 @@
 A Strategy object determines moves based on a game state.
 """
 def Strategy:
-    def __init__(self, turn_strategy, placement_strategy):
+    def __init__(self):
         pass
 
     """
@@ -27,7 +27,7 @@ def Strategy:
              A directiontobuild is a tuple of two ints (x,y) each in the range
              [-1,1]. Can be (0,0) only if the move is a winning move.
     """
-    def get_move(self, buildings, players):
+    def get_move(self, buildings, players, lookahead):
         pass
 
     """
