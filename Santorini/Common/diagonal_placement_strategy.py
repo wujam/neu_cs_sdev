@@ -22,9 +22,8 @@ class DiagonalPlacementStrategy:
         #flatten list
         workers = [worker for player in players for worker in player]
 
-        return next(placement for placement in zip(range(6), range(6))
-               if (placement not in workers), None)
+        for posn in zip(range(6), range(6)):
+            if posn not in workers:
+                return posn
 
-
-
-        
+        return None
