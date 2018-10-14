@@ -1,7 +1,7 @@
 """
 A Strategy object determines moves based on a game state.
 """
-def ModularStrategy:
+class ModularStrategy:
     def __init__(self, turn_strategy, placement_strategy):
         self.turn_strategy = turn_strategy
         self.placement_strategy = placement_strategy

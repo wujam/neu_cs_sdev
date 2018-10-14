@@ -1,7 +1,7 @@
 """
 A sub-strategy that determines the next move to make outside of the start up phase
 """
-def TurnStrategy:
+class TurnStrategy:
     def __init__(self):
         pass
 

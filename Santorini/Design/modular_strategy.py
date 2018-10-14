@@ -6,7 +6,7 @@ from placement_strategy import PlacementStrategy
 A ModularStrategy object is a Strategy that uses a TurnStrategy and PlacementStrategy
 to determine turns and worker placements.
 """
-def ModularStrategy(Strategy):
+class ModularStrategy(Strategy):
     """
     Takes a TurnStrategy and a PlacementStrategy to make move decisions
     @turn_strategy: a TurnStrategy to use

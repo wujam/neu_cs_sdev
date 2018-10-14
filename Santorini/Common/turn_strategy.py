@@ -2,7 +2,7 @@ import itertools
 """
 A sub-strategy that determines the next move to make outside of the start up phase
 """
-def TurnStrategy:
+class TurnStrategy:
     WORKER_MOVE_DISTANCE = 1
     WORKER_HEIGHT_MOVE_DIFF = 1
     BOARD_SIZE = 6

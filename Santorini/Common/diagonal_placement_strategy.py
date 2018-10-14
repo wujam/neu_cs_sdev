@@ -1,7 +1,7 @@
 """
 A sub-strategy that determines the best placement to make during the start-up phase
 """
-def DiagonalPlacementStrategy:
+class DiagonalPlacementStrategy:
     def __init__(self):
         pass
 
