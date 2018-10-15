@@ -20,8 +20,8 @@ class RuleChecker:
 
     """
     determines if a move is valid based on the phase of the game, player turn, and the given move
-    @player_number: 1 or 2, the number of the player of the worker that's moving
-    @worker_number: 1 or 2, which worker of the player is moving
+    @player_number: 0 or 1, the number of the player of the worker that's moving
+    @worker_number: 0 or 1, which worker of the player is moving
     @direction_to_move: tuple of an int within [-1, 1] and [-1, 1]. The first number specifies the x direction to move,
                         and the second number represents the y direction to move. Positive x is east, positive y is south.
                         cannot be (0, 0)
@@ -55,8 +55,8 @@ class RuleChecker:
 
     """
     determines if a move is valid based on the phase of the game, player turn, and the given move
-    @player_number: 1 or 2, the number of the player of the worker that's moving
-    @worker_number: 1 or 2, which worker of the player is moving
+    @player_number: 0 or 1, the number of the player of the worker that's moving
+    @worker_number: 0 or 1, which worker of the player is moving
     @direction_to_move: tuple of an int within [-1, 1] and [-1, 1]. The first number specifies the x direction to move,
                         and the second number represents the y direction to move. Positive x is east, positive y is south.
                         cannot be (0, 0)
@@ -86,7 +86,7 @@ class RuleChecker:
             return False
 
         # building build collision with new worker positions
-        players[player_number - 1][worker_number - 1] = new_worker_position
+        players[player_number][worker_number] = new_worker_position
         new_worker_positions = self._flatten(players)
         if (build_position in new_worker_positions):
             return False
@@ -136,7 +136,7 @@ class RuleChecker:
 
     """
     checks if the game is over or not based on the plater turn and board
-    @player_number: 1 or 2, the number of the player who's turn it is
+    @player_number: 0 or 1, the number of the player who's turn it is
     @return: True if the game is over, False otherwise
     """
     def is_game_over(self, player_number: int) -> bool:

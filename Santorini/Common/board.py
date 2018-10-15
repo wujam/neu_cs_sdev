@@ -15,7 +15,7 @@ A Worker is (x,y) or None
   where x and y and are its x and y positions on the board
   x and y are integers where positive x represents east and
   positive y represents south
-  
+
   A Worker is None if it is not set yet
 
 A Building is an int that respresents it's height on the board
@@ -43,7 +43,7 @@ class Board:
     squares = None
 
     """
-    sets squares to 0 heights 
+    sets squares to 0 heights
     """
     def __init__(self):
         self.squares = []
@@ -55,11 +55,11 @@ class Board:
     Sets the position of a worker
     x: the horizontal position of the worker to be placed, between [0,6)
     y: the vertical position of the worker to be placed, between [0,6)
-    player: represents which player the worker belongs to, between [1,2]
-    worker: represents which worker of the player is being placed, between [1,2]
+    player: represents which player the worker belongs to, between [0,1]
+    worker: represents which worker of the player is being placed, between [0,1]
     """
     def set_worker(self, x: int, y: int, player: int, worker: int):
-       self.players[player - 1][worker - 1] = (x, y) 
+       self.players[player][worker] = (x, y)
 
     """
     Adds a floor to a Building.
@@ -93,11 +93,11 @@ class Board:
 
     """
     @return the position of the specified worker, None if not set yet
-    player: represents which player the worker belongs to, between [1,2]
-    worker: represents which worker of the player is being placed, between [1,2]
+    player: represents which player the worker belongs to, between [0,1]
+    worker: represents which worker of the player is being placed, between [0,1]
     """
     def get_worker_position(self, player: int, worker: int) -> (int, int):
-        return self.players[player - 1][worker - 1]        
+        return self.players[player][worker]
 
     """
     Get a list of the positions of the game's workers.

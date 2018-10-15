@@ -21,10 +21,10 @@ class TestBoard(unittest.TestCase):
             for y in range(6):
                 self.disboard.set_floor_height(x, y, self.squares[y][x])
 
-        self.disboard.set_worker(*self.players[0][0], 1, 1)
-        self.disboard.set_worker(*self.players[0][1], 1, 2)
-        self.disboard.set_worker(*self.players[1][0], 2, 1)
-        self.disboard.set_worker(*self.players[1][1], 2, 2)
+        self.disboard.set_worker(*self.players[0][0], 0, 0)
+        self.disboard.set_worker(*self.players[0][1], 0, 1)
+        self.disboard.set_worker(*self.players[1][0], 1, 0)
+        self.disboard.set_worker(*self.players[1][1], 1, 1)
 
     # doens't really need to do anything
     def teardown(self):
@@ -32,17 +32,17 @@ class TestBoard(unittest.TestCase):
         
     # testing whether set_worker actually sets workers correctly
     def set_worker(self):
-        self.disboard.set_worker(0, 0, 1, 1)
-        self.asssetEqual(self.disboard.get_worker_position(1, 1), (0, 0))
+        self.disboard.set_worker(0, 0, 0, 0)
+        self.asssetEqual(self.disboard.get_worker_position(0, 0), (0, 0))
 
-        self.disboard.set_worker(4, 3, 1, 1)
-        self.asssetEqual(self.disboard.get_worker_position(1, 1), (4, 3))
+        self.disboard.set_worker(4, 3, 0, 1)
+        self.asssetEqual(self.disboard.get_worker_position(0, 1), (4, 3))
 
-        self.disboard.set_worker(4, 4, 2, 1)
-        self.asssetEqual(self.disboard.get_worker_position(2, 1), (4, 4))
+        self.disboard.set_worker(4, 4, 1, 0)
+        self.asssetEqual(self.disboard.get_worker_position(1, 0), (4, 4))
 
-        self.disboard.set_worker(3, 5, 2, 2)
-        self.asssetEqual(self.disboard.get_worker_position(2, 2), (3, 5))
+        self.disboard.set_worker(3, 5, 1, 1)
+        self.asssetEqual(self.disboard.get_worker_position(1, 1), (3, 5))
 
     # testing if add_floor works up the required number of floors
     def test_add_floor(self):
@@ -85,7 +85,7 @@ class TestBoard(unittest.TestCase):
     def test_get_worker_position(self):
         for i in range(2):
             for j in range(2):
-                self.assertEqual(self.disboard.get_worker_position(i + 1, j + 1), self.players[i][j])
+                self.assertEqual(self.disboard.get_worker_position(i, j), self.players[i][j])
 
     def test_get_worker_positions(self):
         workers = self.disboard.get_worker_positions()
