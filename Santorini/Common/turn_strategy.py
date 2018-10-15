@@ -1,6 +1,6 @@
 import itertools
 from board import Board
-from rulechecker import Rulechecker
+from rulechecker import RuleChecker
 from functools import reduce
 
 """
@@ -48,9 +48,11 @@ class TurnStrategy:
              moves lead to loss.
     """
     def get_move(self, buildings, players, lookaheads):
-    # List of tuples of (Turn, Turns)
-    # A Turn is (WorkerNum, WorkerMoveDirection, BuildingMoveDirection)
+        # List of tuples of (Turn, Turns)
+        # A Turn is (WorkerNum, WorkerMoveDirection, BuildingMoveDirection)
         turn_tree = _get_node_generator(self, players, buildings) 
+        
+        # A 
 
     """
     Gets a generator of all possible turns for the player from the given board position.
@@ -84,7 +86,7 @@ class TurnStrategy:
     """
     @staticmethod
     def _get_worker_moves(worker, players, buildings):
-        worker_index = player[0].index(worker)
+        worker_index = players[0].index(worker)
         worker_height = buildings[worker[0]][worker[1]]
         all_workers = players[0] + players[1]
         cur_board = Board(players, buildings)
@@ -113,7 +115,7 @@ class TurnStrategy:
     """
     @staticmethod
     def _get_possible_build_moves(worker, move_direction, players, buildings):
-        worker_index = player[0].index(worker)
+        worker_index = players[0].index(worker)
         all_workers = [w for w in players[0] if w is not worker] + [TurnStrategy._add_tuples(worker, move_direction)] + players[1]
         cur_board = Board(players, buildings)
         for direction in TurnStrategy._gen_cardinal_directions():
