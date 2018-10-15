@@ -14,7 +14,7 @@ A Worker is (x,y) or None
   where x and y and are its x and y positions on the board
   x and y are integers where positive x represents east and
   positive y represents south
-  
+
   A Worker is None if it is not set yet
 
 A Building is an int that respresents it's height on the board
@@ -45,6 +45,20 @@ class Board:
     sets squares to 0 heights 
     """
     def __init__(self):
+        pass
+
+    """
+    copy constructor
+    """
+    def __init__(self, board):
+        pass
+
+    """
+    a new board from a list of heights and workers
+    @players: A list of 2 Players
+    @buildings: A 2d list of buildings
+    """
+    def __init__(self, players, buildings):
         pass
 
     """

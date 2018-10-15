@@ -52,6 +52,22 @@ class Board:
             self.squares.append([self.BASE_BUILDING_HEIGHT] * self.BOARD_DIMENSION)
 
     """
+    makes a new board copied from a previous Board
+    """
+    def __init__(self, board):
+        self.players = board.get_worker_positions()
+        self.squares = board.get_building_heights()
+
+    """
+    makes a new board from a list of heights and workers
+    @players: A list of 2 Players
+    @buildings: A 2d list of buildings
+    """
+    def __init__(self, players, buildings):
+        self.players = copy.deepcopy(players) 
+        self.squares = copy.deepcopy(buildings) 
+
+    """
     Sets the position of a worker
     x: the horizontal position of the worker to be placed, between [0,6)
     y: the vertical position of the worker to be placed, between [0,6)

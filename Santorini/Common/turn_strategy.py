@@ -1,4 +1,6 @@
 import itertools
+from board import Board
+from rulechecker import Rulechecker
 from functools import reduce
 
 """
@@ -61,7 +63,6 @@ class TurnStrategy:
     @staticmethod
     def _get_node_generator(players, buildings):
         our_workers = players[0]
-
         possible_worker_moves = iter(()) 
 
         for worker in our_workers:
@@ -83,14 +84,20 @@ class TurnStrategy:
     """
     @staticmethod
     def _get_worker_moves(worker, players, buildings):
+        worker_index = player[0].index(worker)
         worker_height = buildings[worker[0]][worker[1]]
         all_workers = players[0] + players[1]
+        cur_board = Board(players, buildings)
         for direction in TurnStrategy._gen_cardinal_directions():
             new_pos = TurnStrategy._add_tuples(worker, direction) 
             new_height = buildings[new_pos[0]][new_pos[1]]
+            """
             if (TurnStrategy._in_bounds(*new_pos) and
                 new_pos not in all_workers and
                 new_height - worker_height <= TurnStrategy.WORKER_HEIGHT_MOVE_DIFF):
+            """
+            rulecheck = RuleChecker(cur_board)
+            if rulecheck.is_move_valid(0, worker_index, direction)
                 yield (worker, direction)
             else:
                 continue
@@ -106,15 +113,22 @@ class TurnStrategy:
     """
     @staticmethod
     def _get_possible_build_moves(worker, move_direction, players, buildings):
+        worker_index = player[0].index(worker)
         all_workers = [w for w in players[0] if w is not worker] + [TurnStrategy._add_tuples(worker, move_direction)] + players[1]
+        cur_board = Board(players, buildings)
         for direction in TurnStrategy._gen_cardinal_directions():
             build_pos = reduce(TurnStrategy._add_tuples, [worker, move_direction, direction], (0, 0))
+            """
             if (TurnStrategy._in_bounds(*build_pos) and
                 build_pos not in all_workers and
                 buildings[build_pos[0]][build_pos[1]] < TurnStrategy.MAX_HEIGHT):
+            """
+            rulecheck = RuleChecker(cur_board)
+            if rulecheck.is_move_and_build_valid(0, worker_index, move_direction, direction: 
                 yield (worker, move_direction, direction)
             else:
                 continue
+            
 
     """
     @return: a list of all possible Directions and (0,0)
