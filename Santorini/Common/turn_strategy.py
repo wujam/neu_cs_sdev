@@ -97,7 +97,7 @@ class TurnStrategy:
                 new_height - worker_height <= TurnStrategy.WORKER_HEIGHT_MOVE_DIFF):
             """
             rulecheck = RuleChecker(cur_board)
-            if rulecheck.is_move_valid(0, worker_index, direction)
+            if rulecheck.is_move_valid(0, worker_index, direction):
                 yield (worker, direction)
             else:
                 continue
@@ -124,7 +124,7 @@ class TurnStrategy:
                 buildings[build_pos[0]][build_pos[1]] < TurnStrategy.MAX_HEIGHT):
             """
             rulecheck = RuleChecker(cur_board)
-            if rulecheck.is_move_and_build_valid(0, worker_index, move_direction, direction: 
+            if rulecheck.is_move_and_build_valid(0, worker_index, move_direction, direction): 
                 yield (worker, move_direction, direction)
             else:
                 continue
