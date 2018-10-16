@@ -19,10 +19,9 @@ A Player is a list of Workers, which are tuples of two ints
 A PlayerList is a list of two Players.
     No Workers among all Players can be in the same position as one
     another.
-A Turn is a tuple of (worker_number: int, move_direction: Direction,
+A Turn is a tuple of (worker: (int, int), move_direction: Direction,
     build_direction: Direction or (0,0))
-    A worker_number is an integer designating the Worker to be moved
-    as its index in the PlayerList.
+    A worker is a tuple of two ints(x,y) of the worker's position.
     A Direction is a tuple of two ints (x,y), each in the range
     [-1,1], but cannot be (0,0).
     move_direction is a Direction
