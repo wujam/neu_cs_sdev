@@ -34,8 +34,8 @@ parses the fields in a worker string
 """
 def parse_worker(worker: str) -> (int, int):
     player_name = worker[:-1]
-    worker_num = int(worker[-1])
-    player_num = players.index(player_name) + 1
+    worker_num = int(worker[-1]) - 1
+    player_num = players.index(player_name)
     return player_num, worker_num
 
 # used to parse directions into x and y differences
@@ -67,12 +67,15 @@ verifies if there will be a loss within N moves with the current move
 """
 def handle_board(lookaheads: int):
     player_num = players.index(player_name)
+
     # move player to the beginning of the list
     # because turn_strategy expects that the first_player in the list
     # to be the player who's turn it is
     players_workers = board.get_worker_positions()
     players_workers.insert(0, players_workers.pop(player_num))
+
     given_turn = turn_strategy.get_move(board.get_building_heights(), players_workers, lookaheads)
+
     if given_turn is not None:
         print(json.dumps("yes"))
     else:
@@ -83,17 +86,22 @@ verifies if there will be a new
 """
 def handle_move(worker: str, direction: [str, str], lookaheads: int):
     player_num = players.index(player_name)
+
     # move player to the beginning of the list
     # because turn_strategy expects that the first_player in the list
     # to be the player who's turn it is
-    players.insert(0, players.pop(5))
+    players_workers = board.get_worker_positions()
+    players_workers.insert(0, players_workers.pop(player_num))
 
     worker_player_num, worker_num = parse_worker(worker)
 
     # the tuple that represents the worker being moved
     move_worker = board.get_worker_position(worker_player_num, worker_num)
 
-    given_turn = turn_strategy.get_move_with_move(board.get_buildings(), players, lookaheads, (move_worker, direction))
+    direction_ints = parse_direction(direction)
+
+    given_turn = turn_strategy.get_move(board.get_building_heights(), players_workers, lookaheads, start_turn=(move_worker, direction_ints, (0, 0)))
+
     if given_turn is not None:
         print(json.dumps("yes"))
     else:
@@ -104,17 +112,24 @@ verifies if moving a worker and building in the given directions is valid or not
 """
 def handle_move_and_build(worker: str, move_direction: [str, str], build_direction: [str, str], lookaheads: int):
     player_num = players.index(player_name)
+
     # move player to the beginning of the list
     # because turn_strategy expects that the first_player in the list
     # to be the player who's turn it is
-    players.insert(0, players.pop(5))
+    players_workers = board.get_worker_positions()
+    players_workers.insert(0, players_workers.pop(player_num))
 
     worker_player_num, worker_num = parse_worker(worker)
 
     # the tuple that represents the worker being moved
     move_worker = board.get_worker_position(worker_player_num, worker_num)
 
-    given_turn = turn_strategy.get_move_with_move_build(board.get_buildings(), players, lookaheads, (move_worker, move_direction, build_direction))
+    move_direction_ints = parse_direction(move_direction)
+
+    build_direction_ints = parse_direction(build_direction)
+
+    given_turn = turn_strategy.get_move(board.get_building_heights(), players_workers, lookaheads, start_turn=(move_worker, move_direction_ints, build_direction_ints))
+
     if given_turn is not None:
         print(json.dumps("yes"))
     else:
@@ -182,11 +197,11 @@ while parsed_list:
         if parsed_list and parsed_list[0][0] == "+build":
                 build_cmd = parsed_list.pop(0)
                 build_dir = build_cmd[1]
-                handle_move_and_build(worker, move_dir, build_dir)
+                handle_move_and_build(worker, move_dir, build_dir, lookahead)
 
         # handle board + move
         else:
-            handle_move(worker, move_dir)
+            handle_move(worker, move_dir, lookahead)
 
     # handle just board
     else:

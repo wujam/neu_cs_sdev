@@ -61,10 +61,10 @@ class TurnStrategy:
             new_pos = TurnStrategy._add_tuples(start_worker, start_move)
             worker_id = players[0].index(start_worker)
             player_id = 0
-            board.set_worker(start_worker[0], start_worker[1], player_id, worker_id)
+            current_board.set_worker(start_worker[0], start_worker[1], player_id, worker_id)
             if start_build is not None:
                 build_pos = TurnStrategy._add_tuples(new_pos, start_build)
-                board.add_floor(*build_pos)
+                current_board.add_floor(*build_pos)
             rulecheck = RuleChecker(current_board)
             game_over = rulecheck.is_game_over(0)
             if game_over is 0:
