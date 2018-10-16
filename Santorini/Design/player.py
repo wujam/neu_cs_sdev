@@ -16,10 +16,11 @@ class Player:
         pass
 
     """
-    Method to allow a player to determine if the game is over.
+    Method to notify the player if the game is over.
+    @won: True if this player won the game, False otherwise
     @return: True if the game is over, else False.
     """
-    def game_over(self) -> bool:
+    def game_over(self, won: bool):
         pass
 
     """
