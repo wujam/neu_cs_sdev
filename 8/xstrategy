@@ -70,8 +70,8 @@ def handle_board(lookaheads: int):
     # move player to the beginning of the list
     # because turn_strategy expects that the first_player in the list
     # to be the player who's turn it is
-    players.insert(0, players.pop(5))
-    given_turn = turn_strategy.get_move(board.get_buildings(), players, lookaheads)
+    players.insert(0, players.pop(player_num))
+    given_turn = turn_strategy.get_move(board.get_building_heights(), players, lookaheads)
     if given_move is not None:
         print(json.dumps("yes"))
     else:
@@ -144,14 +144,14 @@ def set_board_and_players(board_array):
                 height = int(board_array[j][i][0])
                 board.set_floor_height(i, j, height)
                 player_name = board_array[j][i][1:-1]
-                worker_num = int(board_array[j][i][-1])
+                worker_num = int(board_array[j][i][-1]) - 1
 
                 # determine if player exists already or not
                 if player_name not in players:
                     players.append(player_name)
 
                 # determine which player (1 or 2)
-                player_num = players.index(player_name) + 1
+                player_num = players.index(player_name)
                 board.set_worker(i, j, player_num, worker_num)
             else:
                 raise ValueError(f"bad initial board: {board_array}")
@@ -167,7 +167,7 @@ while parsed_list:
     set_board_and_players(board_array)
 
     # get the lookahead rounds
-    lookahead = json.pop(0)
+    lookahead = parsed_list.pop(0)
 
     # make sure we aren't at the end of the input list and if the next cmd is a "move"
     if parsed_list and parsed_list[0][0] == "move":
@@ -189,4 +189,4 @@ while parsed_list:
 
     # handle just board
     else:
-        handle_board(lookaead)
+        handle_board(lookahead)
