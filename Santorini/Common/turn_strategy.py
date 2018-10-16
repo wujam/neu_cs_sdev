@@ -49,12 +49,29 @@ class TurnStrategy:
               this class is representing, and the second player represents
               the opposing player.
     @lookaheads: Nat, number of turns to look ahead.
+    @start_turn: A Turn to start with
     @return: A DeterminedTurn that represents the best next turn, else None if all
              moves lead to loss.
     """
-    def get_move(self, buildings, players, lookaheads):
+    def get_move(self, buildings, players, lookaheads, start_turn=None):
         turn_tree = TurnStrategy._get_node_generator(players, buildings) 
         current_board = Board(players, buildings)
+        if start_turn is not None:
+            start_worker, start_move, start_build = start_turn
+            new_pos = TurnStrategy._add_tuples(start_worker, start_move)
+            worker_id = players[0].index(start_worker)
+            player_id = 0
+            board.set_worker(start_worker[0], start_worker[1], player_id, worker_id)
+            if start_build is not None:
+                build_pos = TurnStrategy._add_tuples(new_pos, start_build)
+                board.add_floor(*build_pos)
+            rulecheck = RuleChecker(current_board)
+            game_over = rulecheck.is_game_over(0)
+            if game_over is 0:
+                return (start_worker, (0, 0), (0, 0))
+            elif game_over is 1:
+                return None
+
         if lookaheads == 0:
             # find a non-dead move one layer deep
             viable_turns = []
