@@ -73,7 +73,7 @@ def handle_board(lookaheads: int):
     players_workers = board.get_worker_positions()
     players_workers.insert(0, players_workers.pop(player_num))
     given_turn = turn_strategy.get_move(board.get_building_heights(), players_workers, lookaheads)
-    if given_move is not None:
+    if given_turn is not None:
         print(json.dumps("yes"))
     else:
         print(json.dumps("no"))
@@ -94,7 +94,7 @@ def handle_move(worker: str, direction: [str, str], lookaheads: int):
     move_worker = board.get_worker_position(worker_player_num, worker_num)
 
     given_turn = turn_strategy.get_move_with_move(board.get_buildings(), players, lookaheads, (move_worker, direction))
-    if given_move is not None:
+    if given_turn is not None:
         print(json.dumps("yes"))
     else:
         print(json.dumps("no"))
@@ -115,7 +115,7 @@ def handle_move_and_build(worker: str, move_direction: [str, str], build_directi
     move_worker = board.get_worker_position(worker_player_num, worker_num)
 
     given_turn = turn_strategy.get_move_with_move_build(board.get_buildings(), players, lookaheads, (move_worker, move_direction, build_direction))
-    if given_move is not None:
+    if given_turn is not None:
         print(json.dumps("yes"))
     else:
         print(json.dumps("no"))
