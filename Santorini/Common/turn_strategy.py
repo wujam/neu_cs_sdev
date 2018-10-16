@@ -1,6 +1,6 @@
 import itertools
-from board import Board
-from rulechecker import RuleChecker
+from .board import Board
+from .rulechecker import RuleChecker
 from functools import reduce
 
 """
