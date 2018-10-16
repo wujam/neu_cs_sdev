@@ -53,25 +53,10 @@ class TurnStrategy:
              moves lead to loss.
     """
     def get_move(self, buildings, players, lookaheads, start_turn=None):
-        turn_tree = TurnStrategy._get_node_generator(players, buildings) 
         current_board = Board(players, buildings)
-        if start_turn is not None:
-            start_worker, start_move, start_build = start_turn
-            new_pos = TurnStrategy._add_tuples(start_worker, start_move)
-            worker_id = players[0].index(start_worker)
-            player_id = 0
-            current_board.set_worker(start_worker[0], start_worker[1], player_id, worker_id)
-            if start_build is not None:
-                build_pos = TurnStrategy._add_tuples(new_pos, start_build)
-                current_board.add_floor(*build_pos)
-            rulecheck = RuleChecker(current_board)
-            game_over = rulecheck.is_game_over(0)
-            if game_over is 0:
-                return (start_worker, (0, 0), (0, 0))
-            elif game_over is 1:
-                return None
 
-        if lookaheads == 0:
+        if lookaheads == 0 and start_turn is None:
+            turn_tree = TurnStrategy._get_node_generator(players, buildings) 
             # find a non-dead move one layer deep
             viable_turns = []
             for (worker, move_direction, build_direction) in turn_tree:
@@ -97,7 +82,31 @@ class TurnStrategy:
             if len(viable_turns) == 0:
                 return None
             return viable_turns[0]
+        elif start_turn is not None:
+            start_worker, start_move, start_build = start_turn
+            new_pos = TurnStrategy._add_tuples(start_worker, start_move)
+            worker_id = players[0].index(start_worker)
+            player_id = 0
+            current_board.set_worker(start_worker[0], start_worker[1], player_id, worker_id)
+            if start_build is not None:
+                build_pos = TurnStrategy._add_tuples(new_pos, start_build)
+                current_board.add_floor(*build_pos)
+            rulecheck = RuleChecker(current_board)
+            game_over = rulecheck.is_game_over(0)
+            if game_over is 0:
+                return (start_worker, (0, 0), (0, 0))
+            elif game_over is 1:
+                return None
+
+            next_opposing_move = self.get_move(buildings, [players[1], players[0]], lookaheads - 1)
+            if next_opposing_move is None:
+                return (start_worker, start_move, start_build, True)
+            elif next_opposing_move[3]:
+                return None
+            else:
+                return (start_worker, start_move, start_build, False)
         else:
+            turn_tree = TurnStrategy._get_node_generator(players, buildings) 
             viable_turns = []
 
             for worker, move_direction, build_direction in turn_tree:
