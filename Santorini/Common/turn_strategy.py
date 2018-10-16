@@ -27,6 +27,9 @@ A Turn is a tuple of (worker_number: int, move_direction: Direction,
     [-1,1], but cannot be (0,0).
     move_direction is a Direction
     build_direction is a Direction or (0,0) if the move is a winning move
+A DeterminedTurn is a tuple of (worker_number: int, move_direction: Direction,
+    build_direction: Direction or (0,0), win_move: bool)
+    win_move is a bool that's True if the move is a move that wins, otherwise False
 A PartialTurn is a tuple of (worker_number: int, move_direction: Direction)
 """
 class TurnStrategy:
@@ -41,18 +44,57 @@ class TurnStrategy:
     This function should give back the 'best' move to make with the given
     game state.
     @buildings: A BuildingGrid that represents the board state
+    @player: 0 or 1, the Player whose turn it is
     @players: A PlayerList where the first Player represents the player
               this class is representing, and the second player represents
               the opposing player.
-    @return: A Turn that represents the best next turn, else None if all
+    @lookaheads: Nat, number of turns to look ahead.
+    @return: A DeterminedTurn that represents the best next turn, else None if all
              moves lead to loss.
     """
     def get_move(self, buildings, players, lookaheads):
-        # List of tuples of (Turn, Turns)
-        # A Turn is (WorkerNum, WorkerMoveDirection, BuildingMoveDirection)
         turn_tree = _get_node_generator(self, players, buildings) 
-        
-        # A 
+        current_board = Board(players, buildings)
+        worker_index = player[0].index(worker)
+        if lookaheads == 0:
+            # find a non-dead move one layer deep
+            viable_turns = []
+            for worker, move_direction, build_direction in turn_tree:
+                temp_board = Board(current_board)
+                rulecheck = RuleChecker(temp_board)
+                # move worker
+                new_pos = TurnStrategy._add_tuples(worker, move_direction)
+                build_pos = TurnStrategy._add_tuples(new_pos, build_direction)
+                temp_board.set_worker(new_pos[0], new_pos[1], 0, worker_index)
+                # build on building
+                temp_board.add_floor(build_pos[0], build_pos[1])
+                game_over = rulecheck.is_game_over()
+                if game_over is not -1:
+                    viable_turns.append((worker, move_direction, build_direction, False))
+                elif game_over == 0:
+                    # if we have a move that wins, return it
+                    return (worker, move_direction, build_direction, True)
+                else:
+                    continue
+            # if no moves don't lead to loss, return None, else return a safe move
+            if len(viable_turns) == 0:
+                return None
+            return viable_turns[0]
+        else:
+            viable_turns = []
+
+            for worker, move_direction, build_direction in turn_tree:
+                next_opposing_move = self.get_move(buildings, players[1] + players[0], lookaheads - 1)
+                if next_opposing_move is None:
+                    return (worker, move_direction, build_direction, True)
+                elif next_opposing_move[3]:
+                    continue
+                else:
+                    viable_turns.append((worker, move_direction, build_direction, False))
+
+            if len(viable_turns) == 0:
+                return None
+            return viable_turns[0]
 
     """
     Gets a generator of all possible turns for the player from the given board position.
@@ -72,7 +114,8 @@ class TurnStrategy:
 
         possible_move_and_build_moves = iter(())
         for worker_move in possible_worker_moves:
-            possible_move_and_build_moves = itertools.chain(TurnStrategy._get_possible_build_moves(worker_move[0], worker_move[1], players, buildings), possible_move_and_build_moves)
+            possible_move_and_build_moves = itertools.chain(TurnStrategy._get_possible_build_moves(worker_move[0], worker_move[1], players, buildings),
+                                                            possible_move_and_build_moves)
 
         return possible_move_and_build_moves
 
@@ -99,7 +142,8 @@ class TurnStrategy:
                 new_height - worker_height <= TurnStrategy.WORKER_HEIGHT_MOVE_DIFF):
             """
             rulecheck = RuleChecker(cur_board)
-            if rulecheck.is_move_valid(0, worker_index, direction):
+            if (rulecheck.is_move_valid(0, worker_index, direction) or
+                direction is (0,0)):
                 yield (worker, direction)
             else:
                 continue
@@ -112,24 +156,36 @@ class TurnStrategy:
               the player this class is representing, and the second is the
               opposing player.
     @buildings: A BuildingGrid that represents the board state 
+    @return: a generator of all possible Turns
     """
     @staticmethod
     def _get_possible_build_moves(worker, move_direction, players, buildings):
         worker_index = players[0].index(worker)
         all_workers = [w for w in players[0] if w is not worker] + [TurnStrategy._add_tuples(worker, move_direction)] + players[1]
         cur_board = Board(players, buildings)
+        rulecheck = RuleChecker(cur_board)
+
+        # check if the game is over
+        game_over = rulecheck.is_game_over()
+        if game_over is not -1:
+            if game_over == 0:
+                # if its this player's win, return the winning move
+                yield (worker, move_direction, (0,0))
+            else:
+                # if its the opponent's win, they've won, no moves are good
+                # shouldn't reach here
+                return
+
         for direction in TurnStrategy._gen_cardinal_directions():
-            build_pos = reduce(TurnStrategy._add_tuples, [worker, move_direction, direction], (0, 0))
             """
+            build_pos = reduce(TurnStrategy._add_tuples, [worker, move_direction, direction], (0, 0))
             if (TurnStrategy._in_bounds(*build_pos) and
                 build_pos not in all_workers and
                 buildings[build_pos[0]][build_pos[1]] < TurnStrategy.MAX_HEIGHT):
             """
-            rulecheck = RuleChecker(cur_board)
-            if rulecheck.is_move_and_build_valid(0, worker_index, move_direction, direction): 
+            valid_move =  rulecheck.is_move_and_build_valid(0, worker_index, move_direction, direction)
+            if valid_move:
                 yield (worker, move_direction, direction)
-            else:
-                continue
             
 
     """

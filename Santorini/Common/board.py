@@ -65,7 +65,7 @@ class Board:
     """
     def __init__(self, players, buildings):
         self.players = copy.deepcopy(players) 
-        self.squares = copy.deepcopy(buildings) 
+        self.squares = [copy.deepcopy(col) for col in buildings]
 
     """
     Sets the position of a worker
