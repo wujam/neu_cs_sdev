@@ -71,14 +71,11 @@ class TurnStrategy:
                 temp_board.add_floor(build_pos[0], build_pos[1])
                 game_over = rulecheck.is_game_over(0)
                 if game_over is -1:
-                    print("game_over is -1:", worker, move_direction, build_direction)
                     viable_turns.append((worker, move_direction, build_direction, False))
                 elif game_over is 0:
-                    print("game_over is 0:", worker, move_direction, build_direction)
                     # if we have a move that wins, return it
                     return (worker, move_direction, build_direction, True)
                 else:
-                    print("game_over is 1:", worker, move_direction, build_direction)
                     continue
             # if no moves don't lead to loss, return None, else return a safe move
             if len(viable_turns) == 0:
@@ -111,7 +108,6 @@ class TurnStrategy:
     @staticmethod
     def _get_node_generator(players, buildings):
         our_workers = players[0]
-        print(our_workers)
         possible_worker_moves = iter(()) 
 
         for worker in our_workers:

@@ -148,7 +148,6 @@ class RuleChecker:
         workers = players[0] + players[1]
         for worker in workers:
             if self.board.get_floor_height(*worker) == 3:
-                print("can move to height 3")
                 if worker in players[0]:
                     return 0
                 elif worker in players[1]:
@@ -165,7 +164,6 @@ class RuleChecker:
             possible_builds.update(self._where_can_worker_build(worker, workers))
 
         if len(possible_builds) == 0:
-            print("no possible builds")
             if player_number == 0:
                 return 1
             elif player_number == 1:
