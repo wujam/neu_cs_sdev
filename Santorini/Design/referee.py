@@ -14,7 +14,7 @@ class Referee:
     """
     @player1, player2: the two player that the referee will administer games for
     """
-    def __init__(self, player1, player2):
+    def __init__(self, player1: player, player2: player):
         pass
 
     """

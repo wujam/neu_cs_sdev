@@ -30,7 +30,7 @@ class Player:
     @return: A tuple (x, y) that represents the posiiton on the board
              for a worker to be placed
     """
-    def get_worker_placement(self, board, player_num):
+    def get_worker_placement(self, board: board, player_num: int):
         pass
 
     """
@@ -39,5 +39,5 @@ class Player:
     #player_num: the player number they are with reference to the board, between [0, 1]
     @return 
     """
-    def get_move(self, board, player_num):
+    def get_move(self, board: board, player_num: int):
         pass
