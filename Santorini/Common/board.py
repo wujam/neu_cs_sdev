@@ -43,29 +43,27 @@ class Board:
     squares = None
 
     """
-    sets squares to 0 heights
-    """
-    def __init__(self):
-        self.squares = []
-        self.players = [[None, None], [None, None]]
-        for i in range(self.BOARD_DIMENSION):
-            self.squares.append([self.BASE_BUILDING_HEIGHT] * self.BOARD_DIMENSION)
-
-    """
-    makes a new board copied from a previous Board
-    """
-    def __init__(self, board):
-        self.players = board.get_worker_positions()
-        self.squares = board.get_building_heights()
-
-    """
     makes a new board from a list of heights and workers
     @players: A list of 2 Players
     @buildings: A 2d list of buildings
     """
-    def __init__(self, players, buildings):
-        self.players = copy.deepcopy(players) 
-        self.squares = [copy.deepcopy(col) for col in buildings]
+    def __init__(self, players=None, buildings=None):
+        if players is None or buildings is None:
+            self.squares = []
+            self.players = [[None, None], [None, None]]
+            for i in range(self.BOARD_DIMENSION):
+                self.squares.append([self.BASE_BUILDING_HEIGHT] * self.BOARD_DIMENSION)
+
+        else:
+            self.players = copy.deepcopy(players) 
+            self.squares = [copy.deepcopy(col) for col in buildings]
+
+    """
+    makes a new board copied from a previous Board
+    """
+    def copy_board(self, board):
+        self.players = board.get_worker_positions()
+        self.squares = board.get_building_heights()
 
     """
     Sets the position of a worker

@@ -53,14 +53,15 @@ class TurnStrategy:
              moves lead to loss.
     """
     def get_move(self, buildings, players, lookaheads):
-        turn_tree = _get_node_generator(self, players, buildings) 
+        turn_tree = TurnStrategy._get_node_generator(players, buildings) 
         current_board = Board(players, buildings)
-        worker_index = player[0].index(worker)
         if lookaheads == 0:
             # find a non-dead move one layer deep
             viable_turns = []
-            for worker, move_direction, build_direction in turn_tree:
-                temp_board = Board(current_board)
+            for (worker, move_direction, build_direction) in turn_tree:
+                worker_index = players[0].index(worker)
+                temp_board = Board()
+                temp_board.copy_board(current_board)
                 rulecheck = RuleChecker(temp_board)
                 # move worker
                 new_pos = TurnStrategy._add_tuples(worker, move_direction)
@@ -68,13 +69,16 @@ class TurnStrategy:
                 temp_board.set_worker(new_pos[0], new_pos[1], 0, worker_index)
                 # build on building
                 temp_board.add_floor(build_pos[0], build_pos[1])
-                game_over = rulecheck.is_game_over()
-                if game_over is not -1:
+                game_over = rulecheck.is_game_over(0)
+                if game_over is -1:
+                    print("game_over is -1:", worker, move_direction, build_direction)
                     viable_turns.append((worker, move_direction, build_direction, False))
-                elif game_over == 0:
+                elif game_over is 0:
+                    print("game_over is 0:", worker, move_direction, build_direction)
                     # if we have a move that wins, return it
                     return (worker, move_direction, build_direction, True)
                 else:
+                    print("game_over is 1:", worker, move_direction, build_direction)
                     continue
             # if no moves don't lead to loss, return None, else return a safe move
             if len(viable_turns) == 0:
@@ -107,6 +111,7 @@ class TurnStrategy:
     @staticmethod
     def _get_node_generator(players, buildings):
         our_workers = players[0]
+        print(our_workers)
         possible_worker_moves = iter(()) 
 
         for worker in our_workers:
@@ -166,7 +171,8 @@ class TurnStrategy:
         rulecheck = RuleChecker(cur_board)
 
         # check if the game is over
-        game_over = rulecheck.is_game_over()
+        """
+        game_over = rulecheck.is_game_over(0)
         if game_over is not -1:
             if game_over == 0:
                 # if its this player's win, return the winning move
@@ -175,7 +181,7 @@ class TurnStrategy:
                 # if its the opponent's win, they've won, no moves are good
                 # shouldn't reach here
                 return
-
+        """
         for direction in TurnStrategy._gen_cardinal_directions():
             """
             build_pos = reduce(TurnStrategy._add_tuples, [worker, move_direction, direction], (0, 0))

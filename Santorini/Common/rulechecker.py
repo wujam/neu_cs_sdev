@@ -128,11 +128,12 @@ class RuleChecker:
     """
     checks if a position can be moved to disregarding height
     @position: tuple of two ints (x, y)
+    @workers: a list of all Workers on the board
     @return: True if position is within bounds and no worker occupies it, otherwise false
     """
-    def _can_pos_be_moved_to(self, position: (int, int)):
-        return (self._position_in_bounds(new_pos) and
-            new_pos not in worker_positions)
+    def _can_pos_be_moved_to(self, position: (int, int), worker_positions):
+        return (self._position_in_bounds(position) and
+            position not in worker_positions)
 
     """
     checks if the game is over or not based on the player turn and board
@@ -147,12 +148,13 @@ class RuleChecker:
         workers = players[0] + players[1]
         for worker in workers:
             if self.board.get_floor_height(*worker) == 3:
+                print("can move to height 3")
                 if worker in players[0]:
                     return 0
                 elif worker in players[1]:
                     return 1
 
-        if not all(len(self._where_can_worker_move(worker)) == 0 for worker in players[player_number]):
+        if all(len(self._where_can_worker_move(worker, workers)) == 0 for worker in players[player_number]):
             if worker in players[0]:
                 return 1
             elif worker in players[1]:
@@ -160,9 +162,10 @@ class RuleChecker:
 
         possible_builds = set()
         for worker in players[player_number]:
-            possible_builds.update(self._where_can_worker_build(worker))
+            possible_builds.update(self._where_can_worker_build(worker, workers))
 
         if len(possible_builds) == 0:
+            print("no possible builds")
             if player_number == 0:
                 return 1
             elif player_number == 1:
@@ -173,9 +176,10 @@ class RuleChecker:
     """
     checks where a worker can move
     @worker: tuple of two ints (x, y) within the bounds of the board [0,6)
+    @workers: a list of all Workers on the board
     @return: a list of positions that a worker can move to
     """
-    def _where_can_worker_move(self, worker):
+    def _where_can_worker_move(self, worker, workers):
         worker_height = self.board.get_floor_height(*worker)
         players = self.board.get_worker_positions()
         worker_positions = players[0] + players[1]
@@ -183,23 +187,24 @@ class RuleChecker:
         possible_moves = []
         for direction in self.DIRECTIONS:
             new_pos = self._add_pos_and_move(worker, direction)
-            if (self._can_pos_be_moved_to(new_pos) and
-                self.board.get_floor_height(new_pos) - worker_height <= 1):
+            if (self._can_pos_be_moved_to(new_pos, workers) and
+                self.board.get_floor_height(*new_pos) - worker_height <= 1):
                 possible_moves.append(new_pos)
         return possible_moves
 
     """
     checks where a worker can build
     @worker: tuple of two ints (x, y) within the bounds of the board [0,6)
+    @workers: a list of all Workers on the board
     @return: a list of positions that a worker can move to
     """
-    def _where_can_worker_build(self, worker):
-        possible_moves = self._where_can_worker_move(worker)
+    def _where_can_worker_build(self, worker, workers):
+        possible_moves = self._where_can_worker_move(worker, workers)
         buildable_pos = []
         for poss_move in possible_moves:
             for direction in self.DIRECTIONS:
                 new_pos = self._add_pos_and_move(poss_move, direction)
-                if self._can_pos_be_moved_to(new_pos):
+                if self._can_pos_be_moved_to(new_pos, workers):
                     buildable_pos.append(new_pos)
         return buildable_pos
 
