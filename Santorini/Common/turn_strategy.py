@@ -85,7 +85,7 @@ class TurnStrategy:
             viable_turns = []
 
             for worker, move_direction, build_direction in turn_tree:
-                next_opposing_move = self.get_move(buildings, players[1] + players[0], lookaheads - 1)
+                next_opposing_move = self.get_move(buildings, [players[1], players[0]], lookaheads - 1)
                 if next_opposing_move is None:
                     return (worker, move_direction, build_direction, True)
                 elif next_opposing_move[3]:
