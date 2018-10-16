@@ -147,7 +147,7 @@ class RuleChecker:
 
         workers = players[0] + players[1]
         for worker in workers:
-            if self.board.get_floor_height(*worker) == 3:
+            if self.board.get_floor_height(*worker) == 2:
                 if worker in players[0]:
                     return 0
                 elif worker in players[1]:
