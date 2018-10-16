@@ -70,8 +70,9 @@ def handle_board(lookaheads: int):
     # move player to the beginning of the list
     # because turn_strategy expects that the first_player in the list
     # to be the player who's turn it is
-    players.insert(0, players.pop(player_num))
-    given_turn = turn_strategy.get_move(board.get_building_heights(), players, lookaheads)
+    players_workers = board.get_worker_positions()
+    players_workers.insert(0, players_workers.pop(player_num))
+    given_turn = turn_strategy.get_move(board.get_building_heights(), players_workers, lookaheads)
     if given_move is not None:
         print(json.dumps("yes"))
     else:
