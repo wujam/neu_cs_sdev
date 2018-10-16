@@ -135,9 +135,10 @@ class RuleChecker:
             new_pos not in worker_positions)
 
     """
-    checks if the game is over or not based on the plater turn and board
-    @player_number: 0 or 1, the number of the player who's turn it is
-    @return: True if the game is over, False otherwise
+    checks if the game is over or not based on the player turn and board
+    @player_number: 0 or 1, the number of the player whose turn it is
+    @return: -1 if the game is not over, 0 if the first player won,
+             1 if the second player won
     """
     def is_game_over(self, player_number: int) -> bool:
         buildings = self.board.get_building_heights()
@@ -146,18 +147,28 @@ class RuleChecker:
         workers = players[0] + players[1]
         for worker in workers:
             if self.board.get_floor_height(*worker) == 3:
-                return True
+                if worker in players[0]:
+                    return 0
+                elif worker in players[1]:
+                    return 1
 
         if not all(len(self._where_can_worker_move(worker)) == 0 for worker in players[player_number]):
-            return True
+            if worker in players[0]:
+                return 1
+            elif worker in players[1]:
+                return 0
 
         possible_builds = set()
         for worker in players[player_number]:
             possible_builds.update(self._where_can_worker_build(worker))
 
         if len(possible_builds) == 0:
-            return True
-        return False
+            if player_number == 0:
+                return 1
+            elif player_number == 1:
+                return 0
+        return -1
+
 
     """
     checks where a worker can move
