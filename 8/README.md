@@ -15,6 +15,8 @@ ex:
 
 it should print nothing if the test is successful
 
+There is also a TESTME script that can be run and it will print out the number of tests that passed/failed
+
 -Santorini/Design/strategy.py: Design for a Strategy interface whose job is to determine the best next move
 -Santorini/Design/modular_strategy.py: Design for a ModularStrategy interface that implements the Strategy interface by taking a TurnStrategy object and PlacementStrategy object
 -Santorini/Design/placement_strategy.py: Design for a PlacementStrategy interface that determines the best placement for the next worker
