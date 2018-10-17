@@ -178,5 +178,43 @@ class TestRulesChecker(unittest.TestCase):
             "on (4, 5), building on the square a worker just moved to was expected to "\
             "be invalid, but was valid")
 
+    # test a game that's in progress
+    def test_is_game_over_in_progress_game(self):
+        self._place_workers()
+
+        self.assertEqual(self.rule_checker.is_game_over(0), -1)
+
+    # test a game where a player 2 worker is on a 3 height building
+    def test_is_game_over_worker_on_3_height_building_p2(self):
+        self._place_workers()
+        self.test_board.set_worker(4, 5, 1, 1)
+
+        self.assertEqual(self.rule_checker.is_game_over(0), 1)
+
+    # test a game where a player 1 worker is on a 3 height building
+    def test_is_game_over_worker_on_3_height_building_p1(self):
+        self._place_workers()
+        self.test_board.set_worker(4, 5, 0, 1)
+
+        self.assertEqual(self.rule_checker.is_game_over(0), 0)
+
+    # test a game where a player is boxed in
+    def test_is_game_over_workers_boxed_in(self):
+        self._place_workers()
+
+        # boxing in player 1 workers
+        self.test_board.set_worker(0, 2, 0, 1)
+        self.test_board.set_floor_height(0, 1, 4)
+        self.test_board.set_floor_height(1, 1, 4)
+        self.test_board.set_floor_height(1, 2, 4)
+        self.test_board.set_floor_height(1, 3, 4)
+        self.test_board.set_floor_height(0, 3, 4)
+
+        self.test_board.set_worker(5, 1, 0, 0)
+        self.test_board.set_floor_height(4, 0, 4)
+        self.test_board.set_floor_height(4, 1, 4)
+        self.test_board.set_floor_height(4, 2, 4)
+        self.test_board.set_floor_height(4, 2, 4)
+
 if __name__ == '__main__':
     unittest.main()

@@ -145,29 +145,34 @@ class RuleChecker:
         buildings = self.board.get_building_heights()
         players = self.board.get_worker_positions()
 
+        # check if any worker is on a 3 height buildings
         workers = players[0] + players[1]
         for worker in workers:
-            if self.board.get_floor_height(*worker) == 2:
+            if self.board.get_floor_height(*worker) == 3:
                 if worker in players[0]:
                     return 0
                 elif worker in players[1]:
                     return 1
 
+        # box in scenario
+        # return opposite player lost if all of it's workers cannot move
+
         if all(len(self._where_can_worker_move(worker, workers)) == 0 for worker in players[player_number]):
-            if worker in players[0]:
-                return 1
-            elif worker in players[1]:
-                return 0
-
-        possible_builds = set()
-        for worker in players[player_number]:
-            possible_builds.update(self._where_can_worker_build(worker, workers))
-
-        if len(possible_builds) == 0:
             if player_number == 0:
                 return 1
             elif player_number == 1:
                 return 0
+
+        # testing if a player can build after possible moves?
+        #possible_builds = set()
+        #for worker in players[player_number]:
+        #    possible_builds.update(self._where_can_worker_build(worker, workers))
+
+        #if len(possible_builds) == 0:
+        #    if player_number == 0:
+        #        return 1
+        #    elif player_number == 1:
+        #        return 0
         return -1
 
 
