@@ -178,6 +178,12 @@ class Board:
             return False
         return True
 
+    def __str__(self):
+        """Give a readable string representation of this board.
+        :rtype str
+        """
+        return str("Board: ") + str(self._board) + str(" Workers: ") + str(self._workers.items())
+
 
 class Building:
     """A game piece representing a building in Santorini."""
@@ -213,6 +219,11 @@ class Building:
         """Return True if it is at the max height."""
         return self._floor == self.MAX_HEIGHT
 
+    def __repr__(self):
+        """Returns a unambiguous representation of a building
+        :rtype str
+        """
+        return str(self._floor)
 
 class Worker:
     """A game piece representing a worker in Santorini."""
@@ -255,6 +266,11 @@ class Worker:
         """Worker piece hashing."""
         return hash((self._player, self._num))
 
+    def __repr__(self):
+        """Return a readable string representation of a worker
+        rtype: str
+        """
+        return self._player + str(self._num)
 
 class Direction(Enum):
     """Represents a direction in the eight cardinal directions.
@@ -293,3 +309,4 @@ class Direction(Enum):
         """
         pos = tuple(map(add, pos, direction.vector))
         return pos
+
