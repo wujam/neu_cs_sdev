@@ -1,0 +1,7 @@
+"pone"
+[["0pone1","0pone2","0ptwo1","0ptwo2"]]
+3
+["move","pone1", ["PUT", "SOUTH"]]
+["+build", ["PUT", "SOUTH"]]
+
+

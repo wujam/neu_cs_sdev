@@ -1,0 +1,7 @@
+"shravali"
+[["1evan1", "0shravali1"],
+["0evan2",  "0shravali2"]]
+4
+["move","shravali1",["EAST","SOUTH"]]
+["+build",["EAST","SOUTH"]]
+

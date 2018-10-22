@@ -1,0 +1,8 @@
+"data"
+[["0data1", "1data2", 3, "2worf1"],
+  [0, "2worf2", 3]]
+2
+["move","data2",["WEST","SOUTH"]]
+["+build",["PUT","SOUTH"]]
+
+

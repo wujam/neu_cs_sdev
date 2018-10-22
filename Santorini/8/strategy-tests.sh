@@ -21,7 +21,8 @@ execute() {
     fi
 }
 
-TESTDIR=$dir/strategy-tests/*-in.json
+#TESTDIR=$dir/strategy-tests/*-in.json
+TESTDIR=$dir/strategy-tests-class/**/*-in.json
 BIN=$dir/xstrategy
 
 declare -i passed=0

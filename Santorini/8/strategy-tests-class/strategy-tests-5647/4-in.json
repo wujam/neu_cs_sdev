@@ -1,0 +1,7 @@
+"alpha"
+[["2alpha1", 2, 3],
+[2, "1alpha2", 2],
+["2bravo1", 2, "2bravo2"]]
+3
+["move", "alpha2", ["WEST", "PUT"]]
+["+build", ["EAST", "SOUTH"]]
