@@ -3,7 +3,7 @@
 import json
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import Board, Worker, Direction
 from Santorini.Common import rulechecker
 from Santorini.Player.tree_strat import TreeStrategy as tree
