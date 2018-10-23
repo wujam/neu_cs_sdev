@@ -63,9 +63,10 @@ class Player(AbstractPlayer):
 
         :param Board cur_board: a copy of the current board
         """
-        self.workers.append(Worker(self, len(self.workers) + 1))
-        placement = self.strategy.get_placement(cur_board)
-        return placement
+        new_worker = Worker(self, len(self.workers) + 1)
+        self.workers.append(new_worker)
+        placement = self.strategy.plan_placement(new_worker, cur_board)
+        return new_worker, placement
 
     def play_turn(self, cur_board):
         """Regular Santorini turn.
@@ -102,7 +103,7 @@ class Player(AbstractPlayer):
         :param Board cur_board: a copy of the current state of the board
         :rtype Turn result_turn: the turn to be sent to the ref.
         """
-        return self.strategy.get_turn(self.workers, cur_board)
+        return self.strategy.plan_turn(self.workers, cur_board)
 
     def game_over(self, won):
         """Call when the game is over.

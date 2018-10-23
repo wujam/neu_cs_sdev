@@ -12,10 +12,10 @@ class TestReferee(unittest.TestCase):
     """Test diagonal placement strategy"""
 
     def setUp(self):
-        self.player1 = Player()
-        self.player2 = Player()
+        self.player1 = Player("one")
+        self.player2 = Player("two")
 
     def test_game(self):
-        ref = Referee(self.player1, self.player2)
+        ref = Referee([self.player1, self.player2])
 
-        self.assertEqual(ref.run_game(), self.player1)
+        self.assertEqual(ref.run_game(), self.player2)

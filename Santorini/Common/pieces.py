@@ -82,7 +82,7 @@ class Board:
         :param Worker worker: a Worker on the board
         :param Direction direction: a Direction on the board
         :raise IndexError: if the calculated position is outside the bounds of
-        the board
+        the board#
         :raise LookupError: if the worker is not found on the board (i.e. in
         the _workers dict)
         :raise ValueError: if the calculated position is already occupied by
@@ -270,7 +270,7 @@ class Worker:
         """Return a readable string representation of a worker
         rtype: str
         """
-        return self._player + str(self._num)
+        return self._player.name + str(self._num)
 
 class Direction(Enum):
     """Represents a direction in the eight cardinal directions.

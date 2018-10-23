@@ -1,5 +1,7 @@
 """Two placement strategy implementations."""
 import math
+import sys
+import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Player.strategy import PlaceStrategy
 from Santorini.Common.pieces import Board
@@ -23,7 +25,7 @@ class PlaceStratDiagonal(PlaceStrategy):
             if not board.is_occupied((i, i)):
                 place = (i, i)
                 break
-        return worker, place
+        return place
 
 
 class PlaceStratFar(PlaceStrategy):

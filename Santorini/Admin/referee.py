@@ -52,7 +52,7 @@ class Referee():
         for worker in range(self.NUM_WORKERS):
             for player in game_players:
                 # player made a bad placement
-                if not complete_placement(player):
+                if not self.complete_placement(player):
                     # if the game shouldn't continue finish it
                     if not self._lose_player(player, game_players):
                         game_players[0].game_over(True)
@@ -61,7 +61,7 @@ class Referee():
         # turn loop over all the players
         for player in itertools.cycle(game_players):
             # if the given turn was not valid
-            if not complete_turn(player):
+            if not self.complete_turn(player):
                 # if the game shouldn't continue finish it
                 if not self._lose_player(player, game_players):
                     game_players[0].game_over(True)
@@ -102,7 +102,7 @@ class Referee():
 
         return won_player
 
-    def _lose_player(player, game_players):
+    def _lose_player(self, player, game_players):
         """Kick a player out of the game
 
         Tell the player that they lost
