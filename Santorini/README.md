@@ -30,9 +30,24 @@ constructing a strategy to play Santorini, plan_turn and plan_placement. Plan_pl
 for a worker on the board, and plan_turn returns a valid move and build request. 
 
 The sixth file, `referee.py`, is our interface for the Santorini referee. In it contains an AbstractReferee class
-that has a list of players in the current game. The class contains two methods, run_game and complete_turn. run_game
-will startup the game with the associated players and surpervise turns being played. complete_turn will execute
+that has a list of players in the current game. The class contains two methods, run_game and complete_turn, complete_placement.
+run_game will startup the game with the associated players and surpervise turns being played. complete_turn will execute
+run_n_games will run n games sequentially and return the player who won the most games.
 any turn given by the player's strategy in the game. 
+
+Admin
+------
+The Admin directory contains all the administrative code necessary for the systems to function.
+
+The directory contains 'referee.py', an implementation of the Referee class
+The Referee class is initialized with 2 players, and then the run_game method is called to run the game.
+The Referee has methods complete_placement and complete_turn that can be called to make the
+Referee get worker placements and get turns from a player, which will be validated and then applied to
+the board for their game.
+The Referee class also has a method run_n_games, which will run n number of games sequentially, and
+then return the player that won the most games.
+
+
 
 Common
 ------
@@ -71,8 +86,8 @@ In the player directory is our implementation of our Player interface, along wit
 
 `player.py` includes:
 
-* The Player class, which is our skeleton of what a player will look like in Santorini. The Player
-includes its name as a string, a list of Worker objects, a Strategy object, and a RuleChecker object. 
+* The Player class, which is an implementation of the player in Santorini. The Player
+includes its name as a string, a list of Worker objects, and a Strategy object. 
 This class also includes four methods, initialize, play_placement, play_turn, and game_over. Over the 
 course of a game, the player will initialize itself, play a placement and turns by passing its information
 (i.e. workers and current board state) onto the strategy object, which will in turn return a valid turn to 
