@@ -84,9 +84,23 @@ class Referee():
                          this should be an odd number
         rtype: the player that won the game series
         """
+
+        player_scores = [0] * len(self.players)
+
         # a dict mapping players to the number of games they won
         for i in range(num_games):
-            ff
+            player_won = run_game()
+            players_scores[self.players.index(player)] += 1
+
+        won_player = None
+        won_player_score = 0
+
+        for i in range(len(player_scores)):
+            if player_scores[i] > won_player_score:
+                won_player_score = player_scores[i]
+                won_player = self.players[i]
+
+        return won_player
 
     def _lose_player(player, game_players):
         """Kick a player out of the game
