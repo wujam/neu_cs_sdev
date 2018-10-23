@@ -1,30 +1,32 @@
 """Player implementation in Santorini"""
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Design.player import AbstractPlayer
-from Santorini.Common.rulechecker import RuleChecker
-
+import Santorini.Common.rulechecker
+from Santorini.Common.pieces import Worker
+from Santorini.Player.strategy import Strategy
+from Santorini.Player.place_strat import PlaceStratDiagonal
+from Santorini.Player.tree_strat import TreeStrategy
 
 class Player(AbstractPlayer):
     """Player data reprensation in Santorini."""
 
-    def __init__(self, name, strategy):
+    def __init__(self, name):
         """Create a Player.
 
         :param str name: the user's input name for the game
         :param AbstractStrategy strategy: any strategy object
         """
         self.name = name
-        self.workers = []  # List of two workers
-        self.strategy = strategy
-        self.rulechecker = RuleChecker()
+        self.strategy = Strategy(PlaceStratDiagonal(), TreeStrategy())
+        self.workers = []
 
     def initialize(self):
         """Initialize the player.
 
         Called once at the start of the game to do any needed
-        initializtion for the implementation of the player.
+        initialization for the implementation of the player.
         """
         pass
 
@@ -61,7 +63,9 @@ class Player(AbstractPlayer):
 
         :param Board cur_board: a copy of the current board
         """
-        return self.strategy.plan_placement(cur_board)
+        self.workers.append(Worker(self, len(self.workers) + 1))
+        placement = self.strategy.get_placement(cur_board)
+        return placement
 
     def play_turn(self, cur_board):
         """Regular Santorini turn.
@@ -80,7 +84,7 @@ class Player(AbstractPlayer):
 
         To play a turn, the player will send the board state to the strategy
         object and receive a turn. A turn is a tuple of tuples
-        (in the form ((Worker, Direction), (Worker, Direction)),
+        (in the form ((Worker, Move_Direction, Build_Direction)),
         representing a move request and a build request in the game. The first
         item in the tuple represents a move request with a worker and a
         direction, and the second item represents a build request with a worker
@@ -98,7 +102,7 @@ class Player(AbstractPlayer):
         :param Board cur_board: a copy of the current state of the board
         :rtype Turn result_turn: the turn to be sent to the ref.
         """
-        return self.strategy.plan_turn(cur_board)
+        return self.strategy.get_turn(self.workers, cur_board)
 
     def game_over(self, won):
         """Call when the game is over.
@@ -112,4 +116,5 @@ class Player(AbstractPlayer):
 
         :param str winner: the name of the Player that won the game
         """
+        # TODO
         pass

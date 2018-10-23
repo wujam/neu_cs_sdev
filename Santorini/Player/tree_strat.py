@@ -2,7 +2,7 @@
 
 import copy
 from itertools import product
-
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Player.strategy import TurnStrategy
 from Santorini.Common.pieces import Direction
 from Santorini.Common import rulechecker
