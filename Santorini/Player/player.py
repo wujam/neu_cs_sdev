@@ -22,7 +22,7 @@ class Player(AbstractPlayer):
         self.strategy = Strategy(PlaceStratDiagonal(), TreeStrategy())
         self.workers = []
 
-    def initialize(self):
+    def start_of_game(self):
         """Initialize the player.
 
         Called once at the start of the game to do any needed

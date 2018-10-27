@@ -9,7 +9,7 @@ class AbstractPlayer(ABC):
     """Player interface."""
 
     @abstractmethod
-    def initialize(self):
+    def start_of_game(self):
         """Initialize the player.
 
         Called once at the start of the game to do any needed

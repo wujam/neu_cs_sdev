@@ -40,3 +40,15 @@ class AbstractReferee(ABC):
         declare the opposing player as the winner.
         """
         pass
+
+    @abstractmethod
+    def complete_placement(self, player):
+        """Complete a placement for a given player.
+
+        This method will call the player's play_placement method in
+        conjunction with the rulechecker.
+
+        If the turn is invalid, the ref will end the game and
+        declare the opposing player as the winner.
+        """
+        pass
