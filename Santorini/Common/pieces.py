@@ -182,7 +182,7 @@ class Board:
         """Give a readable string representation of this board.
         :rtype str
         """
-        return str("Board: ") + str(self._board) + str(" Workers: ") + str(self._workers.items())
+        return "Board: " + str(self._board) + " Workers: " + str(self._workers.items())
 
 
 class Building:
@@ -235,7 +235,7 @@ class Worker:
 
         Worker will be associated with the player and the piece number
         given as inputs
-        :param str player: the player this piece is associated with
+        :param Uuid player: the player this piece is associated with
         :param int num: the piece number [1 - NUM_WORKERS]
         :raises ValueError when num is out of range [1 - NUM_WORKERS]
         """
@@ -270,7 +270,7 @@ class Worker:
         """Return a readable string representation of a worker
         rtype: str
         """
-        return self._player.name + str(self._num)
+        return self._player + str(self._num)
 
 class Direction(Enum):
     """Represents a direction in the eight cardinal directions.
