@@ -17,25 +17,25 @@ class TestPlaceFarthest(unittest.TestCase):
                         Worker("p2", 1),
                         Worker("p2", 2)]
 
-    def test_get_turn(self):
-        """Test that get_turn returns the correct turn
+    def test_plan_turn(self):
+        """Test that plan_turn returns the correct turn
         for a simple test case."""
         board = Board([[2, 3]],
                       workers={self.workers[i]: (i, i)
                                for i in range(len(self.workers))})
         tree_strat = tree(2)
-        self.assertEqual(tree_strat.get_turn(self.workers[0:2], board),
-                         (self.workers[0], Direction.SOUTH, None))
+        self.assertEqual(tree_strat.plan_turn(self.workers[0:2], board),
+                         (self.workers[0], Direction.EAST, None))
 
-    def test_get_turn_forced(self):
-        """Test that get_turn returns the correct turn
+    def test_plan_turn_forced(self):
+        """Test that plan_turn returns the correct turn
         for a simple test case."""
         board = Board([[2, 3],
                        [4, 0]],
                       workers={self.workers[i]: (i, i)
                                for i in range(len(self.workers))})
         tree_strat = tree(2)
-        self.assertEqual(tree_strat.get_turn(self.workers[0:2], board),
+        self.assertEqual(tree_strat.plan_turn(self.workers[0:2], board),
                          (self.workers[0], Direction.EAST, None))
 
     def test_depth_zero(self):

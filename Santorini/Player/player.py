@@ -12,15 +12,25 @@ from Santorini.Player.tree_strat import TreeStrategy
 class Player(AbstractPlayer):
     """Player data reprensation in Santorini."""
 
-    def __init__(self, name):
+    def __init__(self):
         """Create a Player.
-
-        :param str name: the user's input name for the game
-        :param AbstractStrategy strategy: any strategy object
         """
-        self.name = name
         self.strategy = Strategy(PlaceStratDiagonal(), TreeStrategy())
         self.workers = []
+
+    def set_id(self, player_id):
+        """Give a id for this Player.
+        
+        :param Uuid player_id, this player's uuid 
+        """
+        self._player_id = player_id
+
+    def get_name(self):
+        """Get a name to call this Player.
+
+        :rtype String name, a name that this player wants to call itself.
+        """
+        return "Billy Tan"
 
     def start_of_game(self):
         """Initialize the player.

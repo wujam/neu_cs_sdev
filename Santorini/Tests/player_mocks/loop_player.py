@@ -1,8 +1,8 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-class LoopPlayer():
+class LoopPlayer:
     """ This player really likes loops. """
     
     def set_id(self, player_id):

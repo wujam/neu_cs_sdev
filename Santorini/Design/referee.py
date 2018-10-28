@@ -26,6 +26,21 @@ class AbstractReferee(ABC):
         If a game end state is reached, the ref will call determine_winner
         to check against its list of players and the board to get the
         winner of the game. 
+
+        :rtype Uuid winner: the winner of the game 
+        """
+        pass
+
+    @abstractmethod
+    def run_n_games(self, num_games):
+        """Supervise num_games games between players.
+
+        The referee runs n games and returns the Uuid of the player who won
+        the most games.
+
+        :param int num_games: the number of games to run, must be non-negative
+                                and odd
+        :rtype Uuid winner: the winner of the game
         """
         pass
 

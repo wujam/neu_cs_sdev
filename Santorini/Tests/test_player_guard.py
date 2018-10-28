@@ -16,8 +16,8 @@ class TestPlayerGuard(unittest.TestCase):
     def test_legit_play(self):
         """ Test that correct moves go through """
         board = Board()
-        player1 = legit_player.LegitPlayer()
-        player2 = legit_player.LegitPlayer()
+        player1 = LegitPlayer()
+        player2 = LegitPlayer()
         player_guard1 = PlayerGuard(player1)
         player_guard2 = PlayerGuard(player2)
 
@@ -29,9 +29,9 @@ class TestPlayerGuard(unittest.TestCase):
 
         # check getting names correctly
         p1name = player_guard1.get_name()
-        self.assertEquals(p1name, "legit player")
+        self.assertEqual(p1name, "legit player")
         p2name = player_guard2.get_name()
-        self.assertEquals(p2name, "legit player")
+        self.assertEqual(p2name, "legit player")
         # test methods don't error out
         player_guard1.start_of_game()
         player_guard2.start_of_game()
@@ -47,8 +47,8 @@ class TestPlayerGuard(unittest.TestCase):
     def test_bad_placement(self):
         """ Test that well formed bad placements go through """
         board = Board()
-        player1 = legit_player.LegitPlayer()
-        player2 = bad_placement_player.BadPlacementPlayer()
+        player1 = LegitPlayer()
+        player2 = BadPlacementPlayer()
         player_guard1 = PlayerGuard(player1)
         player_guard2 = PlayerGuard(player2)
 
@@ -65,8 +65,8 @@ class TestPlayerGuard(unittest.TestCase):
     def test_bad_turn(self):
         """ Test that well formed bad turns go through """
         board = Board()
-        player1 = legit_player.LegitPlayer()
-        player2 = bad_turn_player.BadTurnPlayer()
+        player1 = LegitPlayer()
+        player2 = BadTurnPlayer()
         player_guard1 = PlayerGuard(player1)
         player_guard2 = PlayerGuard(player2)
 
@@ -86,8 +86,8 @@ class TestPlayerGuard(unittest.TestCase):
     def test_bad_worker(self):
         """ Test that unowned worker placement gives the correct Exception """
         board = Board()
-        player1 = legit_player.LegitPlayer()
-        player2 = bad_worker_player.BadWorkerPlayer()
+        player1 = LegitPlayer()
+        player2 = BadWorkerPlayer()
         player_guard1 = PlayerGuard(player1)
         player_guard2 = PlayerGuard(player2)
 
@@ -103,7 +103,7 @@ class TestPlayerGuard(unittest.TestCase):
     def test_exception_player(self):
         """ Test that players who throw exceptions get filtered to our Exception """
         board = Board()
-        player1 = exception_player.ExceptionPlayer()
+        player1 = ExceptionPlayer()
         player_guard1 = PlayerGuard(player1)
 
         # set ids
@@ -120,7 +120,7 @@ class TestPlayerGuard(unittest.TestCase):
         """ Test that players who get stuck in an infinite loop are timed out
             and a timeout exception is thrown"""
         board = Board()
-        player1 = loop_player.LoopPlayer()
+        player1 = LoopPlayer()
         player_guard1 = PlayerGuard(player1)
 
         # set ids
@@ -137,7 +137,7 @@ class TestPlayerGuard(unittest.TestCase):
         """ Test that players who stall for time (sleep) are timed out and
             a timeout exception is thrown"""
         board = Board()
-        player1 = sleep_player.SleepPlayer()
+        player1 = SleepPlayer()
         player_guard1 = PlayerGuard(player1)
 
         p1id = uuid.uuid4() 
@@ -151,7 +151,7 @@ class TestPlayerGuard(unittest.TestCase):
     def test_malformed_player(self):
         """ Test that players who return malformed data give the correction Exception """
         board = Board()
-        player1 = malformed_data_player.MalformedDataPlayer()
+        player1 = MalformedDataPlayer()
         player_guard1 = PlayerGuard(player1)
 
         p1id = uuid.uuid4() 

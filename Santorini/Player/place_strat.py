@@ -11,12 +11,12 @@ class PlaceStratDiagonal(PlaceStrategy):
     """Implementation of diagonal placement strategy."""
 
     @staticmethod
-    def get_placement(worker, board):
+    def plan_placement(player, board):
         """Return a valid placement of (row, col) for workers on the board.
 
         For these workers, they will be placed along the diagonal starting at
         (0,0) if the position on the board isn't occupied
-        :param Worker worker: A given worker
+        :param Uuid player:
         :param Board board: A game board
         :rtype pos (row, col): A location on the game board
         """
@@ -73,15 +73,15 @@ class PlaceStratFar(PlaceStrategy):
         return farthest_pos
 
     @staticmethod
-    def get_placement(worker, board):
+    def plan_placement(player, board):
         """Return a valid placement of (row, col) for workers on the board.
 
         For these workers, they will be placed as far apart as possible from
         the other player's workers through the notion of geometric distance
-        :param Worker worker: a given worker
+        :param Uuid player: the Player to place for 
         :param Board board: a game board
         :rtype pos (row, col): A location on the game board
         """
         opposing_workers = [board.worker_position(w) for w in board.workers
-                            if w.player != worker.player]
-        return worker, PlaceStratFar.get_farthest_pos(board, opposing_workers)
+                            if w.player != player]
+        return PlaceStratFar.get_farthest_pos(board, opposing_workers)

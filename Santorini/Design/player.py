@@ -7,6 +7,22 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 class AbstractPlayer(ABC):
     """Player interface."""
+    
+    @abstractmethod
+    def set_id(self, player_id):
+        """Give a id for this Player.
+        
+        :param Uuid player_id, this player's uuid 
+        """
+        pass
+
+    @abstractmethod
+    def get_name(self):
+        """Get a name to call this Player.
+
+        :rtype String name, a name that this player wants to call itself.
+        """
+        pass
 
     @abstractmethod
     def start_of_game(self):
@@ -50,6 +66,7 @@ class AbstractPlayer(ABC):
         a total of four workers on the board.
 
         :param Board cur_board: a copy of the current board
+        :rtype tuple (Worker, (row, col)) placement: the placement
         """
         pass
 

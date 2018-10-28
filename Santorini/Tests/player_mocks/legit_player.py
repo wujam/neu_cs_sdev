@@ -1,11 +1,11 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 import Santorini.Player.tree_strat
 import Santorini.Player.place_strat
 import Santorini.Common.pieces
 
-class LegitPlayer():
+class LegitPlayer:
     """ This player is legit. It plays by the rules. """
     
     def set_id(self, player_id):

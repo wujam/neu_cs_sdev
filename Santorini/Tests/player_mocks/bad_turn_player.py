@@ -1,11 +1,11 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 import Santorini.Player.tree_strat
 import Santorini.Player.place_strat
 import Santorini.Common.pieces
 
-class BadTurnPlayer():
+class BadTurnPlayer:
     """ This does well formed turns with bad values. """
     
     def set_id(self, player_id):

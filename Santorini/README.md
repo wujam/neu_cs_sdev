@@ -3,6 +3,10 @@ Santorini
 
 Batman and Robin
 
+Changes from existing
+---------------------
+Many docs were updated because the implementation didn't match the design or the docstrings.
+
 Design
 ------
 In the Design directory is the contents of the board interface for Santorini and our plan 

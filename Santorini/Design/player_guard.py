@@ -46,8 +46,26 @@ class PlayerUnownedWorker(PlayerError):
 
 class AbstractPlayerGuard(ABC):
 
-    def __init__(self, player):
+    def __init__(self, player, timeout):
+        """
+        :param Player player: the Player to wrap
+        :param int timeout: the number of seconds that calls should timeout after 
+        """
         self.player = player
+
+    @abstractmethod
+    def set_id(self, player_id):
+        """Give a id for this Player.
+        :param Uuid player_id, this player's uuid 
+        """
+        pass
+
+    @abstractmethod
+    def get_name(self):
+        """Get a name to call this Player.
+        :rtype String name, a name that this player wants to call itself.
+        """
+        pass
 
     @abstractmethod
     def start_of_game(self):

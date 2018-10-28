@@ -134,7 +134,7 @@ class TreeStrategy(TurnStrategy):
             logger.info("player " + pname + " can't survive with this board:" + str(copied_board) + " depth:" + str(depth))
             return False
 
-    def get_turn(self, workers, board):
+    def plan_turn(self, workers, board):
         """Return a valid turn for the list of player's worker on the board.
 
         A valid turn is one of:

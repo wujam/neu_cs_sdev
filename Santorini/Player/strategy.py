@@ -21,16 +21,15 @@ class Strategy:
         self.place_strat = place_strat
         self.turn_strat = turn_strat
 
-    def plan_placement(self, worker, board):  # pragma: no cover
+    def plan_placement(self, player, board):  # pragma: no cover
         """Generate a plan for the next turn to be played.
 
-        :param Worker worker: a worker belonging to the player
-        calling this method
+        :param Uuid player: the id of the Player to plan a placement for
         :param Board board: a copy of the current game board
         :rtype tuple result: a tuple containing a worker and a position
         (row, col), representing the placement on the board
         """
-        return self.place_strat.get_placement(worker, board)
+        return self.place_strat.plan_placement(worker, board)
 
     def plan_turn(self, workers, board):  # pragma: no cover
         """Generate a plan for the next turn to be played.
@@ -41,15 +40,15 @@ class Strategy:
         :rtype tuple result: a tuple containing a move and build request,
         representing a player's full turn
         """
-        return self.turn_strat.get_turn(workers, board)
+        return self.turn_strat.plan_turn(workers, board)
 
 
 class PlaceStrategy(ABC):
     """An interface for a placement strategy."""
 
     @abstractmethod
-    def get_placement(self, worker, board):  # pragma: no cover
-        """Return a valid placement of (row, col) for a worker on the board."""
+    def plan_placement(self, player, board):  # pragma: no cover
+        """Return a valid placement of (worker, (row, col)) for a worker on the board."""
         pass
 
 
@@ -57,7 +56,7 @@ class TurnStrategy(ABC):
     """An interface for a turn strategy."""
 
     @abstractmethod
-    def get_turn(self, workers, board):  # pragma: no cover
+    def plan_turn(self, workers, board):  # pragma: no cover
         """Return a valid turn for a worker on the board.
 
         A valid turn is one of:
