@@ -1,9 +1,9 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
-import Santorini.Player.tree_strat
-import Santorini.Player.place_strat
-import Santorini.Common.pieces
+from Santorini.Player.tree_strat import *
+from Santorini.Player.place_strat import *
+from Santorini.Common.pieces import *
 import uuid
 
 class BadWorkerPlayer:
@@ -29,9 +29,9 @@ class BadWorkerPlayer:
         """Worker Placement.
         :param Board cur_board: a copy of the current board
         """
-        placement = place_strat.PlaceStratDiagonal.plan_placement(self._player_id, cur_board)
+        placement = PlaceStratDiagonal.plan_placement(self._player_id, cur_board)
         self._worker_count = self._worker_count + 1
-        worker = pieces.Worker(uuid.uuid4(), self._worker_count)
+        worker = Worker(uuid.uuid4(), self._worker_count)
         return (worker, placement)
 
     def play_turn(self, cur_board):
@@ -40,9 +40,9 @@ class BadWorkerPlayer:
         :rtype Turn result_turn: the turn to be sent to the ref.
         """
         our_workers = [worker for worker in cur_board.workers() if worker.player == self._player_id]
-        return tree_strat.TreeStrategy.plan_turn(our_workers, cur_board)
+        return TreeStrategy.plan_turn(our_workers, cur_board)
 
-    def game_over(self, winner):
+    def end_of_game(self, winner):
         """
         :param str winner: the name of the Player that won the game
         """

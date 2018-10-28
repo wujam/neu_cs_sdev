@@ -41,7 +41,7 @@ class LoopPlayer:
         while(True):
             pass
 
-    def game_over(self, winner):
+    def end_of_game(self, winner):
         """Call when the game is over.
 
         If any of the endgame conditions are met (see is_gameover method

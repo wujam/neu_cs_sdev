@@ -41,7 +41,7 @@ class TemplatePlayer:
         our_workers = [worker for worker in cur_board.workers() if worker.player == self._player_id]
         tree_strat.TreeStrategy.plan_turn(our_workers, cur_board)
 
-    def game_over(self, winner):
+    def end_of_game(self, winner):
         """Call when the game is over.
 
         If any of the endgame conditions are met (see is_gameover method

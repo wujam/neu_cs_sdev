@@ -40,7 +40,7 @@ class ExceptionPlayer:
         placement = tree_strat.TreeStrategy.plan_turn(our_workers, cur_board)
         raise Exception(str(placement[0]) + str(placement[1]) + str(placement[2]))
 
-    def game_over(self, winner):
+    def end_of_game(self, winner):
         """
         :param str winner: the name of the Player that won the game
         """
