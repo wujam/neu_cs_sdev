@@ -87,14 +87,14 @@ class AbstractPlayer(ABC):
         board
 
         To play a turn, the player will send the board state to the strategy
-        object and receive a turn. A turn is a tuple of tuples
-        (in the form ((Worker, Direction), (Worker, Direction)),
-        representing a move request and a build request in the game. The first
-        item in the tuple represents a move request with a worker and a
-        direction, and the second item represents a build request with a worker
-        and a direction.
+        object and receive a turn.
 
-        After receiving this turn, the player will send this to the referre.
+        A valid turn is one of:
+        (None, None, None) - A no request if it couldn't find any move
+        (Worker, Direction, None) - Move request
+        (Worker, Direction, Direction). - Move+Build request
+
+        After creating this turn, the player will send this to the referre.
         If the turn is invalid or breaks the rules according to our defined
         rulechecker,the referee will call is_gameover and automatically declare
         the opposing player the winner.
@@ -109,7 +109,7 @@ class AbstractPlayer(ABC):
         pass
 
     @abstractmethod
-    def game_over(self, winner):
+    def end_of_game(self, winner):
         """Call when the game is over.
 
         If any of the endgame conditions are met (see is_gameover method

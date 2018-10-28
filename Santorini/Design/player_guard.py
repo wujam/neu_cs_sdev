@@ -83,6 +83,7 @@ class AbstractPlayerGuard(ABC):
         or raises a corresponding PlayerError
 
         :param Board cur_board: a copy of the current board
+        :rtype Placement: the placement to the send back to the ref
         """
         pass
 
@@ -94,12 +95,12 @@ class AbstractPlayerGuard(ABC):
         or raises a correspinding PlayerError
 
         :param Board cur_board: a copy of the current state of the board
-        :rtype Turn result_turn: the turn to be sent to the ref.
+        :rtype Turn: the turn to be sent to the ref.
         """
         pass
 
     @abstractmethod
-    def game_over(self, winner):
+    def end_of_game(self, winner):
         """Call when the game is over.
 
         Runs the start of game function of a player and returns the data
