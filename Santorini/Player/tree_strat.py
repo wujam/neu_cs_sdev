@@ -112,7 +112,7 @@ class TreeStrategy(TurnStrategy):
                     # check that we have a safe move
                     for our_worker, our_move, our_build in our_turns:
                         if TreeStrategy.do_survive(next_board, pname, depth - 2, worker=our_worker, move_dir=our_move, build_dir=our_build):
-                            logger.info("player " + pname + " survived with this move:" + str(next_board) + " depth:" + str(depth))
+                            logger.info("player " + str(pname) + " survived with this move:" + str(next_board) + " depth:" + str(depth))
                             continue
                         else:
                             safe = True
@@ -123,15 +123,15 @@ class TreeStrategy(TurnStrategy):
             # if depth was 1, that means that we were checking if the enemy could kill us, and if so that means this should
             # be True cause they failed to kill us
             # if depth was 2 or more that means searching for more moves failed, and we died
-            logger.info("player " + pname +" depth:" + str(depth) + " viable_move" + str(viable_move))
+            logger.info("player " + str(pname) +" depth:" + str(depth) + " viable_move" + str(viable_move))
             return depth < 2 or viable_move
         else:
             our_turns = TreeStrategy.next_turn(our_workers, copied_board)
             for our_worker, our_move, our_build in our_turns:
                 if TreeStrategy.do_survive(copied_board, pname, depth - 2, worker=our_worker, move_dir=our_move, build_dir=our_build):
-                    logger.info("player " + pname + " survived with this move:" + str(copied_board) + " depth:" + str(depth))
+                    logger.info("player " + str(pname) + " survived with this move:" + str(copied_board) + " depth:" + str(depth))
                     return True
-            logger.info("player " + pname + " can't survive with this board:" + str(copied_board) + " depth:" + str(depth))
+            logger.info("player " + str(pname) + " can't survive with this board:" + str(copied_board) + " depth:" + str(depth))
             return False
 
     def plan_turn(self, workers, board):
