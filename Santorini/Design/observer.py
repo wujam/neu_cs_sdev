@@ -15,7 +15,7 @@ class AbstractObserver(ABC):
         pass
 
     @abstractmethod
-    def update_placement(self, board, placement, worker_to_player)
+    def update_placement(self, board, placement, id_to_name)
         """Receives a placement and updates
 
         A placement is a tuple of worker and
@@ -23,11 +23,11 @@ class AbstractObserver(ABC):
 
         :param Board board: a copy of the current game board
         :param placement placement: a turn that the player inputted
-        :param worker_to_player dict: dict mapping worker to player names
+        :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
 
     @abstractmethod
-    def update_turn(self, board, turn, worker_to_player):
+    def update_turn(self, board, turn, id_to_name):
         """Receives a turn and updates.
 
         A turn is one of:
@@ -37,16 +37,26 @@ class AbstractObserver(ABC):
 
         :param Board board: a copy of the current game board
         :param turn turn: a turn that the player inputted
-        :param worker_to_player dict: dict mapping worker to player names
+        :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
         pass
 
     @abstractmethod
-    def update_game_over(self, board):
+    def update_game_over(self, board, player, id_to_name):
         """Same notifies the observer that the game is over as well.
 
 
         :param Board board: a copy of the current game board
         :param player string: name of the player that won
+        :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
+        """
+        pass
+
+    @abstractmethod
+    def update_error_msg(self, msg):
+        """Takes a string that represents an error message
+        prints out when a player mis-behaves
+
+        :param str msg: the message as a string
         """
         pass
