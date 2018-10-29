@@ -38,10 +38,10 @@ class AbstractReferee(ABC):
         winner of the game. 
 
         :rtype tuple(PlayerResult.OK, Uuid) the player won the game
-               tuple(PlayerResult.NEFARIOUS, Uuid) the player did something
-                                                   untrustworthy and the
-                                                   other should win by
-                                                   default
+               tuple(PlayerResult.NEFARIOUS, list(Uuid)) the player did something
+                                                        untrustworthy and the
+                                                        other should win by
+                                                        default
         """
         pass
 
@@ -55,7 +55,7 @@ class AbstractReferee(ABC):
         :param int num_games: the number of games to run, must be non-negative
                                 and odd
         :rtype tuple(PlayerResult.OK, Uuid) the player won the series
-               tuple(PlayerResult.NEFARIOUS, Uuid) the player did something
+               tuple(PlayerResult.NEFARIOUS, list(Uuid)) the player did something
                                                    untrustworthy and the
                                                    other should win by
                                                    default
