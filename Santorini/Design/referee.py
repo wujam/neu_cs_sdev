@@ -11,7 +11,11 @@ class AbstractReferee(ABC):
         NEFARIOUS = 2
 
     def __init__(self, players, timeout=30):
-        """Create a referee component with the associated list of players."""
+        """Create a referee component with the associated list of players.
+        :param list of tuple(Uuid, Player) players: uuids and the Player
+                                                    they're assigned to
+        :param int timeout: time in seconds allowed per player action
+        """
         self.players = players
         self.timeout = timeout
 
@@ -54,30 +58,7 @@ class AbstractReferee(ABC):
                tuple(PlayerResult.NEFARIOUS, Uuid) the player did something
                                                    untrustworthy and the
                                                    other should win by
-        """
-        pass
-
-    @abstractmethod
-    def complete_turn(self, player):
-        """Complete a turn for a given player.
-
-        This method will call the player's play_turn method in
-        conjunction with the rulechecker.
-
-        If the turn is invalid, the ref will end the game and
-        declare the opposing player as the winner.
-        """
-        pass
-
-    @abstractmethod
-    def complete_placement(self, player):
-        """Complete a placement for a given player.
-
-        This method will call the player's play_placement method in
-        conjunction with the rulechecker.
-
-        If the turn is invalid, the ref will end the game and
-        declare the opposing player as the winner.
+                                                   default
         """
         pass
 
