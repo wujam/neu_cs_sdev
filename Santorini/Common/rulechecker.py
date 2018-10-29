@@ -74,7 +74,7 @@ def can_move_build(board, worker, move_dir, build_dir=None):
                 height_difference(board, worker, move_dir))
     if can_move:
         board_copy.move_worker(worker, move_dir)
-    can_build = (not build_dir or
+    can_build = ((not build_dir and is_game_over(board_copy, board.workers)) or
                  (valid_position(board_copy,
                                  Direction.move_position(moved_pos,
                                                          build_dir)) and
@@ -123,7 +123,7 @@ def get_winner(board):
     If there is no winning player, this will return false
 
     :param Board board: a copy of the game board
-    :returns Player | False: player if there is a winner,
+    :returns Uuid | False: player if there is a winner,
     false if the game isn't over yet
     """
 
