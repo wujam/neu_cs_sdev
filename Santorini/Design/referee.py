@@ -4,6 +4,11 @@ from abc import ABC, abstractmethod
 
 class AbstractReferee(ABC):
     """Interface for a Referee component in Santorini."""
+    class PlayerResult(Enum):
+        """ Describes a result of a player interaction """
+        OK = 0
+        BAD = 1
+        NEFARIOUS = 2
 
     def __init__(self, players, timeout=30):
         """Create a referee component with the associated list of players."""
@@ -28,7 +33,11 @@ class AbstractReferee(ABC):
         to check against its list of players and the board to get the
         winner of the game. 
 
-        :rtype Uuid winner: the winner of the game 
+        :rtype tuple(PlayerResult.OK, Uuid) the player won the game
+               tuple(PlayerResult.NEFARIOUS, Uuid) the player did something
+                                                   untrustworthy and the
+                                                   other should win by
+                                                   default
         """
         pass
 
@@ -41,7 +50,10 @@ class AbstractReferee(ABC):
 
         :param int num_games: the number of games to run, must be non-negative
                                 and odd
-        :rtype Uuid winner: the winner of the game
+        :rtype tuple(PlayerResult.OK, Uuid) the player won the series
+               tuple(PlayerResult.NEFARIOUS, Uuid) the player did something
+                                                   untrustworthy and the
+                                                   other should win by
         """
         pass
 
