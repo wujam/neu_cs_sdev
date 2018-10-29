@@ -5,9 +5,10 @@ from abc import ABC, abstractmethod
 class AbstractReferee(ABC):
     """Interface for a Referee component in Santorini."""
 
-    def __init__(self, players):
+    def __init__(self, players, timeout=30):
         """Create a referee component with the associated list of players."""
         self.players = players
+        self.timeout = timeout
 
     @abstractmethod
     def run_game(self):
@@ -65,5 +66,15 @@ class AbstractReferee(ABC):
 
         If the turn is invalid, the ref will end the game and
         declare the opposing player as the winner.
+        """
+        pass
+
+    @abstractmethod
+    def set_turn_timeout(self, timeout):
+        """Sets a the turn timeout in seconds for the game administrated
+        by this Referee.
+        :param int timeout: Positive integer number of seconds. Players
+                            who take longer than this to take an action
+                            will be killed and assigned a game loss.
         """
         pass
