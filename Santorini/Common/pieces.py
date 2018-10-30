@@ -3,7 +3,6 @@
 from operator import add
 from enum import Enum
 
-
 class Board:
     """Board implementation for Santorini."""
 
@@ -120,13 +119,11 @@ class Board:
         The height of a building is obtained from getting the
         input worker's position and adding the input direction to it
 
-        :param Worker worker: a Worker on the board
+        :param tuple(row, col) position: a position on the board
         :param Direction direction: a Direction on the board
         :rtype int: the building height at the position
         :raise IndexError: if the calculated position is outside the bounds of
         the board
-        :raise KeyError: if the worker is not found on the board (i.e. in
-        the _workers dict)
         """
         row, col = Direction.move_position(position, direction)
         self.assert_bounds((row, col))
@@ -183,7 +180,6 @@ class Board:
         :rtype str
         """
         return "Board: " + str(self._board) + " Workers: " + str(self._workers.items())
-
 
 class Building:
     """A game piece representing a building in Santorini."""
@@ -310,3 +306,19 @@ class Direction(Enum):
         pos = tuple(map(add, pos, direction.vector))
         return pos
 
+    def __str__(self):
+        x = ""
+        y = ""
+        if self.row is 1:
+            x = "EAST"
+        elif self.row is -1:
+            x = "WEST"
+        elif self.row is 0:
+            x = "STAY"
+        if self.col is 1:
+            y = "SOUTH"
+        elif self.col is -1:
+            y = "NORTH"
+        elif self.row is 0:
+            y = "STAY"
+        return x + "," + y
