@@ -1,7 +1,7 @@
 """Interface for a tournament manager of multiple games of Santorini for multiple workers"""
 
 """Takes in a list of players to run a round robin tournament against the players
-:param List of Players players: list of players to run the tournament with
+:param List of Players players: list of players to run the tournament with, must have at least 2 players
 :rtype List of Players winners: list of players who win the tournament"""
 def run_tournament(players):
     """

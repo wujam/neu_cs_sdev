@@ -39,11 +39,14 @@ run_game will startup the game with the associated players and surpervise turns 
 run_n_games will run n games sequentially and return the player who won the most games.
 any turn given by the player's strategy in the game. 
 
+The seventh file `tournament_manager.py`, is our interface for the Santorini Tournament Manager.  It contains a
+function that facilitates running a round robin tournament amongst an arbitrary amount of players
+
 Admin
 ------
 The Admin directory contains all the administrative code necessary for the systems to function.
 
-The directory contains 'referee.py', an implementation of the Referee class
+* The directory contains `referee.py`, an implementation of the Referee class
 The Referee class is initialized with 2 players, and then the run_game method is called to run the game.
 The Referee has methods complete_placement and complete_turn that can be called to make the
 Referee get worker placements and get turns from a player, which will be validated and then applied to
@@ -51,6 +54,9 @@ the board for their game.
 The Referee class also has a method run_n_games, which will run n number of games sequentially, and
 then return the player that won the most games.
 
+* The directory also contains `player_guard.py`, a class that serves as a wrapper
+for players and guards against players that could be broken or malicious.
+It passes up useful errors to callers informing them of how the player broke.
 
 
 Common
@@ -106,6 +112,14 @@ the furthest possible away from opposing players.
 * The TurnStrategy implementation, TreeStrategy. This is a class that has a depth attribute for the look-ahead, 
 and methods to get the turn derived by the strategy, find the next turn derived by the strategy, and determine
 if the player can survive for a finite amount of turns (get_turn, next_turn, and do_survive, respectively). 
+
+
+Observer
+------
+
+`Observer.py` includes:
+
+* An observer class that plugs into a Referee and prints out game information in JSON format to STDOUT
 
 Tests
 -----
