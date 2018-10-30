@@ -5,39 +5,31 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import Board, Worker
 from Santorini.Common import rulechecker
-from Santorini.Admin.player_guard import PlayerGuard
+from Santorini.Admin.player_guard import *
 import itertools
 import copy
 import uuid
 from enum import Enum
+import logging
+logging.basicConfig(filename='refereetest.log', filemode='w')
 
+class PlayerResult(Enum):
+    OK = 0
+    BAD = 1
+    NEFARIOUS = 2
 class Referee:
-
-    class PlayerResult(Enum):
-        OK = 0
-        BAD = 1
-        NEFARIOUS = 2
-    """
-    A GameResult is a tuple (PlayerResult, PlayerGuard)
-        (OK, PlayerGuard) means that the given player is the winner and won the game fairly
-        (BAD, PlayerGuard) means that the given player made an invalid move or placement
-                           and should be given a game loss
-        (NEFARIOUS, PlayerGuard) means that the given player timed out, gave malformed data,
-                                 tried to use unowned workers, or raised an exception, and
-                                 should be disconnected and disqualified
-    """
 
     """Implementation of the Referee component in Santorini."""
     NUM_PLAYERS = 2
 
-    def __init__(self, uuids_players, timeout):
+    def __init__(self, uuids_players, timeout=30):
         """Create a referee component with the associated list of players."""
         self.players = []
         self.timeout = timeout
         self.uuids_to_player = {}
         self.uuids_to_name = {}
         for uuid, player in uuids_players:
-            player_guard = PlayerGuard(player)
+            player_guard = PlayerGuard(player, timeout=self.timeout)
             self.uuids_to_player[uuid] = player_guard
             self.players.append(player_guard)
 
@@ -51,10 +43,12 @@ class Referee:
         """
         result = self._initialize()
         evil_players = []
+        winner = None 
         if result is not PlayerResult.OK:
             evil_players.append(result[1])
+            winner = [p for p in self.uuids_to_player if p != result[1]][0]
         else:
-            result, player = self._play_game(self.players)
+            result, player = self._play_game(self.uuids_to_player.keys())
 
             if result is PlayerResult.OK:
                 winner = player
@@ -82,13 +76,17 @@ class Referee:
         player_scores = [0] * len(self.players)
         result = self._initialize()
         evil_players = []
+        player_ids = [p_id for p_id in self.uuids_to_player]
+        logging.error("run n games")
 
         if result is not PlayerResult.OK:
             evil_players.append(result[1])
         else:
             # a dict mapping players to the number of games they won
             for i in range(num_games):
-                player_order = self.players if i % 2 == 0 else reversed(self.players)
+                logging.error("game" + str(i))
+                self._reset_board()
+                player_order = player_ids if i % 2 == 0 else [i for i in reversed(player_ids)]
                 result, player = self._play_game(player_order)
                 if result is PlayerResult.OK:
                     winner = player
@@ -97,14 +95,15 @@ class Referee:
                 if result is PlayerResult.NEFARIOUS:
                     evil_players.append(player)
 
-                result, players = self._end_game(winner, evil_players)
-                if result is PlayerResult.NEFARIOUS:
+                endresult, players = self._end_game(winner, copy.deepcopy(evil_players))
+                if endresult is PlayerResult.NEFARIOUS:
                     for p in players:
                         evil_players.append(p)
+                if result is PlayerResult.NEFARIOUS or endresult is PlayerResult.NEFARIOUS:
                     break
+                player_scores[player_ids.index(winner)] += 1
 
-                players_scores[self.players.index(winner)] += 1
-
+        logging.error("endloop")
         if len(evil_players) > 0:
             return (PlayerResult.NEFARIOUS, evil_players)
         else:
@@ -113,8 +112,8 @@ class Referee:
 
             for i in range(len(player_scores)):
                 if player_scores[i] > won_player_score:
-                    won_player_score = player_scores[i]
-                    won_player = self.players[i]
+                    won_player_score = player_score[i]
+                    won_player = player_ids[i]
 
             return (PlayerResult.OK, won_player)
 
@@ -125,43 +124,49 @@ class Referee:
             NEFARIOUS and the nefarious player otherwise.
         """
         self._reset_board()
-        for player_uuid, playerguard in self.uuids_to_player.items():
+        for player_uuid, player_guard in self.uuids_to_player.items():
             try:
                 player_guard.set_id(player_uuid)
                 name = player_guard.get_name()
                 self.uuids_to_name[player_uuid] = name
-            except PlayerException:
-                return (NEFARIOUS, player_uuid)
+            except PlayerError:
+                return (PlayerResult.NEFARIOUS, player_uuid)
+        return PlayerResult.OK
 
     def _play_game(self, players):
         """
-        :param list players: List of two PlayerGuards in order of who goes first
-        :rtype GameResult: the result of the game
+        :param list players: List of two Uuids in order of who goes first
+        :rtype tuple(PlayerResult, Uuid): the result of the game
         """
         # start phase
         for player in players:
+            player_guard = self.uuids_to_player[player]
             try:
-                player.start_game()
-            except PlayerException:
+                player_guard.start_of_game()
+            except PlayerError:
                 return (PlayerResult.NEFARIOUS, player)
         # placement phase
         for worker_num in range(Worker.NUM_WORKERS):
+            logging.error("placing")
             for player in players:
-                place_result = self._place_worker(player)
+                player_guard = self.uuids_to_player[player]
+                place_result = self._place_worker(player_guard)
                 if place_result is PlayerResult.OK:
                     continue
                 else:
                     return (place_result, player)
         # play phase
-        for player_uuid, player in itertools.cycle(self.uuids_to_player.items()):
+        id_and_players = zip(players, [self.uuids_to_player[player] for player in players])
+        for player_uuid, player in itertools.cycle(id_and_players):
             turn_result = self._play_turn(player)
-            if place_result is PlayerResult.OK:
+            if turn_result is PlayerResult.OK:
                 continue
             else:
-                return (place_result, player)
-            if rulechecker.is_game_over(copy.deepcopy(self.board))
-                winner = self.uuids_to_player(rulechecker.get_winner(self.board))
-                return (PlayerResult.OK, winner)
+                return (turn_result, player_uuid)
+            
+            workers = [w for w in self.board.workers if w.player == player_uuid]
+            if rulechecker.is_game_over(copy.deepcopy(self.board), workers):
+                return (PlayerResult.OK, rulechecker.get_winner(self.board))
 
     def _place_worker(self, player):
         """Get a placement from a player and place on the board.
@@ -172,11 +177,12 @@ class Referee:
         """
         try:
             worker, position = player.place_worker(copy.deepcopy(self.board))
-        except PlayerException:
+            logging.error("placing" + str(worker) + str(position))
+        except PlayerError:
             return PlayerResult.NEFARIOUS
 
         if rulechecker.can_place_worker(self.board, worker, position):
-            self.board.place_worker(*placement)
+            self.board.place_worker(worker, position)
             return PlayerResult.OK
         else:
             return PlayerResult.BAD
@@ -190,10 +196,12 @@ class Referee:
         """
         try:
             worker, move_dir, build_dir = player.play_turn(copy.deepcopy(self.board))
-        except PlayerException:
+        except PlayerError:
             return PlayerResult.NEFARIOUS
 
-        if all(rulechecker.can_move_build(self.board, worker, move_dir, build_dir)):
+        can_move_build = rulechecker.can_move_build(copy.deepcopy(self.board), worker, move_dir, build_dir)
+        is_winner = rulechecker.get_winner(copy.deepcopy(self.board))
+        if can_move_build or is_winner:
             self._do_move(worker, move_dir, build_dir)
             return PlayerResult.OK
         else:
@@ -214,18 +222,19 @@ class Referee:
         :param Uuid winner: uuid of winner
         :param list(Uuid) evil_players: the bad players
         """
+        logging.error(str(len(evil_players)))
+        winner_name = self.uuids_to_name[winner]
         for player in self.uuids_to_player:
             if player not in evil_players:
                 try:
-                    player.end_of_game(winner)
-                except PlayerException:
+                    self.uuids_to_player[player].end_of_game(winner_name)
+                except PlayerError:
                     evil_players.append(player)
-
         if len(evil_players) is not 0:
             return (PlayerResult.NEFARIOUS, evil_players)
         else:
             return (PlayerResult.OK, winner)
 
-    def _reset_board(self)
+    def _reset_board(self):
         """ Resets the board """
         self.board = Board()

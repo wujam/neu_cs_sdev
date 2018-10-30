@@ -54,7 +54,7 @@ class AbstractPlayer(ABC):
         representing the placement of a single worker on the board.
 
         After receiving this placement, the player will send this to the
-        referre. If the placement is invalid or breaks the rules according
+        referee. If the placement is invalid or breaks the rules according
         to our defined rulechecker, the referee will call is_gameover and
         automatically declare the opposing player the winner.
 

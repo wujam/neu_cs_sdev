@@ -19,58 +19,62 @@ class TestReferee(unittest.TestCase):
         self.uuidp1 = uuid.uuid4()
         self.uuidp2 = uuid.uuid4()
 
-# test the outcome of a game between two players using the diagonal placement
-# and the tree strategy
+    # test the outcome of a game between two players using the diagonal placement
+    # and the tree strategy
 
-    def test_start_of_game_end_of_game_called_normal_game():
-        """test that start_of_game and end_of_game are called in a normal game
-        also tests how a game between two legit players would go
-        """
-        player1 = LegitPlayer()
-        player1.start_of_game = mock.MagicMock()
-        player1.end_of_game = mock.MagicMock()
-        player1.get_name = mock.MagicMock(return_value="p1")
+    """
+        def test_start_of_game_end_of_game_called_normal_game(self):
+    """
+    #test that start_of_game and end_of_game are called in a normal game
+    #also tests how a game between two legit players would go
+    """
+            player1 = LegitPlayer()
+            player1.start_of_game = mock.MagicMock()
+            player1.end_of_game = mock.MagicMock()
+            player1.get_name = mock.MagicMock(return_value="p1")
 
-        player2 = LegitPlayer()
-        player2.start_of_game = mock.MagicMock()
-        player2.end_of_game = mock.MagicMock()
-        player2.get_name = mock.MagicMock(return_value="p2")
+            player2 = LegitPlayer()
+            player2.start_of_game = mock.MagicMock()
+            player2.end_of_game = mock.MagicMock()
+            player2.get_name = mock.MagicMock(return_value="p2")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = ref.run_game()
+            ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+            result = ref.run_game()
 
-        player1.start_of_game.assert_called_once()
-        player2.start_of_game.assert_called_once()
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_called_once("p1")
-        self.assertEqual(result, (PlayerResult.OK, player1._player_id))
+            player1.start_of_game.assert_called_once()
+            player2.start_of_game.assert_called_once()
+            player1.end_of_game.assert_called_once_with("p1")
+            player2.end_of_game.assert_called_once("p1")
+            self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+    """
+    """
+        def test_run_n_games_normal_games(self):
+    """
+    #test start_of_game and end_of_game calls in normal
+    #run_n_games series
+    """
+            player1 = LegitPlayer()
+            player1.start_of_game = mock.MagicMock()
+            player1.end_of_game = mock.MagicMock()
+            player1.get_name = mock.MagicMock(return_value="p1")
 
-    def test_run_n_games_normal_games():
-        """test start_of_game and end_of_game calls in normal
-        run_n_games series
-        """
-        player1 = LegitPlayer()
-        player1.start_of_game = mock.MagicMock()
-        player1.end_of_game = mock.MagicMock()
-        player1.get_name = mock.MagicMock(return_value="p1")
+            player2 = LegitPlayer()
+            player2.start_of_game = mock.MagicMock()
+            player2.end_of_game = mock.MagicMock()
+            player2.get_name = mock.MagicMock(return_value="p2")
 
-        player2 = LegitPlayer()
-        player2.start_of_game = mock.MagicMock()
-        player2.end_of_game = mock.MagicMock()
-        player2.get_name = mock.MagicMock(return_value="p2")
+            ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+            result = ref.run_n_games(3)
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = ref.run_n_games(3)
-
-        self.assertEqual(player1.start_of_game.call_count, 3)
-        self.assertEqual(player2.start_of_game.call_count, 3)
-        self.assertEqual(player1.endof_game.call_count, 3)
-        self.assertEqual(player2.end_of_game.call_count, 3)
-        player1.end_of_game.assert_called_with("p1")
-        player2.end_of_game.assert_called_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, player1._player_id))
-
-    def test_game_invalid_placements():
+            self.assertEqual(player1.start_of_game.call_count, 3)
+            self.assertEqual(player2.start_of_game.call_count, 3)
+            self.assertEqual(player1.endof_game.call_count, 3)
+            self.assertEqual(player2.end_of_game.call_count, 3)
+            player1.end_of_game.assert_called_with("p1")
+            player2.end_of_game.assert_called_with("p1")
+            self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+    """
+    def test_game_invalid_placements(self):
         """test that a player who gives invalid placements loses
         test that end_of_game is called on both players
         """
@@ -85,13 +89,13 @@ class TestReferee(unittest.TestCase):
 
         ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
 
-        result = run_game()
+        result = ref.run_game()
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_called_once_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, player1._player_id))
+        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
 
-    def test_n_games_invalid_placements():
+    def test_n_games_invalid_placements(self):
         """tests that a player who gives invalid placements
         always loses in a series of n games but all games are played
         """
@@ -110,13 +114,13 @@ class TestReferee(unittest.TestCase):
 
         self.assertEqual(player1.start_of_game.call_count, 3)
         self.assertEqual(player2.start_of_game.call_count, 3)
-        self.assertEqual(player1.endof_game.call_count, 3)
+        self.assertEqual(player1.end_of_game.call_count, 3)
         self.assertEqual(player2.end_of_game.call_count, 3)
         player1.end_of_game.assert_called_with("p1")
         player2.end_of_game.assert_called_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, player1._player_id))
+        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
 
-    def test_game_invalid_turn():
+    def test_game_invalid_turn(self):
         """test that a player who passes an invalid turn loses immediately
         test that end_of_game is called on both players
         """
@@ -130,20 +134,20 @@ class TestReferee(unittest.TestCase):
 
         ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
 
-        result = run_game()
+        result = ref.run_game()
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_called_once_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, player1._player_id))
+        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
 
-    def test_n_games_invalid_turns():
+    def test_n_games_invalid_turns(self):
         """tests that a player who gives invalid turns
         always loses in a series of n games but all games are played
         """
         player1 = LegitPlayer()
         player1.start_of_game = mock.MagicMock()
         player1.end_of_game = mock.MagicMock()
-        player2.get_name = mock.MagicMock(return_value="p1")
+        player1.get_name = mock.MagicMock(return_value="p1")
 
         player2 = BadTurnPlayer()
         player2.start_of_game = mock.MagicMock()
@@ -155,13 +159,13 @@ class TestReferee(unittest.TestCase):
 
         self.assertEqual(player1.start_of_game.call_count, 3)
         self.assertEqual(player2.start_of_game.call_count, 3)
-        self.assertEqual(player1.endof_game.call_count, 3)
+        self.assertEqual(player1.end_of_game.call_count, 3)
         self.assertEqual(player2.end_of_game.call_count, 3)
         player1.end_of_game.assert_called_with("p1")
         player2.end_of_game.assert_called_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, player1._player_id))
+        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
 
-    def test_game_malformed_placement():
+    def test_game_malformed_placement(self):
         """tests that a player who gives a malformed placement
         loses and end_of_game is not called on it
         """
@@ -176,15 +180,15 @@ class TestReferee(unittest.TestCase):
 
         ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
 
-        result = run_game()
+        result = ref.run_game()
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_n_games_malformed_placement():
+    def test_n_games_malformed_placement(self):
         """tests that a player who gives a malformed placement
         loses and end_of_game is not called on it in n games
         """
@@ -199,15 +203,15 @@ class TestReferee(unittest.TestCase):
 
         ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
 
-        result = run_n_game(3)
+        result = ref.run_n_games(3)
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_games_malformed_turn():
+    def test_games_malformed_turn(self):
         """tests that a player who gives a malformed turn
         loses and end_of_games is not called on it
         """
@@ -222,15 +226,15 @@ class TestReferee(unittest.TestCase):
 
         ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
 
-        result = run_game()
+        result = ref.run_game()
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_n_games_malformed_turn():
+    def test_n_games_malformed_turn(self):
         """tests that a player who gives a malformed turn
         loses and end_of_games is not called on it in n games
         """
@@ -245,19 +249,19 @@ class TestReferee(unittest.TestCase):
 
         ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
 
-        result = run_n_game(3)
+        result = ref.run_n_games(3)
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
 class testRefereeExceptionsTimeout(unittest.TestCase):
     """class that rests the referee when the player
     throws exceptions"""
 
-    def take_time():
+    def take_time(self):
         time.sleep(10)
 
     def setUp(self):
@@ -271,138 +275,138 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player2.end_of_game = mock.MagicMock()
         self.player2.get_name = mock.MagicMock(return_value="p2")
 
-    def test_start_of_game_exception():
+    def test_start_of_game_exception(self):
         """tests that a player who throws an exception
         in start_of_game gets booted
         """
         self.player2.start_of_game = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_set_id_exception():
+    def test_set_id_exception(self):
         """tests that a player who throws an exception
         in start_of_game gets booted
         """
         self.player2.set_id = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_get_name_exception():
+    def test_get_name_exception(self):
         """tests that a player who throws an exception
         in get_name gets booted
         """
         self.player2.get_name = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_place_worker_exception():
+    def test_place_worker_exception(self):
         """tests that a player who throws an exception
         in get_name gets booted
         """
         self.player2.place_worker = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_end_of_game_exception():
+    def test_end_of_game_exception(self):
         """tests that a player who throws an exception
         in get_name gets booted
         """
         self.player2.play_turn = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        result = ref.run_game()
 
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_start_of_game_timeout():
+    def test_start_of_game_timeout(self):
         """tests that a player who throws an timeout
         in start_of_game gets booted
         """
         self.player2.start_of_game = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)], timeout = 3)
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_set_id_timeout():
+    def test_set_id_timeout(self):
         """tests that a player who throws an timeout
         in start_of_game gets booted
         """
         self.player2.set_id = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)], timeout = 3)
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_get_name_timeout():
+    def test_get_name_timeout(self):
         """tests that a player who throws an timeout
         in get_name gets booted
         """
         self.player2.get_name = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)], timeout = 3)
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_place_worker_timeout():
+    def test_place_worker_timeout(self):
         """tests that a player who throws an timeout
         in get_name gets booted
         """
         self.player2.place_worker = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)], timeout = 3)
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        result = ref.run_game()
 
-        player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_not_called()
+        self.player1.end_of_game.assert_called_once_with("p1")
+        self.player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
-    def test_end_of_game_timeout():
+    def test_end_of_game_timeout(self):
         """tests that a player who throws an timeout
         in get_name gets booted
         """
         self.player2.play_turn = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)], timeout = 3)
-        result = run_game()
+        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        result = ref.run_game()
 
         res_enum, nef_players = result
-        result = (res_enum, nef_players)
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {player2._player_id}))
+        result = (res_enum, set(nef_players))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))

@@ -270,7 +270,7 @@ class Worker:
         """Return a readable string representation of a worker
         rtype: str
         """
-        return self._player + str(self._num)
+        return str(self._player) + str(self._num)
 
 class Direction(Enum):
     """Represents a direction in the eight cardinal directions.

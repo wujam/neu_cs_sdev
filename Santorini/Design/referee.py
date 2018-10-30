@@ -1,14 +1,14 @@
 """Interface for a referee in Santorini."""
 from abc import ABC, abstractmethod
 
+class PlayerResult(Enum):
+    """ Describes a result of a player interaction """
+    OK = 0
+    BAD = 1
+    NEFARIOUS = 2
 
 class AbstractReferee(ABC):
     """Interface for a Referee component in Santorini."""
-    class PlayerResult(Enum):
-        """ Describes a result of a player interaction """
-        OK = 0
-        BAD = 1
-        NEFARIOUS = 2
 
     def __init__(self, players, timeout=30):
         """Create a referee component with the associated list of players.
