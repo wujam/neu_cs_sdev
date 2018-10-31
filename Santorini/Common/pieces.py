@@ -2,6 +2,7 @@
 """Santorini game pieces implementation."""
 from operator import add
 from enum import Enum
+import json
 
 class Board:
     """Board implementation for Santorini."""
@@ -175,6 +176,25 @@ class Board:
             return False
         return True
 
+    def dump_as_json_string(self, id_to_name):
+        """
+        Gives a string representation of the board in json.
+        :param map{Uuid -> String} id_to_name: map of uuids to player name
+        :rtype String: the json representation of the board
+        """
+        tiles = []
+        for i in range(self.BOARD_SIZE):
+            tiles.append([])
+            for j in range(self.BOARD_SIZE):
+                tiles[i].append(self.get_height((i, j), Direction.STAY)) 
+        
+        for w in self.workers:
+            row, col = self.worker_position(w) 
+            tiles[row][col] = str(tiles[row][col]) + w.dump_with_name(id_to_name) 
+            
+        return str(tiles) 
+
+
     def __str__(self):
         """Give a readable string representation of this board.
         :rtype str
@@ -250,6 +270,15 @@ class Worker:
     def number(self):
         """Return the piece number of the worker."""
         return self._num
+
+
+    def dump_with_name(self, id_to_name):
+        """
+        Gives a string representation of a worker in json.
+        :param map{Uuid -> String} id_to_name: map of uuids to player name
+        :rtype String: the json representation of the worker
+        """
+        return str(id_to_name[self.player]) + str(self._num)
 
     def __eq__(self, other):
         """Worker piece equality."""

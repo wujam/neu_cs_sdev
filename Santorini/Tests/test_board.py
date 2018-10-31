@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import Board, Worker, Direction
-
+import uuid
 
 class TestBoard(unittest.TestCase):
     """Board unit tests."""
@@ -15,10 +15,15 @@ class TestBoard(unittest.TestCase):
         4 workers for 2 players, each placed along the diagonal
         (i.e. (0, 0), (1, 1), etc)
         """
-        self.workers = [Worker("player1", 1),
-                        Worker("player1", 2),
-                        Worker("player2", 1),
-                        Worker("player2", 2)]
+        self.ids = [uuid.uuid4(), uuid.uuid4()]
+        self.player_names = ["player1", "player2"]
+        self.uuids_to_name = {}
+        for player_id, player_name in zip(self.ids, self.player_names):
+            self.uuids_to_name[player_id] = player_name
+        self.workers = [Worker(self.ids[0], 1),
+                        Worker(self.ids[0], 2),
+                        Worker(self.ids[0], 1),
+                        Worker(self.ids[0], 2)]
 
     def test_place_worker(self):
         """Base case for placing a worker at the start of a game."""
@@ -300,3 +305,13 @@ class TestBoard(unittest.TestCase):
         self.assertFalse(board.is_maxheight(
                          board.worker_position(self.workers[0]),
                          Direction.NORTH))
+
+    def test_dump_board_as_json_string(self):
+        """Test that a board can be printed as a json string correctly."""
+        tiles = [[1,2,2],[],[],[2,0,2,0,0,1]]
+        board = Board(tiles, workers={self.workers[1]: (2,2)})
+        expected_str = "[[1, 2, 2, 0, 0, 0], [0, 0, 0, 0, 0, 0], "\
+                "[0, 0, '0player12', 0, 0, 0], [2, 0, 2, 0, 0, 1],"\
+                " [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]"
+        self.assertEqual(board.dump_as_json_string(self.uuids_to_name),
+                expected_str)
