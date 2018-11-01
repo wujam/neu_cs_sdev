@@ -1,0 +1,10 @@
+#!/usr/bin/env python36
+sys.path.append('../Santorini')
+from Admin.referee import Referee
+from Observer.observer import Observer
+from Tests.player_mock.legit_player import LegitPlayer
+
+player_1 = LegitPlayer()
+player_2 = LegitPlayer()
+referee = Referee(player_1, player_2)
+
