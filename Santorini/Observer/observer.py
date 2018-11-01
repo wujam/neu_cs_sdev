@@ -1,3 +1,5 @@
+import sys
+import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import Board, Direction
 import json
@@ -9,7 +11,7 @@ class Observer:
         """Create an Observer object """
         pass
 
-    def update_placement(self, board, placement, id_to_name)
+    def update_placement(self, board, placement, id_to_name):
         """Receives a placement and updates
 
         A placement is a tuple of worker and
@@ -85,7 +87,6 @@ class Observer:
         worker, move_dir, build_dir = turn
         worker_string = self._dump_worker(worker, id_to_name)
         move_dir_string = str(move_dir)
-        build_dir_string = "," + str(build_dir) if build_dir is not None and build_dir.vector is not (0,0)
-                            else ""
+        build_dir_string = "," + str(build_dir) if build_dir is not None and build_dir.vector != (0,0) else ""
         return ("[" + worker.dump_with_name(id_to_name) + ","
                 + move_dir_string + build_dir_string + "]") 

@@ -103,7 +103,7 @@ class TreeStrategy(TurnStrategy):
                 winner = rulechecker.get_winner(next_board)
                 if (winner and winner != pname):
                     #enemy found a way to kill you on their move, return False
-                    logger.info("player " + winner + " kills with this move:" + str(next_board) + " depth:" + str(depth))
+                    logger.info("player " + str(winner) + " kills with this move:" + str(next_board) + " depth:" + str(depth))
                     return False
 
                 if depth > 1:

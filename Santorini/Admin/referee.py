@@ -24,12 +24,15 @@ class Referee:
     NUM_PLAYERS = 2
 
     def __init__(self, uuids_players, timeout=30):
-        """Create a referee component with the associated list of players."""
+        """Create a referee component with the associated list of players.
+        :param dict[UUID -> Player] uuid_player: dictionary of UUIDs to players
+        :param int timeout: the timeout in seconds for untrusted code (Players and Observers)
+        """
         self.players = []
         self.timeout = timeout
         self.uuids_to_player = {}
         self.uuids_to_name = {}
-        for uuid, player in uuids_players:
+        for uuid, player in uuids_players.items():
             player_guard = PlayerGuard(player, timeout=self.timeout)
             self.uuids_to_player[uuid] = player_guard
             self.players.append(player_guard)
@@ -218,7 +221,7 @@ class Referee:
         try:
             worker, move_dir, build_dir = player.play_turn(copy.deepcopy(self.board))
         except PlayerError:
-            p_uuid = self.uuid_of_player_guard(player)
+            p_uuid = self._uuid_of_player_guard(player)
             self._notify_observers_player_disqualified(p_uuid)
             return PlayerResult.NEFARIOUS
 
@@ -229,7 +232,7 @@ class Referee:
             self._notify_observers_turn((worker, move_dir, build_dir))
             return PlayerResult.OK
         else:
-            p_uuid = self.uuid_of_player_guard(player)
+            p_uuid = self._uuid_of_player_guard(player)
             self._notify_observers_player_bad_turn(p_uuid)
             return PlayerResult.BAD
 
@@ -269,9 +272,9 @@ class Referee:
         :param PlayerGuard player_guard: the PlayerGuard to get the Uuid of
         :rtype Uuid or None: Returns the uuid if it is found, else None
         """
-        for pg_uuid, pg in self.uuids_to_player:
+        for pg_uuid, pg in self.uuids_to_player.items():
             if pg == player_guard:
-                return uuid
+                return pg_uuid
         return None
 
     def _notify_observers_placement(self, placement):
@@ -305,7 +308,7 @@ class Referee:
         """ Notify observers that player is disqualified
         :param Uuid player: Uuid of disqualified player
         """
-        player_name = self.uuids_to_name(player)
+        player_name = self.uuids_to_name[player]
         error_msg = f"Player {player_name} is disqualified."
         self._notify_observers_error_msg(error_msg)
         

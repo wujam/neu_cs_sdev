@@ -25,9 +25,9 @@ class ObserverManager:
         bad_observers = []
         for index, obs in enumerate(self._observers):
             try:
-                with timeout(seconds = self._timeout)
+                with timeout(seconds = self._timeout):
                     getattr(obs, fun_name)(*args, **kwargs)
             except Exception:
-                bad_observers.append[index]
+                bad_observers.append(index)
         for bad_obs_index in reversed(bad_observers):
             del self._observers[bad_obs_index]
