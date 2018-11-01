@@ -12,14 +12,6 @@ class ObserverManager(ABC):
         pass
 
     @abstractmethod
-    def remove_observer(self, observer):
-        """ Removes an observer.
-        :param Observer observer: an Observer to be removed
-        :rtype bool: True if successful, False if not found
-        """
-        pass
-
-    @abstractmethod
     def remove_all_observers(self):
         """ Removes all observers """
         pass

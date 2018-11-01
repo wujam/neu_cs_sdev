@@ -71,3 +71,11 @@ class AbstractReferee(ABC):
                             will be killed and assigned a game loss.
         """
         pass
+
+    @abstractmethod
+    def add_observer(self, observer):
+        """Adds an observer, which will be sent the board, placements,
+        turns, errors, and gameover in a timely manner.
+        :param Observer observer: an Observer for this game
+        """
+        pass

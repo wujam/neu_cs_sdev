@@ -91,3 +91,12 @@ class AbstractBoard(ABC):
         :rtype int: the new floor count
         """
         pass
+
+    @abstractmethod
+    def dump_as_json_string(self, id_to_name):
+        """
+        Gives a string representation of the board in json.
+        :param map{Uuid -> String} id_to_name: map of uuids to player name
+        :rtype String: the json representation of the board
+        """
+        pass
