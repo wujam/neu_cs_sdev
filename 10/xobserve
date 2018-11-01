@@ -1,10 +1,18 @@
-#!/usr/bin/env python36
+#!/usr/bin/env python3.6
+import sys
 sys.path.append('../Santorini')
 from Admin.referee import Referee
 from Observer.observer import Observer
-from Tests.player_mock.legit_player import LegitPlayer
+from Tests.player_mocks.legit_player import LegitPlayer
+import uuid
 
-player_1 = LegitPlayer()
-player_2 = LegitPlayer()
-referee = Referee(player_1, player_2)
+uuids_players = {
+    uuid.uuid4() : LegitPlayer(),
+    uuid.uuid4() : LegitPlayer()
+}
 
+referee = Referee(uuids_players)
+
+referee.add_observer(Observer())
+
+referee.run_game()
