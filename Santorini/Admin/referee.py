@@ -16,7 +16,8 @@ logging.basicConfig(filename='refereetest.log', filemode='w')
 
 class PlayerResult(Enum):
     OK = 0
-    BAD = 1
+    GIVE_UP = 1
+    BAD = 2
     NEFARIOUS = 2
 class Referee:
 
@@ -215,6 +216,7 @@ class Referee:
         """Get a turn from a player and enact on the board.
         :param PlayerGuard player: the PlayerGuard to get a turn from
         :rtype PlayerResult: OK if turn went through
+                             GIVE_UP if the player gave up
                              BAD if turn was invalid
                              NEFARIOUS if player did something untrustworthy
         """
@@ -224,6 +226,10 @@ class Referee:
             p_uuid = self._uuid_of_player_guard(player)
             self._notify_observers_player_disqualified(p_uuid)
             return PlayerResult.NEFARIOUS
+
+        # player giving up
+        if worker == None and move_dir == None and build_dir == None:
+            return PlayerResult.GIVE_UP
 
         can_move_build = rulechecker.can_move_build(copy.deepcopy(self.board), worker, move_dir, build_dir)
         is_winner = rulechecker.get_winner(copy.deepcopy(self.board))
@@ -282,21 +288,21 @@ class Referee:
         :param Placement placement: a placement of a worker
         """
         self.observer_manager.notify_all("update_placement", copy.deepcopy(self.board),
-                                        copy.deepcopy(placement), self.uuids_to_player)
+                                        copy.deepcopy(placement), self.uuids_to_name)
 
     def _notify_observers_turn(self, turn):
         """Notify observers of placement.
         :param Turn turn:
         """
         self.observer_manager.notify_all("update_turn", copy.deepcopy(self.board),
-                                        turn, self.uuids_to_player)
+                                        turn, self.uuids_to_name)
 
     def _notify_observers_game_over(self, winner):
         """Notify observers of game over
         :param Uuid winner: Uuid of winner
         """
         self.observer_manager.notify_all("update_game_over", copy.deepcopy(self.board),
-                                        winner, self.uuids_to_player)
+                                        winner, self.uuids_to_name)
 
     def _notify_observers_error_msg(self, msg):
         """Notify observers of error message
