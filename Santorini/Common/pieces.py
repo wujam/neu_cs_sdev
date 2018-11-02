@@ -335,19 +335,25 @@ class Direction(Enum):
         pos = tuple(map(add, pos, direction.vector))
         return pos
 
+    def string_values(self):
+        """Return Direction as a list of strings, EAST or WEST and NORTH or SOUTH
+        :rtype list of string
+        """
+        east_west_map = {
+            0  : "PUT",
+            1  : "EAST",
+            -1 : "WEST"
+        }
+
+        north_south_map= {
+            0  : "PUT",
+            1  : "SOUTH",
+            -1 : "NORTH"
+        }
+
+        return [east_west_map[self.row], north_south_map[self.col]]
+
     def __str__(self):
-        x = ""
-        y = ""
-        if self.row is 1:
-            x = "EAST"
-        elif self.row is -1:
-            x = "WEST"
-        elif self.row is 0:
-            x = "STAY"
-        if self.col is 1:
-            y = "SOUTH"
-        elif self.col is -1:
-            y = "NORTH"
-        elif self.row is 0:
-            y = "STAY"
+        x, y = self.string_values()
+
         return x + "," + y
