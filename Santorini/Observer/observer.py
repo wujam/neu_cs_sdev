@@ -36,7 +36,7 @@ class Observer:
         :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
         print(board.dump_as_json_string(id_to_name))
-        print(self._dump_turn(board, id_to_name))
+        print(self._dump_turn(turn, id_to_name))
 
     def update_game_over(self, board, player, id_to_name):
         """Same notifies the observer that the game is over as well.
@@ -56,26 +56,6 @@ class Observer:
         :param str msg: the message as a string
         """
         print(msg)
-
-    def _dump_board(self, board, id_to_name):
-        """
-        Gives a string representation of the board in json.
-        :param Board board: the board
-        :param map{Uuid -> String} id_to_name: map of uuids to player name
-        :rtype String: the json representation of the board
-        """
-        tiles = []
-        for i in range(BOARD_SIZE):
-            tiles[i] = []
-            for j in range(BOARD_SIZE):
-                tiles[i][j] = board.get_height(i, j, Direction.STAY) 
-        
-        for w in board.workers:
-            row, col = board.worker_position(w) 
-            tiles[row][col] = str(tiles)[row][col] + w.dump_with_name(id_to_name) 
-            
-        return json.dumps(json.loads(tiles)) 
-
         
     def _dump_turn(self, turn, id_to_name):
 
@@ -85,8 +65,9 @@ class Observer:
         :param map{Uuid -> String} id_to_name: map of uuids to player name
         """
         worker, move_dir, build_dir = turn
-        worker_string = self._dump_worker(worker, id_to_name)
-        move_dir_string = str(move_dir)
-        build_dir_string = "," + str(build_dir) if build_dir is not None and build_dir.vector != (0,0) else ""
-        return ("[" + worker.dump_with_name(id_to_name) + ","
-                + move_dir_string + build_dir_string + "]") 
+        turn_list = []
+        turn_list.append(worker.dump_with_name(id_to_name))
+        turn_list.extend(move_dir.string_values())
+        if build_dir is not None:
+            turn_list.extend(build_dir.string_values())
+        return json.dumps(turn_list)
