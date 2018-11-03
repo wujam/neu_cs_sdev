@@ -259,8 +259,8 @@ class Referee:
         :param Uuid winner: uuid of winner
         :param list(Uuid) evil_players: the bad players
         """
-        self._notify_observers_game_over(winner)
         winner_name = self.uuids_to_name[winner]
+        self._notify_observers_game_over(winner_name)
         # attempt to notify non bad players
         for player in self.uuids_to_player:
             if player not in evil_players:
