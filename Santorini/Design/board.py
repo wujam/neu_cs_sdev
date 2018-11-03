@@ -93,10 +93,11 @@ class AbstractBoard(ABC):
         pass
 
     @abstractmethod
-    def dump_as_json_string(self, id_to_name):
+    def dump_as_json(self, id_to_name):
         """
         Gives a string representation of the board in json.
         :param map{Uuid -> String} id_to_name: map of uuids to player name
-        :rtype String: the json representation of the board
+        :rtype 2D List of string or int: a 2D list representing the board
+                                         which can be dumped to json
         """
         pass

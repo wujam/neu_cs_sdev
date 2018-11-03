@@ -310,8 +310,8 @@ class TestBoard(unittest.TestCase):
         """Test that a board can be printed as a json string correctly."""
         tiles = [[1,2,2],[],[],[2,0,2,0,0,1]]
         board = Board(tiles, workers={self.workers[1]: (2,2)})
-        expected_str = "[[1, 2, 2, 0, 0, 0], [0, 0, 0, 0, 0, 0], "\
-                "[0, 0, '0player12', 0, 0, 0], [2, 0, 2, 0, 0, 1],"\
-                " [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]"
-        self.assertEqual(board.dump_as_json_string(self.uuids_to_name),
+        expected_str = [[1, 2, 2, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                [0, 0, '0player12', 0, 0, 0], [2, 0, 2, 0, 0, 1],
+                 [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+        self.assertEqual(board.dump_as_json(self.uuids_to_name),
                 expected_str)

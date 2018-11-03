@@ -176,23 +176,24 @@ class Board:
             return False
         return True
 
-    def dump_as_json_string(self, id_to_name):
+    def dump_as_json(self, id_to_name):
         """
         Gives a string representation of the board in json.
         :param map{Uuid -> String} id_to_name: map of uuids to player name
-        :rtype String: the json representation of the board
+        :rtype 2D List of string or int: a 2D list representing the board
+                                         which can be dumped to json
         """
         tiles = []
         for i in range(self.BOARD_SIZE):
             tiles.append([])
             for j in range(self.BOARD_SIZE):
-                tiles[i].append(self.get_height((i, j), Direction.STAY)) 
-        
+                tiles[i].append(self.get_height((i, j), Direction.STAY))
+
         for w in self.workers:
-            row, col = self.worker_position(w) 
+            row, col = self.worker_position(w)
             tiles[row][col] = str(tiles[row][col]) + w.dump_with_name(id_to_name) 
-            
-        return str(tiles) 
+
+        return tiles
 
 
     def __str__(self):
@@ -276,7 +277,8 @@ class Worker:
         """
         Gives a string representation of a worker in json.
         :param map{Uuid -> String} id_to_name: map of uuids to player name
-        :rtype String: the json representation of the worker
+        :rtype String: a string representing the worker that can be dumped
+                       to json
         """
         return str(id_to_name[self.player]) + str(self._num)
 

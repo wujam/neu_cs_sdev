@@ -21,7 +21,7 @@ class Observer:
         :param placement placement: a turn that the player inputted
         :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
-        print(board.dump_as_json_string(id_to_name))
+        print(json.dumps(board.dump_as_json(id_to_name)))
 
     def update_turn(self, board, turn, id_to_name):
         """Receives a turn and updates.
@@ -35,7 +35,7 @@ class Observer:
         :param turn turn: a turn that the player inputted
         :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
-        print(board.dump_as_json_string(id_to_name))
+        print(json.dumps(board.dump_as_json(id_to_name)))
         print(self._dump_turn(turn, id_to_name))
 
     def update_game_over(self, board, player, id_to_name):
@@ -43,11 +43,11 @@ class Observer:
 
 
         :param Board board: a copy of the current game board
-        :param player string: name of the player that won
+        :param String player_name: name of the player that won
         :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
-        print(board.dump_as_json_string(id_to_name))
-        print(player)
+        print(json.dumps(board.dump_as_json(id_to_name)))
+        print(json.dumps("Winner: " + player_name))
 
     def update_error_msg(self, msg):
         """Takes a string that represents an error message
@@ -55,8 +55,8 @@ class Observer:
 
         :param str msg: the message as a string
         """
-        print(msg)
-        
+        print(json.dumps(msg))
+
     def _dump_turn(self, turn, id_to_name):
 
         """
