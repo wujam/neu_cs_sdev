@@ -22,8 +22,8 @@ class TestBoard(unittest.TestCase):
             self.uuids_to_name[player_id] = player_name
         self.workers = [Worker(self.ids[0], 1),
                         Worker(self.ids[0], 2),
-                        Worker(self.ids[0], 1),
-                        Worker(self.ids[0], 2)]
+                        Worker(self.ids[1], 1),
+                        Worker(self.ids[1], 2)]
 
     def test_place_worker(self):
         """Base case for placing a worker at the start of a game."""
