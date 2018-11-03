@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+from Santorini.Lib.timeout import timeout
 """ ObserverManager manages Observers """
 class ObserverManager:
     def __init__(self, timeout=10):
