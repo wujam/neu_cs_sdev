@@ -229,6 +229,8 @@ class Referee:
 
         # player giving up
         if worker == None and move_dir == None and build_dir == None:
+            p_uuid = self._uuid_of_player_guard(player)
+            self._notify_observers_gave_up(self.uuids_to_name[p_uuid])
             return PlayerResult.GIVE_UP
 
         can_move_build = rulechecker.can_move_build(copy.deepcopy(self.board), worker, move_dir, build_dir)
@@ -296,6 +298,12 @@ class Referee:
         """
         self.observer_manager.notify_all("update_turn", copy.deepcopy(self.board),
                                         turn, self.uuids_to_name)
+
+    def _notify_observers_gave_up(self, player_name):
+        """Notify observers of a player giving up.
+        :param String player_name: the name of the player who gave up
+        """
+        self.observer_manager.notify_all("update_gave_up", player_name)
 
     def _notify_observers_game_over(self, winner):
         """Notify observers of game over

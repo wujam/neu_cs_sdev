@@ -38,7 +38,13 @@ class Observer:
         print(json.dumps(board.dump_as_json(id_to_name)))
         print(self._dump_turn(turn, id_to_name))
 
-    def update_game_over(self, board, player, id_to_name):
+    def update_gave_up(self, player_name):
+        """Receives a player who is giving up
+        :param String player_name: name of the player who gave up
+        """
+        print(json.dumps("Player gave up: " + player_name))
+
+    def update_game_over(self, board, player_name, id_to_name):
         """Same notifies the observer that the game is over as well.
 
 
