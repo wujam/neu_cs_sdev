@@ -53,3 +53,48 @@ class TestDirection(unittest.TestCase):
         """Testing not moving."""
         self.assertEqual(Direction.move_position((0, 0), Direction.STAY),
                          (0, 0))
+
+    def test_string_values_north(self):
+        """Test string north"""
+        dir_str = Direction.NORTH.string_values()
+        self.assertEqual(dir_str, ["PUT", "NORTH"])
+
+    def test_string_values_northeast(self):
+        """Test string northeast"""
+        dir_str = Direction.NORTHEAST.string_values()
+        self.assertEqual(dir_str, ["EAST", "NORTH"])
+
+    def test_string_values_northwest(self):
+        """Test string northwest"""
+        dir_str = Direction.NORTHWEST.string_values()
+        self.assertEqual(dir_str, ["WEST", "NORTH"])
+
+    def test_string_values_south(self):
+        """Test string south"""
+        dir_str = Direction.SOUTH.string_values()
+        self.assertEqual(dir_str, ["PUT", "SOUTH"])
+
+    def test_string_values_southeast(self):
+        """Test string southeast"""
+        dir_str = Direction.SOUTHEAST.string_values()
+        self.assertEqual(dir_str, ["EAST", "SOUTH"])
+
+    def test_string_values_southwest(self):
+        """Test string southwest"""
+        dir_str = Direction.SOUTHWEST.string_values()
+        self.assertEqual(dir_str, ["WEST", "SOUTH"])
+
+    def test_string_values_east(self):
+        """Test string east"""
+        dir_str = Direction.EAST.string_values()
+        self.assertEqual(dir_str, ["EAST", "PUT"])
+
+    def test_string_values_west(self):
+        """Test string west"""
+        dir_str = Direction.WEST.string_values()
+        self.assertEqual(dir_str, ["WEST", "PUT"])
+
+    def test_string_values_stay(self):
+        """Test string stay"""
+        dir_str = Direction.STAY.string_values()
+        self.assertEqual(dir_str, ["PUT", "PUT"])

@@ -353,7 +353,7 @@ class Direction(Enum):
             -1 : "NORTH"
         }
 
-        return [east_west_map[self.row], north_south_map[self.col]]
+        return [east_west_map[self.col], north_south_map[self.row]]
 
     def __str__(self):
         x, y = self.string_values()
