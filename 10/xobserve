@@ -5,10 +5,17 @@ from Admin.referee import Referee
 from Observer.observer import Observer
 from Tests.player_mocks.legit_player import LegitPlayer
 import uuid
+from unittest import mock
+
+player_a = LegitPlayer()
+player_a.get_name = mock.MagicMock(return_value="a")
+
+player_b = LegitPlayer()
+player_b.get_name = mock.MagicMock(return_value="b")
 
 uuids_players = {
-    uuid.uuid4() : LegitPlayer(),
-    uuid.uuid4() : LegitPlayer()
+    uuid.uuid4() : player_a,
+    uuid.uuid4() : player_b
 }
 
 referee = Referee(uuids_players)
