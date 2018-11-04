@@ -38,14 +38,14 @@ class TestReferee(unittest.TestCase):
             player2.end_of_game = mock.MagicMock()
             player2.get_name = mock.MagicMock(return_value="p2")
 
-            ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+            ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
             result = ref.run_game()
 
             player1.start_of_game.assert_called_once()
             player2.start_of_game.assert_called_once()
             player1.end_of_game.assert_called_once_with("p1")
             player2.end_of_game.assert_called_once("p1")
-            self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+            self.assertEqual(result, PlayerResult.OK,self.uuidp1)
     """
     """
         def test_run_n_games_normal_games(self):
@@ -63,16 +63,16 @@ class TestReferee(unittest.TestCase):
             player2.end_of_game = mock.MagicMock()
             player2.get_name = mock.MagicMock(return_value="p2")
 
-            ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+            ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
             result = ref.run_n_games(3)
 
-            self.assertEqual(player1.start_of_game.call_count, 3)
-            self.assertEqual(player2.start_of_game.call_count, 3)
-            self.assertEqual(player1.endof_game.call_count, 3)
-            self.assertEqual(player2.end_of_game.call_count, 3)
+            self.assertEqualplayer1.start_of_game.call_count:3
+            self.assertEqualplayer2.start_of_game.call_count:3
+            self.assertEqualplayer1.endof_game.call_count:3
+            self.assertEqualplayer2.end_of_game.call_count:3
             player1.end_of_game.assert_called_with("p1")
             player2.end_of_game.assert_called_with("p1")
-            self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+            self.assertEqual(result, PlayerResult.OK,self.uuidp1)
     """
     def test_game_invalid_placements(self):
         """test that a player who gives invalid placements loses
@@ -87,13 +87,13 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game = mock.MagicMock()
         player2.get_name = mock.MagicMock(return_value="p2")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
 
         result = ref.run_game()
 
         player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_called_once_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+        player2.end_of_game.assert_not_called()
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, [self.uuidp2]))
 
     def test_n_games_invalid_placements(self):
         """tests that a player who gives invalid placements
@@ -109,16 +109,15 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game = mock.MagicMock()
         player2.get_name = mock.MagicMock(return_value="p2")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
         result = ref.run_n_games(3)
 
-        self.assertEqual(player1.start_of_game.call_count, 3)
-        self.assertEqual(player2.start_of_game.call_count, 3)
-        self.assertEqual(player1.end_of_game.call_count, 3)
-        self.assertEqual(player2.end_of_game.call_count, 3)
+        self.assertEqual(player1.start_of_game.call_count, 1)
+        self.assertEqual(player2.start_of_game.call_count, 1)
+        self.assertEqual(player1.end_of_game.call_count, 1)
+        self.assertEqual(player2.end_of_game.call_count, 0)
         player1.end_of_game.assert_called_with("p1")
-        player2.end_of_game.assert_called_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, [self.uuidp2]))
 
     def test_game_invalid_turn(self):
         """test that a player who passes an invalid turn loses immediately
@@ -132,13 +131,13 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game = mock.MagicMock()
         player2.get_name = mock.MagicMock(return_value="p2")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
 
         result = ref.run_game()
 
         player1.end_of_game.assert_called_once_with("p1")
-        player2.end_of_game.assert_called_once_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+        player2.end_of_game.assert_not_called()
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, [self.uuidp2]))
 
     def test_n_games_invalid_turns(self):
         """tests that a player who gives invalid turns
@@ -154,16 +153,15 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game = mock.MagicMock()
         player2.get_name = mock.MagicMock(return_value="p2")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
         result = ref.run_n_games(3)
 
-        self.assertEqual(player1.start_of_game.call_count, 3)
-        self.assertEqual(player2.start_of_game.call_count, 3)
-        self.assertEqual(player1.end_of_game.call_count, 3)
-        self.assertEqual(player2.end_of_game.call_count, 3)
+        self.assertEqual(player1.start_of_game.call_count, 1)
+        self.assertEqual(player2.start_of_game.call_count, 1)
+        self.assertEqual(player1.end_of_game.call_count, 1)
+        self.assertEqual(player2.end_of_game.call_count, 0)
         player1.end_of_game.assert_called_with("p1")
-        player2.end_of_game.assert_called_with("p1")
-        self.assertEqual(result, (PlayerResult.OK, self.uuidp1))
+        self.assertEqual(result, (PlayerResult.NEFARIOUS, [self.uuidp2]))
 
     def test_game_malformed_placement(self):
         """tests that a player who gives a malformed placement
@@ -178,15 +176,19 @@ class TestReferee(unittest.TestCase):
         player2.get_name = mock.MagicMock(return_value="p2")
         player2.place_worker = mock.MagicMock(return_value="lolol")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
+        self.assertEqual(len(ref.players), 2)
+        self.assertEqual(len(ref.uuids_to_player.keys()), 2)
 
         result = ref.run_game()
+        self.assertEqual(len(ref.players), 2)
+        self.assertEqual(len(ref.uuids_to_player.keys()), 2)
 
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         res_enum, nef_players = result
-        result = (res_enum, set(nef_players))
-        self.assertEqual(result, (PlayerResult.NEFARIOUS, {self.uuidp2}))
+        result2 = (res_enum, set(nef_players))
+        self.assertEqual(result2, (PlayerResult.NEFARIOUS, {self.uuidp2}))
 
     def test_n_games_malformed_placement(self):
         """tests that a player who gives a malformed placement
@@ -201,7 +203,7 @@ class TestReferee(unittest.TestCase):
         player2.get_name = mock.MagicMock(return_value="p2")
         player2.place_worker = mock.MagicMock(return_value="lolol")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
 
         result = ref.run_n_games(3)
 
@@ -224,7 +226,7 @@ class TestReferee(unittest.TestCase):
         player2.get_name = mock.MagicMock(return_value="p2")
         player2.play_turn = mock.MagicMock(return_value="lolol")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
 
         result = ref.run_game()
 
@@ -247,7 +249,7 @@ class TestReferee(unittest.TestCase):
         player2.get_name = mock.MagicMock(return_value="p2")
         player2.play_turn = mock.MagicMock(return_value="lolol")
 
-        ref = Referee([(self.uuidp1, player1), (self.uuidp2, player2)])
+        ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
 
         result = ref.run_n_games(3)
 
@@ -280,7 +282,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in start_of_game gets booted
         """
         self.player2.start_of_game = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2})
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -294,7 +296,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in start_of_game gets booted
         """
         self.player2.set_id = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2})
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -308,7 +310,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in get_name gets booted
         """
         self.player2.get_name = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2})
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -322,7 +324,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in get_name gets booted
         """
         self.player2.place_worker = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2})
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -336,7 +338,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in get_name gets booted
         """
         self.player2.play_turn = mock.MagicMock(side_effect=Exception())
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)])
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2})
         result = ref.run_game()
 
         res_enum, nef_players = result
@@ -348,7 +350,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in start_of_game gets booted
         """
         self.player2.start_of_game = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2}, timeout = 3)
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -362,7 +364,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in start_of_game gets booted
         """
         self.player2.set_id = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2}, timeout = 3)
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -376,7 +378,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in get_name gets booted
         """
         self.player2.get_name = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2}, timeout = 3)
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -390,7 +392,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in get_name gets booted
         """
         self.player2.place_worker = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2}, timeout = 3)
         result = ref.run_game()
 
         self.player1.end_of_game.assert_called_once_with("p1")
@@ -404,7 +406,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         in get_name gets booted
         """
         self.player2.play_turn = mock.MagicMock(side_effect=self.take_time)
-        ref = Referee([(self.uuidp1, self.player1), (self.uuidp2, self.player2)], timeout = 3)
+        ref = Referee({self.uuidp1:self.player1, self.uuidp2:self.player2}, timeout = 3)
         result = ref.run_game()
 
         res_enum, nef_players = result

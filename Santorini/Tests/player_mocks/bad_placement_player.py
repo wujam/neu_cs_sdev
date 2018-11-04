@@ -20,7 +20,7 @@ class BadPlacementPlayer:
         """Get a name to call this Player.
         :rtype String name, a name that this player wants to call itself.
         """
-        return "legit player"
+        return "bad placement player"
 
     def start_of_game(self):
         pass
