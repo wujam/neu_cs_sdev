@@ -27,12 +27,12 @@ class Observer:
         """Receives a turn and updates.
 
         A turn is one of:
-        (None, None, None) - A no request if it couldn't find any move
+        (None, None, None) - A give_up request if it couldn't find any move
         (Worker, Direction, None) - Move request
         (Worker, Direction, Direction). - Move+Build request
 
         :param Board board: a copy of the current game board
-        :param turn turn: a turn that the player inputted
+        :param Turn turn: a turn that the player inputted, cannot be a give up move (None, None, None)
         :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
         print(json.dumps(board.dump_as_json(id_to_name)))
