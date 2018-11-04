@@ -4,16 +4,18 @@ from abc import ABC, abstractmethod
 class PlayerResult(Enum):
     """ Describes a result of a player interaction """
     OK = 0
-    BAD = 1
-    NEFARIOUS = 2
+    GIVE_UP = 1
+    BAD = 2
+    NEFARIOUS = 3
 
 class AbstractReferee(ABC):
     """Interface for a Referee component in Santorini."""
 
-    def __init__(self, players, timeout=30):
+    def __init__(self, uuids_players, uuids_names, observer_manager, timeout=30):
         """Create a referee component with the associated list of players.
-        :param list of tuple(Uuid, Player) players: uuids and the Player
-                                                    they're assigned to
+        :param dict[UUID -> Player] uuids_players: dictionary of UUIDs to players
+        :param dict[UUID -> String] uuids_names: dictionary of UUIDs to player names
+        :param ObserverManager observer_manager: an observer manager object
         :param int timeout: time in seconds allowed per player action
         """
         self.players = players
@@ -54,11 +56,9 @@ class AbstractReferee(ABC):
 
         :param int num_games: the number of games to run, must be non-negative
                                 and odd
-        :rtype tuple(PlayerResult.OK, Uuid) the player won the series
-               tuple(PlayerResult.NEFARIOUS, list(Uuid)) the player did something
-                                                   untrustworthy and the
-                                                   other should win by
-                                                   default
+        :rtype tuple(list of nefarious players,
+                     list of n length of the uuid of the winner of each game in order,
+                       where n is the number of games played (n can be shorter than num_games))
         """
         pass
 

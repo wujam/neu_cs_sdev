@@ -2,6 +2,8 @@ import sys
 """Interface for a tournament manager of multiple games of Santorini for multiple workers"""
 
 class TournamentManager:
+
+
     def run_tournament():
         """Runs a round robin tournament against the configured players
         :rtype List of Players winners: list of players who win the tournament
@@ -43,5 +45,14 @@ class TournamentManager:
         a Name is a JSON String denoting the name of the player
         a PathString is Linux Path to the implementation of the player/observer
         :param TextIOBase file_in: Defaults to stdin. A source of text to read from.
+
+        Steps to load up the configuration:
+         - Read the players from the player list
+         - Load up the player objects and wrap them in player_guards
+         - hand each player a UUID and set the maps of UUIDs to player_guard and UUIDs to player_name
+           - if a player_guard reports an error while setting the UUID don't include this player
+            in the tournament
+           - while setting names in the UUID to name map make sure that the names are unique
+         - Load up the observer objects from the 
         """
         pass
