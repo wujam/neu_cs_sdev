@@ -42,7 +42,7 @@ class Observer:
         """Receives a player who is giving up
         :param String player_name: name of the player who gave up
         """
-        print(json.dumps("Player gave up: " + player_name))
+        print(json.dumps(self.GIVE_UP_STR + player_name))
 
     def update_game_over(self, board, player_name, id_to_name):
         """Same notifies the observer that the game is over as well.
@@ -53,7 +53,7 @@ class Observer:
         :param Dict{uuid, str} id_to_name: dict mapping of player_id to a string of the player name
         """
         print(json.dumps(board.dump_as_json(id_to_name)))
-        print(json.dumps("Winner: " + player_name))
+        print(json.dumps(self.WINNER_STR + player_name))
 
     def update_error_msg(self, msg):
         """Takes a string that represents an error message
@@ -61,7 +61,7 @@ class Observer:
 
         :param str msg: the message as a string
         """
-        print(json.dumps(msg))
+        print(json.dumps(self.ERROR_STR + msg))
 
     def _dump_turn(self, turn, id_to_name):
 
@@ -77,3 +77,9 @@ class Observer:
         if build_dir is not None:
             turn_list.extend(build_dir.string_values())
         return json.dumps(turn_list)
+
+
+    # String values in the file
+    GIVE_UP_STR = "Player gave up: "
+    WINNER_STR = "Winner: "
+    ERROR_STR = "Error: "
