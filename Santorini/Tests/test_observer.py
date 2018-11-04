@@ -22,15 +22,6 @@ class MockStdOut(list):
 
 class TestObserver(unittest.TestCase):
 
-    MOVE = "[{worker},{ew},{ns}]"
-    MOVE_BUILD = "[{worker},{ew_move},{ns_move},{ew_build},{ns_build}]"
-
-    PUT = "PUT"
-    NORTH = "NORTH"
-    SOUTH = "SOUTH"
-    EAST = "EAST"
-    WEST = "WEST"
-
     def setUp(self):
         """Mock-up context for testing the observer"""
 
