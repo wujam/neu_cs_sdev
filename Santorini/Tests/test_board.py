@@ -10,7 +10,7 @@ class TestBoard(unittest.TestCase):
     """Board unit tests."""
 
     def setUp(self):
-        """Mock-up context for testing the rulechecker.
+        """Mock-up context for testing the board.
 
         4 workers for 2 players, each placed along the diagonal
         (i.e. (0, 0), (1, 1), etc)
