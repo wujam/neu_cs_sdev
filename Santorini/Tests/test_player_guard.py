@@ -45,7 +45,7 @@ class TestPlayerGuard(unittest.TestCase):
         player_guard2.end_of_game("legit player")
 
     def test_bad_placement(self):
-        """ Test that well formed bad placements go through """
+        """ Test that well formed bad placements raise PlayerInvalidPlacement """
         board = Board()
         player1 = LegitPlayer()
         player2 = BadPlacementPlayer()
@@ -59,11 +59,11 @@ class TestPlayerGuard(unittest.TestCase):
         player_guard2.set_id(p2id)
 
         board.place_worker(*player_guard1.place_worker(board))
-        # shouldn't raise exception
-        player_guard2.place_worker(board)
+
+        self.assertRaises(PlayerInvalidPlacement, player_guard2.place_worker, board)
 
     def test_bad_turn(self):
-        """ Test that well formed bad turns go through """
+        """ Test that well formed bad turns raise PlayerInvalidTurn """
         board = Board()
         player1 = LegitPlayer()
         player2 = BadTurnPlayer()
@@ -80,8 +80,8 @@ class TestPlayerGuard(unittest.TestCase):
         board.place_worker(*player_guard2.place_worker(board))
         board.place_worker(*player_guard2.place_worker(board))
         board.place_worker(*player_guard1.place_worker(board))
-        # shouldn't raise exception
-        player_guard2.play_turn(board)
+
+        self.assertRaises(PlayerInvalidTurn, player_guard2.play_turn, board)
 
     def test_bad_worker(self):
         """ Test that unowned worker placement gives the correct Exception """
