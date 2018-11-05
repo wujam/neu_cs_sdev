@@ -27,11 +27,6 @@ class TestPlayerGuard(unittest.TestCase):
         player_guard1.set_id(p1id)
         player_guard2.set_id(p2id)
 
-        # check getting names correctly
-        p1name = player_guard1.get_name()
-        self.assertEqual(p1name, "legit player")
-        p2name = player_guard2.get_name()
-        self.assertEqual(p2name, "legit player")
         # test methods don't error out
         player_guard1.start_of_game()
         player_guard2.start_of_game()
@@ -110,7 +105,6 @@ class TestPlayerGuard(unittest.TestCase):
         p1id = uuid.uuid4() 
         self.assertRaises(PlayerRaisedException, player_guard1.set_id, p1id)
 
-        self.assertRaises(PlayerRaisedException, player_guard1.get_name)
         self.assertRaises(PlayerRaisedException, player_guard1.start_of_game)
         self.assertRaises(PlayerRaisedException, player_guard1.place_worker, board)
         self.assertRaises(PlayerRaisedException, player_guard1.play_turn, board)
@@ -127,7 +121,6 @@ class TestPlayerGuard(unittest.TestCase):
         p1id = uuid.uuid4() 
         self.assertRaises(PlayerTimeout, player_guard1.set_id, p1id)
 
-        self.assertRaises(PlayerTimeout, player_guard1.get_name)
         self.assertRaises(PlayerTimeout, player_guard1.start_of_game)
         self.assertRaises(PlayerTimeout, player_guard1.place_worker, board)
         self.assertRaises(PlayerTimeout, player_guard1.play_turn, board)
@@ -143,7 +136,6 @@ class TestPlayerGuard(unittest.TestCase):
         p1id = uuid.uuid4() 
         self.assertRaises(PlayerTimeout, player_guard1.set_id, p1id)
 
-        self.assertRaises(PlayerTimeout, player_guard1.get_name)
         self.assertRaises(PlayerTimeout, player_guard1.start_of_game)
         self.assertRaises(PlayerTimeout, player_guard1.place_worker, board)
         self.assertRaises(PlayerTimeout, player_guard1.play_turn, board)
@@ -158,6 +150,5 @@ class TestPlayerGuard(unittest.TestCase):
 
         player_guard1.set_id(uuid.uuid4())
 
-        self.assertRaises(PlayerMalformedData, player_guard1.get_name)
         self.assertRaises(PlayerMalformedData, player_guard1.place_worker, board)
         self.assertRaises(PlayerMalformedData, player_guard1.play_turn, board)

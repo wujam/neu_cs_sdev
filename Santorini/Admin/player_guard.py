@@ -86,15 +86,6 @@ class PlayerGuard():
         self._call_with_timeout(self.player.set_id, player_id)
         self.player_id = player_id
 
-    def get_name(self):
-        """Get a name to call this Player.
-        :rtype String name, a name that this player wants to call itself.
-        """
-
-        name = self._call_with_timeout(self.player.get_name)
-        self._well_formed_name(name)
-        return name
-
     def start_of_game(self):
         """
         Runs the start of game function of a player and returns the data
