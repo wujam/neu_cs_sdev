@@ -39,11 +39,9 @@ class AbstractReferee(ABC):
         to check against its list of players and the board to get the
         winner of the game. 
 
-        :rtype tuple(PlayerResult.OK, Uuid) the player won the game
-               tuple(PlayerResult.NEFARIOUS, list(Uuid)) the player did something
-                                                        untrustworthy and the
-                                                        other should win by
-                                                        default
+        :rtype tuple(list of nefarious players,
+                     list of n length of the uuid of the winner of each game in order,
+                       where n is the number of games played (n can be shorter than num_games))
         """
         pass
 
