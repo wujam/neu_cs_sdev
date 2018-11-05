@@ -1,0 +1,4 @@
+{ "players"   : [["good", "good player", "../Santorini/Player/player.py"],
+				 ["breaker", "breaking player", "../Santorini/Tests/player_mocks/exception_player.py"],
+				 ["infinite", "looping player", "../Santorini/Tests/player_mocks/loop_player.py"]],
+  "observers" : []}
