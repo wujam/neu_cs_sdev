@@ -17,14 +17,6 @@ class AbstractPlayer(ABC):
         pass
 
     @abstractmethod
-    def get_name(self):
-        """Get a name to call this Player.
-
-        :rtype String name, a name that this player wants to call itself.
-        """
-        pass
-
-    @abstractmethod
     def start_of_game(self):
         """Initialize the player.
 
