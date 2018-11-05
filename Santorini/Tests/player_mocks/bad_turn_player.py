@@ -16,12 +16,6 @@ class BadTurnPlayer:
         self._worker_count = 0
         self._tree_strategy = TreeStrategy()
 
-    def get_name(self):
-        """Get a name to call this Player.
-        :rtype String name, a name that this player wants to call itself.
-        """
-        return "legit player"
-
     def start_of_game(self):
         pass
 

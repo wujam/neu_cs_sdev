@@ -13,14 +13,6 @@ class LoopPlayer:
         while(True):
             pass
 
-    def get_name(self):
-        """Get a name to call this Player.
-        :rtype String name, a name that this player wants to call itself.
-        """
-        while(True):
-            pass
-        return "templateplayer"
-
     def start_of_game(self):
         while(True):
             pass

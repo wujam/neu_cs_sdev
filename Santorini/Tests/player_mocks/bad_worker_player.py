@@ -16,12 +16,6 @@ class BadWorkerPlayer:
         self._player_id = player_id
         self._worker_count = 0
 
-    def get_name(self):
-        """Get a name to call this Player.
-        :rtype String name, a name that this player wants to call itself.
-        """
-        return "legit player"
-
     def start_of_game(self):
         pass
 

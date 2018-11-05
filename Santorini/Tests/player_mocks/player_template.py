@@ -12,12 +12,6 @@ class TemplatePlayer:
         """
         self._player_id = player_id
 
-    def get_name(self):
-        """Get a name to call this Player.
-        :rtype String name, a name that this player wants to call itself.
-        """
-        return "templateplayer"
-
     def start_of_game(self):
         """Initialize the player.
 

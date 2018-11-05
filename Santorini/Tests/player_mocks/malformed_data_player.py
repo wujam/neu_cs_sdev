@@ -13,13 +13,6 @@ class MalformedDataPlayer:
         """
         self._player_id = player_id
 
-    def get_name(self):
-        """Get a name to call this Player.
-        :rtype String name, a name that this player wants to call itself.
-        """
-        #returns a tuple of each character from the string
-        return tuple("malformed data player",)
-
     def start_of_game(self):
         pass
 
