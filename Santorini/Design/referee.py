@@ -39,9 +39,10 @@ class AbstractReferee(ABC):
         to check against its list of players and the board to get the
         winner of the game. 
 
-        :rtype tuple(list of nefarious players,
-                     list of n length of the uuid of the winner of each game in order,
-                       where n is the number of games played (n can be shorter than num_games))
+        :rtype tuple(list(Uuid), list(Uuid))
+            The first list is a list of misbehaving players in order
+            The second list contains the Uuid of the winner of the game,
+            if both players are disqualified this list is empty.
         """
         pass
 
@@ -54,9 +55,10 @@ class AbstractReferee(ABC):
 
         :param int num_games: the number of games to run, must be non-negative
                                 and odd
-        :rtype tuple(list of nefarious players,
-                     list of n length of the uuid of the winner of each game in order,
-                       where n is the number of games played (n can be shorter than num_games))
+        :rtype tuple(list(Uuid), list(Uuid))
+            The first list is a list of misbehaving players in order
+            The second list contains the Uuid of the winner of each game played in order,
+            if both players are disqualified this list is empty.
         """
         pass
 

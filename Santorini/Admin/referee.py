@@ -24,28 +24,31 @@ class Referee:
     NUM_PLAYERS = 2
     NO_WINNER = -1
 
-    def __init__(self, uuids_players, timeout=30):
+    def __init__(self, uuids_players, uuids_names, observer_manager, timeout=30):
         """Create a referee component with the associated list of players.
-        :param dict[UUID -> Player] uuid_player: dictionary of UUIDs to players
-        :param int timeout: the timeout in seconds for untrusted code (Players and Observers)
+        :param dict[UUID -> Player] uuids_players: dictionary of UUIDs to players
+        :param dict[UUID -> String] uuids_names: dictionary of UUIDs to player names
+        :param ObserverManager observer_manager: an observer manager object
+        :param int timeout: time in seconds allowed per player action
         """
         self.players = []
         self.timeout = timeout
         self.uuids_to_player = {}
-        self.uuids_to_name = {}
         for uuid, player in uuids_players.items():
             player_guard = PlayerGuard(player, timeout=self.timeout)
             self.uuids_to_player[uuid] = player_guard
             self.players.append(player_guard)
+        self.uuids_to_name = uuids_names 
         self.observer_manager = ObserverManager()
 
     def run_game(self):
         """Supervise a game between players.
-        :rtype tuple(PlayerResult.OK, Uuid) the player won the game
-               tuple(PlayerResult.NEFARIOUS, list(Uuid))
-                   these players did something untrustworthy in
-                   order of their appearance in the list
+        :rtype tuple(list(Uuid), list(Uuid))
+            The first list is a list of misbehaving players in order
+            The second list contains the Uuid of the winner of the game,
+            if both players are disqualified this list is empty.
         """
+        self._reset_board()
         result = self._initialize()
 
         if result is PlayerResult.OK:
@@ -62,12 +65,12 @@ class Referee:
 
         Will call run_game num_games times and tally up the score
 
-        :param int num_games: the number of games to play in this series
-                              this should be an odd number
-        :rtype tuple(PlayerResult.OK, Uuid) the player won the series
-               tuple(PlayerResult.NEFARIOUS, list(Uuid))
-                   these players did something untrustworthy in
-                   order of their appearance in the list
+        :param int num_games: the number of games to run, must be non-negative
+                                and odd
+        :rtype tuple(list(Uuid), list(Uuid))
+            The first list is a list of misbehaving players in order
+            The second list contains the Uuid of the winner of each game played in order,
+            if both players are disqualified this list is empty.
         """
 
         player_scores = [0, 0]
@@ -77,6 +80,7 @@ class Referee:
         player_ids = [p_id for p_id in self.uuids_to_player]
 
         if init_result is PlayerResult.OK:
+            game_results = []
             # run the series
             for i in range(num_games):
                 self._reset_board()
@@ -84,27 +88,21 @@ class Referee:
                 result, player = self._play_game(player_order)
                 winner, evil_players = self._determine_winner_result((result, player))
 
-                endresult, evil_players = self._end_game(winner, evil_players)
-                if endresult is PlayerResult.NEFARIOUS:
+                evil_players, winner_list = self._end_game(winner, evil_players)
+                game_results = game_results + winner_list
+                if evil_players is not []:
                     break
                 player_scores[player_ids.index(winner)] += 1
 
             # end the series
-            if len(evil_players) > 0:
-                # if we encountered any bad players, notify manager
-                return (PlayerResult.NEFARIOUS, evil_players)
-            else:
-                # else give back the winner
-                max_score = max(player_scores)
-                index_of_winner = player_score.index(max_score)
-
-                overall_winner = player_ids[index_of_winner]
-                return (PlayerResult.OK, overall_winner)
+            filtered_results = self._filter_game_results(game_results, evil_players)
+            return evil_players, filtered_results
 
         else:
+            self._reset_board()
+            # if a player misbehaved during initialization, the other player wins
             winner, evil_players = self._determine_init_result(init_result)
-            endresult, evil_players = self._end_game(winner, evil_players)
-            return (PlayerResult.NEFARIOUS, evil_players)
+            return self._end_game(winner, evil_players)
 
     def set_turn_timeout(self, timeout):
         """Sets a the turn timeout in seconds
@@ -127,12 +125,9 @@ class Referee:
             OK if initialization went fine.
             NEFARIOUS and the nefarious player otherwise.
         """
-        self._reset_board()
         for player_uuid, player_guard in self.uuids_to_player.items():
             try:
                 player_guard.set_id(player_uuid)
-                name = player_guard.get_name()
-                self.uuids_to_name[player_uuid] = name
             except PlayerError:
                 return (PlayerResult.NEFARIOUS, player_uuid)
         return PlayerResult.OK
@@ -235,6 +230,10 @@ class Referee:
         """ Notifies players of end of game.
         :param Uuid winner: uuid of winner
         :param list(Uuid) evil_players: the bad players
+        :rtype tuple(list(Uuid), list(Uuid))
+            The first list is a list of misbehaving players in order
+            The second list contains the Uuid of the winner of the game,
+            if both players are disqualified this list is empty.
         """
         winner_name = self.uuids_to_name[winner]
         self._notify_observers_game_over(winner_name)
@@ -246,13 +245,9 @@ class Referee:
                 except PlayerError:
                     self._notify_observers_player_disqualified(player)
                     evil_players.append(player)
-        # return all players that were bad, or just the winner
-        if len(evil_players) is not 0:
-            logging.error("bad players were" + str(evil_players))
-            return (PlayerResult.NEFARIOUS, evil_players)
-        else:
-            logging.error("winner was" + str(winner))
-            return (PlayerResult.OK, winner)
+        # return all players that were bad, and the winner
+        winnerlist = [] if winner in evil_players else [winner]
+        return evil_players, winnerlist
 
     def _determine_init_result(self, result):
         """ From a result, determine the winner and any misbehaving players.
@@ -294,6 +289,21 @@ class Referee:
             evil_players.append(player)
 
         return winner, evil_players
+
+    def _filter_game_results(self, game_results, evil_players):
+        """Retroactively assign losses to games that bad_players won,
+           and remove games from being counted if both are bad.
+        """
+        if len(evil_players) is self.NUM_PLAYERS:
+            return []
+        filtered_results = []
+        for game_winner in game_results:
+            if game_winner in evil_players:
+                other_player = next(p_id for p_id in self.uuids_to_player
+                                    if p_id is not game_winner)
+            else:
+                filtered_results.append(game_winner)
+        return filtered_results
 
     def _uuid_of_player_guard(self, player_guard):
         """ Get the Uuid of a player_guard.

@@ -98,10 +98,10 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game.assert_not_called()
 
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
-        expected_game_results = [self.uuidp1] * 3
+        expected_game_results = [self.uuidp1]
         for actual, expected in zip(game_results, expected_game_results):
             self.assertEqual(actual, expected)
 
@@ -128,10 +128,10 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_with("p1")
 
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
-        expected_game_results = [self.uuidp1] * 3
+        expected_game_results = [self.uuidp1]
         for actual, expected in zip(game_results, expected_game_results):
             self.assertEqual(actual, expected)
 
@@ -153,7 +153,7 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -182,10 +182,10 @@ class TestReferee(unittest.TestCase):
         self.assertEqual(player2.end_of_game.call_count, 0)
         player1.end_of_game.assert_called_with("p1")
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
-        expected_game_results = [self.uuidp1] * 3
+        expected_game_results = [self.uuidp1]
         for actual, expected in zip(game_results, expected_game_results):
             self.assertEqual(actual, expected)
 
@@ -208,7 +208,7 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -235,10 +235,10 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
-        expected_game_results = [self.uuidp1] * 3
+        expected_game_results = [self.uuidp1]
         for actual, expected in zip(game_results, expected_game_results):
             self.assertEqual(actual, expected)
 
@@ -261,7 +261,7 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -290,7 +290,7 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_once_with("p1")
         player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -321,7 +321,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.obs_man = ObserverManager()
         self.uuids_to_name = {self.uuidp1:self.p1name, self.uuidp2:self.p2name}
         self.uuids_to_player = {self.uuidp1:self.player1, self.uuidp2:self.player2}
-        self.ref = Referee(self.uuids_to_player, self.uuids_to_name, self.obs_man timeout = 3)
+        self.ref = Referee(self.uuids_to_player, self.uuids_to_name, self.obs_man, timeout = 3)
 
     def test_start_of_game_exception(self):
         """tests that a player who throws an exception
@@ -332,7 +332,8 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
 
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
-        expected_bad_players = [self.player2]
+        bad_players, game_results = result
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -349,7 +350,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -366,7 +367,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -382,7 +383,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         result = self.ref.run_game()
 
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -399,7 +400,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -416,7 +417,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -433,7 +434,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -450,7 +451,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1.end_of_game.assert_called_once_with("p1")
         self.player2.end_of_game.assert_not_called()
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
@@ -465,7 +466,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         result = self.ref.run_game()
 
         bad_players, game_results = result
-        expected_bad_players = [self.player2]
+        expected_bad_players = [self.uuidp2]
         for actual, expected in zip(bad_players, expected_bad_players):
             self.assertEqual(actual, expected)
         expected_game_results = [self.uuidp1]
