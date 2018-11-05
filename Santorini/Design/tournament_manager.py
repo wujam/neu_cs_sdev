@@ -6,7 +6,12 @@ class TournamentManager:
 
     def run_tournament():
         """Runs a round robin tournament against the configured players
-        :rtype List of Players winners: list of players who win the tournament
+
+        A game result is a 2 element list with the first element being the
+        name of the winner and the second being the name of the loser
+
+        :rtype (List of names of misbehaving players,
+               list of game results in the order played):
 
         To start the round robin tournament we need to generate the list of
         matches that will be played in the tournament.
@@ -32,10 +37,11 @@ class TournamentManager:
         """
         pass
 
-    def read_config_from(file_in=sys.stdin):
-        """Reads the tournament configuration from an input file source
+    def read_config_from(self, file_in=sys.stdin):
+        """Reads the tournament configuration from a given io object
+        To read in a config file pass in a file objects with a file open
         
-        The input string should be a json text with the following contents
+        The input io should contain a json text with the following contents
         { "players"    : [[Kind, Name, PathString, ...]],
           "observers"  : [[Name, PathString], ...]
         }
