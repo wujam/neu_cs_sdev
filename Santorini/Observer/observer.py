@@ -2,9 +2,10 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import Board, Direction
+from Santorini.Common.observer_interface import AbstractObserver
 import json
 
-class Observer:
+class Observer(AbstractObserver):
     """Interface for a Observer object in Santorini."""
 
     def __init__(self):
