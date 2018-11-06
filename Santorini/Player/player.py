@@ -2,12 +2,13 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
-from Santorini.Design.player import AbstractPlayer
+from Santorini.Common.player_interface import AbstractPlayer
 import Santorini.Common.rulechecker
 from Santorini.Common.pieces import Worker
 from Santorini.Player.strategy import Strategy
 from Santorini.Player.place_strat import PlaceStratDiagonal
 from Santorini.Player.tree_strat import TreeStrategy
+
 
 class Player(AbstractPlayer):
     """Player data reprensation in Santorini."""
@@ -53,7 +54,7 @@ class Player(AbstractPlayer):
         """
         return self.strategy.plan_turn(self.workers, cur_board)
 
-    def game_over(self, won):
+    def end_of_game(self, won):
         """Call when the game is over.
 
         :param str winner: the name of the Player that won the game
