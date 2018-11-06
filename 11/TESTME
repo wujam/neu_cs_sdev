@@ -2,9 +2,9 @@
 # instructions in README
 tests=1
 passed=0
-for i in {1..5}
+for i in {1..1}
 do
-    ./xrun < rules-tests/$i-in.json | diff - rules-tests/$i-out.json
+    ./xrun < santorini.rc/$i-in.json | diff - santorini.rc/$i-out.json
 
     if [ $? -eq 0 ]
     then
