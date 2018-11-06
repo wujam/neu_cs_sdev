@@ -1,0 +1,18 @@
+#!/bin/bash
+# instructions in README
+tests=1
+passed=0
+for i in {1..5}
+do
+    ./xrun < rules-tests/$i-in.json | diff - rules-tests/$i-out.json
+
+    if [ $? -eq 0 ]
+    then
+        passed=$((passed + 1))
+    else
+        echo "Failed test $i"
+    fi
+done
+echo -e "\e[32mPassed $passed tests"
+echo -e "\e[31mFailed $((tests - passed)) tests"
+setterm -default
