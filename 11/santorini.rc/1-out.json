@@ -1,2 +1,1 @@
-[["breaking player", "looping player"], [["good player", "breaking player"], ["good player", "looping player"]]]
-
+[["loopplacementplayer", "loopturnplayer"], [["goodplayer", "loopplacementplayer"], ["goodplayer", "loopturnplayer"]]]

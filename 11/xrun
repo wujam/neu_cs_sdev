@@ -1,7 +1,9 @@
 #!/usr/bin/python3.6
 import sys
-sys.path.append('../Santorini')
-from Admin.tournament_manager import TournamentManager
+import os
+import json
+sys.path.append('..')
+from Santorini.Admin.tournament_manager import TournamentManager
 
 tournament_manager = TournamentManager()
 tournament_manager.read_config_from()
