@@ -58,6 +58,11 @@ then return the player that won the most games.
 for players and guards against players that could be broken or malicious.
 It passes up useful errors to callers informing them of how the player broke.
 
+* The directory also contains `tournament_manager.py`, an implementation of the Tournament Manager
+The Tournament manager is handed a configuration through a python IO object that it reads
+and runs a tournament after it is configured.  It delivers a list of players that broke in order
+throughout the tournament and the list of meet-ups between that occured in order throughout the tournament.
+
 
 Common
 ------
