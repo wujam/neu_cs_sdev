@@ -3,8 +3,35 @@ import sys
 
 class TournamentManager:
 
+    def read_config_from(self, file_in=sys.stdin):
+        """Reads the tournament configuration from a given io object
+        :param IO file_in: the IO object to read the config from
 
-    def run_tournament():
+        To read in a config file pass in a file objects with a file open
+        
+        The input io should contain a json text with the following contents
+        { "players"    : [[Kind, Name, PathString, ...]],
+          "observers"  : [[Name, PathString], ...]
+        }
+        a Kind is one of: "good" for a well behaved player
+                          "breaker" for a player that terminates correctly but misbehaves
+                          "infinite" for a player that goes into an infinite loop
+        a Name is a JSON String denoting the name of the player
+        a PathString is Linux Path to the implementation of the player/observer
+        :param TextIOBase file_in: Defaults to stdin. A source of text to read from.
+
+        Steps to load up the configuration:
+         - Read the players from the player list
+         - Load up the player objects and wrap them in player_guards
+         - hand each player a UUID and set the maps of UUIDs to player_guard and UUIDs to player_name
+           - if a player_guard reports an error while setting the UUID don't include this player
+            in the tournament
+           - while setting names in the UUID to name map make sure that the names are unique
+         - Load up the observer objects from the 
+        """
+        pass
+
+    def run_tournament(self):
         """Runs a round robin tournament against the configured players
 
         A game result is a 2 element list with the first element being the
@@ -34,31 +61,5 @@ class TournamentManager:
         Broken players should be removed from the tournament when they break
         Matches involving them shouuld be removed from the list of possible matches
         and their scores should be removed list of scores.
-        """
-        pass
-
-    def read_config_from(self, file_in=sys.stdin):
-        """Reads the tournament configuration from a given io object
-        To read in a config file pass in a file objects with a file open
-        
-        The input io should contain a json text with the following contents
-        { "players"    : [[Kind, Name, PathString, ...]],
-          "observers"  : [[Name, PathString], ...]
-        }
-        a Kind is one of: "good" for a well behaved player
-                          "breaker" for a player that terminates correctly but misbehaves
-                          "infinite" for a player that goes into an infinite loop
-        a Name is a JSON String denoting the name of the player
-        a PathString is Linux Path to the implementation of the player/observer
-        :param TextIOBase file_in: Defaults to stdin. A source of text to read from.
-
-        Steps to load up the configuration:
-         - Read the players from the player list
-         - Load up the player objects and wrap them in player_guards
-         - hand each player a UUID and set the maps of UUIDs to player_guard and UUIDs to player_name
-           - if a player_guard reports an error while setting the UUID don't include this player
-            in the tournament
-           - while setting names in the UUID to name map make sure that the names are unique
-         - Load up the observer objects from the 
         """
         pass
