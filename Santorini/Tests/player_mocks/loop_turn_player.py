@@ -1,21 +1,19 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
-from Santorini.Player.tree_strat import *
+from Santorini.Common.player_interface import AbstractPlayer
 from Santorini.Player.place_strat import *
 from Santorini.Common.pieces import *
-from Santorini.Common.player_interface import AbstractPlayer
 
-class LegitPlayer(AbstractPlayer):
-    """ This player is legit. It plays by the rules. """
+class LoopPlayer(AbstractPlayer):
+    """ This player really likes loops. """
     
     def set_id(self, player_id):
         """Give a id for this Player.
         :param Uuid player_id, this player's uuid 
         """
         self._player_id = player_id
-        self._worker_count = 0
-        self._tree_strategy = TreeStrategy()
+        pass
 
     def start_of_game(self):
         pass
@@ -31,14 +29,25 @@ class LegitPlayer(AbstractPlayer):
 
     def play_turn(self, cur_board):
         """Regular Santorini turn.
+
         :param Board cur_board: a copy of the current state of the board
         :rtype Turn result_turn: the turn to be sent to the ref.
         """
-        our_workers = [worker for worker in cur_board.workers if worker.player == self._player_id]
-        return self._tree_strategy.plan_turn(our_workers, cur_board)
+        while(True):
+            pass
 
     def end_of_game(self, winner):
-        """
+        """Call when the game is over.
+
+        If any of the endgame conditions are met (see is_gameover method
+        in the rulechecker interface), this will be sent to the game
+        to determine the winner of the game.
+
+        The game will send back which player's name won the game based on
+        endgame conditions and return this name to the player to compare to
+        itself.
+
         :param str winner: the name of the Player that won the game
         """
-        pass
+        while(True):
+            pass

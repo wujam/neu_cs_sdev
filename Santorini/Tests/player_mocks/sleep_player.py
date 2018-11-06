@@ -5,8 +5,9 @@ import Santorini.Player.tree_strat
 import Santorini.Player.place_strat
 import Santorini.Common.pieces
 import time
+from Santorini.Common.player_interface import AbstractPlayer
 
-class SleepPlayer():
+class SleepPlayer(AbstractPlayer):
     """ This player really likes to sleep. """
     
     def set_id(self, player_id):

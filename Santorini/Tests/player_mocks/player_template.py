@@ -3,8 +3,9 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 import Santorini.Player.tree_strat
 import Santorini.Player.place_strat
+from Santorini.Common.player_interface import AbstractPlayer
 
-class TemplatePlayer:
+class TemplatePlayer(AbstractPlayer):
     
     def set_id(self, player_id):
         """Give a id for this Player.

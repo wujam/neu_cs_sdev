@@ -4,8 +4,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 from Santorini.Player.tree_strat import *
 from Santorini.Player.place_strat import *
 from Santorini.Common.pieces import *
+from Santorini.Common.player_interface import AbstractPlayer
 
-class BadPlacementPlayer:
+class BadPlacementPlayer(AbstractPlayer):
     """ This player does well formed but bad worker placements. """
     
     def set_id(self, player_id):

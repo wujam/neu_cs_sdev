@@ -3,8 +3,9 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 from Santorini.Player.tree_strat import *
 from Santorini.Player.place_strat import *
+from Santorini.Common.player_interface import AbstractPlayer
 
-class MalformedDataPlayer:
+class MalformedDataPlayer(AbstractPlayer):
     """ This player didn't read the data spec. """
     
     def set_id(self, player_id):
