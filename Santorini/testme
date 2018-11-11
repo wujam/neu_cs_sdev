@@ -2,4 +2,9 @@
 
 dir=$(dirname "$0")
 cd $dir
+if [ $# -eq 0 ]
+then
 python3.6 -m unittest discover Tests
+else
+python3.6 -m unittest $1 -f
+fi

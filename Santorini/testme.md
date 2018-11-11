@@ -9,5 +9,6 @@ you use python3 as we have written everything in this version of the language. I
 installed, run `pip3.6 install pytest`. The output that you'll see from pytest is the files that have been
 tested, how much time was spent in executing these tests relative to the total time of the run (as a percentage), and how many tests passed in the total time run.
 
-To run our integration tests, we have bash scripts written in their respective project directories, `board-tests.sh` in the `6/` directory and `rules-tests.sh` in the `7/` directory. To see more verbose results, run the script using 
-the `-v` option to see actual output vs expected output.
+To run our integration tests, we have bash scripts written in their respective project directories, `board-tests.sh` in the `6/` directory and `rules-tests.sh` in the `7/` directory.
+Run the testme script to run all scripts.
+Run the testme script with the path to a file to run only that test, and have it stop on the first failure.
