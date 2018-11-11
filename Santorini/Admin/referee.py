@@ -26,7 +26,7 @@ class Referee:
 
     def __init__(self, uuids_players, uuids_names, observer_manager, timeout=30):
         """Create a referee component with the associated list of players.
-        :param dict[UUID -> Player] uuids_players: dictionary of UUIDs to players
+        :param dict[UUID -> PlayerGuard] uuids_players: dictionary of UUIDs to players
         :param dict[UUID -> String] uuids_names: dictionary of UUIDs to player names
         :param ObserverManager observer_manager: an observer manager object
         :param int timeout: time in seconds allowed per player action
@@ -34,11 +34,10 @@ class Referee:
         self.players = []
         self.timeout = timeout
         self.uuids_to_player = {}
-        for uuid, player in uuids_players.items():
-            player_guard = PlayerGuard(player, timeout=self.timeout)
+        for uuid, player_guard in uuids_players.items():
             self.uuids_to_player[uuid] = player_guard
             self.players.append(player_guard)
-        self.uuids_to_name = uuids_names 
+        self.uuids_to_name = uuids_names
         self.observer_manager = ObserverManager()
 
     def run_game(self):
@@ -48,6 +47,7 @@ class Referee:
             The second list contains the Uuid of the winner of the game,
             if both players are disqualified this list is empty.
         """
+        #logging.error("new game")
         self._reset_board()
         result = self._initialize()
 
@@ -161,7 +161,7 @@ class Referee:
                 continue
             else:
                 return (turn_result, player_uuid)
-            
+
             workers = [w for w in self.board.workers if w.player == player_uuid]
             if rulechecker.is_game_over(copy.deepcopy(self.board), workers):
                 return (PlayerResult.OK, rulechecker.get_winner(self.board))
@@ -201,15 +201,18 @@ class Referee:
         except PlayerInvalidTurn:
             p_uuid = self._uuid_of_player_guard(player)
             self._notify_observers_player_bad_turn(p_uuid)
+            #logging.error("bad turn")
             return PlayerResult.BAD
         except PlayerError:
             p_uuid = self._uuid_of_player_guard(player)
             self._notify_observers_player_disqualified(p_uuid)
+            #logging.error("nefarious")
             return PlayerResult.NEFARIOUS
         else:
             if worker == None and move_dir == None and build_dir == None:
                 p_uuid = self._uuid_of_player_guard(player)
                 self._notify_observers_gave_up(self.uuids_to_name[p_uuid])
+                #logging.error("give up")
                 return PlayerResult.GIVE_UP
             else:
                 self._do_move(worker, move_dir, build_dir)
@@ -355,9 +358,9 @@ class Referee:
         player_name = self.uuids_to_name[player]
         error_msg = f"Player {player_name} is disqualified."
         self._notify_observers_error_msg(error_msg)
-        
+
     def _notify_observers_player_bad_turn(self, player):
-        """ Notify observers that player attempted a bad turn. 
+        """ Notify observers that player attempted a bad turn.
         :param Uuid player: Uuid of infracting player
         """
         player_name = self.uuids_to_name[player]
@@ -365,7 +368,7 @@ class Referee:
         self._notify_observers_error_msg(error_msg)
 
     def _notify_observers_player_bad_placement(self, player):
-        """ Notify observers that player attempted a bad placement. 
+        """ Notify observers that player attempted a bad placement.
         :param Uuid player: Uuid of infracting player
         """
         player_name = self.uuids_to_name[player]

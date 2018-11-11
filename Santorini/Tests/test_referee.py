@@ -6,7 +6,9 @@ import sys
 import os
 import copy
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
-from Santorini.Admin.referee import Referee, PlayerResult, ObserverManager
+from Santorini.Admin.referee import Referee, PlayerResult
+from Santorini.Admin.observermanager import ObserverManager
+from Santorini.Admin.player_guard import PlayerGuard
 #from Santorini.Player.player import Player
 from Santorini.Tests.player_mocks import *
 import uuid
@@ -42,7 +44,7 @@ class TestReferee(unittest.TestCase):
             player2.end_of_game = mock.MagicMock()
             player2.get_name = mock.MagicMock(return_value="p2")
 
-            ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
+            ref = Referee({self.uuidp1:player1guard, self.uuidp2:player2guard})
             result = ref.run_game()
 
             player1.start_of_game.assert_called_once()
@@ -67,7 +69,7 @@ class TestReferee(unittest.TestCase):
             player2.end_of_game = mock.MagicMock()
             player2.get_name = mock.MagicMock(return_value="p2")
 
-            ref = Referee({self.uuidp1:player1, self.uuidp2:player2})
+            ref = Referee({self.uuidp1:player1guard, self.uuidp2:player2guard})
             result = ref.run_n_games(3)
 
             self.assertEqualplayer1.start_of_game.call_count:3
@@ -82,14 +84,16 @@ class TestReferee(unittest.TestCase):
         """test that a player who gives invalid placements loses
         test that end_of_game is called on both players
         """
-        
+
         player1 = LegitPlayer()
         player1.end_of_game = mock.MagicMock()
 
         player2 = BadPlacementPlayer()
         player2.end_of_game = mock.MagicMock()
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
 
         result = ref.run_game()
@@ -117,7 +121,9 @@ class TestReferee(unittest.TestCase):
         player2.start_of_game = mock.MagicMock()
         player2.end_of_game = mock.MagicMock()
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
         result = ref.run_n_games(3)
 
@@ -145,7 +151,9 @@ class TestReferee(unittest.TestCase):
         player2 = BadTurnPlayer()
         player2.end_of_game = mock.MagicMock()
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
 
         result = ref.run_game()
@@ -172,7 +180,9 @@ class TestReferee(unittest.TestCase):
         player2.start_of_game = mock.MagicMock()
         player2.end_of_game = mock.MagicMock()
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
         result = ref.run_n_games(3)
 
@@ -200,7 +210,9 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game = mock.MagicMock()
         player2.place_worker = mock.MagicMock(return_value="lolol")
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
 
         result = ref.run_game()
@@ -228,7 +240,9 @@ class TestReferee(unittest.TestCase):
         player2.get_name = mock.MagicMock(return_value="p2")
         player2.place_worker = mock.MagicMock(return_value="lolol")
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
         result = ref.run_n_games(3)
 
@@ -253,7 +267,9 @@ class TestReferee(unittest.TestCase):
         player2.end_of_game = mock.MagicMock()
         player2.play_turn = mock.MagicMock(return_value="lolol")
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
 
         result = ref.run_game()
@@ -282,7 +298,9 @@ class TestReferee(unittest.TestCase):
         player2.get_name = mock.MagicMock(return_value="p2")
         player2.play_turn = mock.MagicMock(return_value="lolol")
 
-        uuids_to_player = {self.uuidp1:player1, self.uuidp2:player2}
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
 
         result = ref.run_n_games(3)
@@ -307,20 +325,22 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
 
     def setUp(self):
         self.p1name = "p1"
-        self.uuidp1 = uuid.uuid4()
+        self.uuidp1 = uuid.UUID('00000000000000000000000000000000')
         self.player1 = LegitPlayer()
         self.player1.end_of_game = mock.MagicMock()
         self.player1.get_name = mock.MagicMock(return_value=self.p1name)
 
         self.p2name = "p2"
-        self.uuidp2 = uuid.uuid4()
+        self.uuidp2 = uuid.UUID('11111111111111111111111111111111')
         self.player2 = LegitPlayer()
         self.player2.end_of_game = mock.MagicMock()
         self.player2.get_name = mock.MagicMock(return_value=self.p2name)
 
         self.obs_man = ObserverManager()
         self.uuids_to_name = {self.uuidp1:self.p1name, self.uuidp2:self.p2name}
-        self.uuids_to_player = {self.uuidp1:self.player1, self.uuidp2:self.player2}
+        self.player1guard = PlayerGuard(self.player1)
+        self.player2guard = PlayerGuard(self.player2)
+        self.uuids_to_player = {self.uuidp1:self.player1guard, self.uuidp2:self.player2guard}
         self.ref = Referee(self.uuids_to_player, self.uuids_to_name, self.obs_man, timeout = 3)
 
     def test_start_of_game_exception(self):
