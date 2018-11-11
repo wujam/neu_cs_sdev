@@ -70,14 +70,14 @@ class TournamentManager:
                 self._filter_bad_meet_up_results()
                 meet_up_winner = [player for player in match if player != nef_players[0]][0]
             elif len(nef_players) == 2:
-                self._filters_bad_meet_up_results()
+                self._filter_bad_meet_up_results()
                 continue
             else:
                 meet_up_winner = self._determine_meet_up_winner(game_winners)
 
             meet_up_result = self._winner_to_meet_up_result(match, meet_up_winner)
             self.meet_up_results.append(meet_up_result)
-            
+
         return [self.uuids_names[uuid] for uuid in self.nef_players], \
                [[self.uuids_names[uuid] for uuid in meet_up_result]
                        for meet_up_result in self.meet_up_results]
@@ -95,7 +95,7 @@ class TournamentManager:
                 scores[winner] = 1
 
         max_score = max(scores.values())
-        
+
         for winner, score in scores.items():
             if score == max_score:
                 return winner
@@ -144,12 +144,11 @@ class TournamentManager:
         :param [str, str, str] player: the spec for a player which is
                                        the kind, name, and path to the player
         """
-        name = player_spec[1]
+        kind, name, path = player_spec
         if not self._validate_name(name):
             return
         name = self._gen_unique_name(name)
- 
-        path = player_spec[2]
+
         player_class = self._find_subclass_in_source(path, AbstractPlayer)
         if player_class:
             player_guard = PlayerGuard(player_class())
