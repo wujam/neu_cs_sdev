@@ -38,7 +38,7 @@ class Referee:
             self.uuids_to_player[uuid] = player_guard
             self.players.append(player_guard)
         self.uuids_to_name = uuids_names
-        self.observer_manager = ObserverManager()
+        self.observer_manager = observer_manager
 
     def run_game(self):
         """Supervise a game between players.
