@@ -43,7 +43,7 @@ class TestTournamentManager(unittest.TestCase):
 
         json_config = io.StringIO('{ "players" : '\
                                 '[["good", "a", "./Tests/player_mocks/legit_player.py"],'\
-                                '["breaking", "a", "./Tests/player_mocks/legit_player.py"]],'\
+                                '["good", "a", "./Tests/player_mocks/legit_player.py"]],'\
                                 '"observers" : '\
                                 '[["bobserver", "./Observer/observer.py"]]}')
 
@@ -53,6 +53,22 @@ class TestTournamentManager(unittest.TestCase):
         player_name_set = set()
         player_name_set.update(player_names)
         self.assertEqual(len(player_name_set), 2)
+
+    def testTournament(self):
+        """Tests that a tournament manager with 2 good players runs correctly"""
+        json_config = io.StringIO('{ "players" : '\
+                                '[["good", "a", "./Tests/player_mocks/legit_player.py"],'\
+                                '["good", "b", "./Tests/player_mocks/legit_player.py"]],'\
+                                '"observers" : '\
+                                '[]}')
+
+        self.tm.read_config_from(file_in=json_config)
+        player_guards = self.tm.uuids_players.values()
+        self.assertEqual(len(player_guards), 2)
+
+        bad_players, meetups = self.tm.run_tournament()
+        self.assertEqual(bad_players, [])
+        self.assertEqual(meetups, [["a", "b"]])
 
     def testTournamentMalformedPlayer(self):
         """Tests a tournament manager with a malformed player
