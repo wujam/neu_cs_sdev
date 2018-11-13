@@ -27,7 +27,7 @@ class TournamentManager:
         self.meet_up_results = []
 
     def read_config_from(self, file_in=sys.stdin):
-        """Reads the tournament configuration from an input io object
+        """Reads the tournament configuration from an input IO object
         :param IO file_in: the IO object to read the config from
         """
         in_str = file_in.read()
@@ -118,7 +118,7 @@ class TournamentManager:
     def _winner_to_meet_up_result(self, player_ids, winner):
         """Generates a meet_up result based on the given players and
            the given winner
-        :param list of UUIDs player_ids: list of players
+        :param list of 2 UUIDs player_ids: list of 2 player UUIDs
         :param UUID winner: the uuid of the winner
         """
         if winner == player_ids[0]:
@@ -126,13 +126,12 @@ class TournamentManager:
         else:
             return player_ids[::-1]
 
-
     def _add_observer(self, observer_spec):
         """Adds an observer to the tournament
         :param [str, str] observer: the spec for an observer which is
                                     the name, and path to the observer
         """
-        path = observer_spec[1]
+        kind, path = observer_spec
 
         observer_class = self._find_subclass_in_source(path, AbstractObserver)
 
@@ -161,12 +160,15 @@ class TournamentManager:
             self.uuids_names[player_uuid] = name
 
     def _find_subclass_in_source(self, path, parent):
-        """Finds a subclass of parent_class in a source file
+        """Finds a subclass of parent in a source file
         :param path: path to the source file
         :param Type parent: class to search for subclasses of
         :rtype Type or bool: the subclass or False
         """
         spec = importlib.util.spec_from_file_location("mod", path)
+        # importlib returns None if the file isn't found
+        if spec is None:
+            return
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
 
@@ -183,7 +185,7 @@ class TournamentManager:
         :param str name: the name to be validated
         :rtype bool: True if name is valid, False otherwise
         """
-        return name.isalnum() and name.islower()
+        return name.isalpha() and name.islower()
 
     def _gen_unique_name(self, name):
         """If the given name is unique from the current list of names return it,
