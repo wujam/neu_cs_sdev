@@ -8,6 +8,7 @@ import copy
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Admin.referee import Referee, PlayerResult
 from Santorini.Admin.observermanager import ObserverManager
+from Santorini.Observer.observer import Observer
 from Santorini.Admin.player_guard import PlayerGuard
 #from Santorini.Player.player import Player
 from Santorini.Tests.player_mocks import *
@@ -28,58 +29,65 @@ class TestReferee(unittest.TestCase):
     # test the outcome of a game between two players using the diagonal placement
     # and the tree strategy
 
-    """
-        def test_start_of_game_end_of_game_called_normal_game(self):
-    """
-    #test that start_of_game and end_of_game are called in a normal game
-    #also tests how a game between two legit players would go
-    """
-            player1 = LegitPlayer()
-            player1.start_of_game = mock.MagicMock()
-            player1.end_of_game = mock.MagicMock()
-            player1.get_name = mock.MagicMock(return_value="p1")
+    @unittest.skip("take a while")
+    def test_normal_game(self):
+        """test a normal game between two good players
+        """
 
-            player2 = LegitPlayer()
-            player2.start_of_game = mock.MagicMock()
-            player2.end_of_game = mock.MagicMock()
-            player2.get_name = mock.MagicMock(return_value="p2")
+        player1 = LegitPlayer()
+        player1.start_of_game = mock.MagicMock()
+        player1.end_of_game = mock.MagicMock()
+        player1.get_name = mock.MagicMock(return_value="p1")
 
-            ref = Referee({self.uuidp1:player1guard, self.uuidp2:player2guard})
-            result = ref.run_game()
+        player2 = LegitPlayer()
+        player2.start_of_game = mock.MagicMock()
+        player2.end_of_game = mock.MagicMock()
+        player2.get_name = mock.MagicMock(return_value="p2")
 
-            player1.start_of_game.assert_called_once()
-            player2.start_of_game.assert_called_once()
-            player1.end_of_game.assert_called_once_with("p1")
-            player2.end_of_game.assert_called_once("p1")
-            self.assertEqual(result, PlayerResult.OK,self.uuidp1)
-    """
-    """
-        def test_run_n_games_normal_games(self):
-    """
-    #test start_of_game and end_of_game calls in normal
-    #run_n_games series
-    """
-            player1 = LegitPlayer()
-            player1.start_of_game = mock.MagicMock()
-            player1.end_of_game = mock.MagicMock()
-            player1.get_name = mock.MagicMock(return_value="p1")
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
 
-            player2 = LegitPlayer()
-            player2.start_of_game = mock.MagicMock()
-            player2.end_of_game = mock.MagicMock()
-            player2.get_name = mock.MagicMock(return_value="p2")
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
+        ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
+        bad_players, game_results = ref.run_game()
 
-            ref = Referee({self.uuidp1:player1guard, self.uuidp2:player2guard})
-            result = ref.run_n_games(3)
+        player1.start_of_game.assert_called_once()
+        player2.start_of_game.assert_called_once()
+        player1.end_of_game.assert_called_once_with("p1")
+        player2.end_of_game.assert_called_once_with("p1")
+        self.assertEqual(bad_players, [])
+        self.assertEqual(game_results, [self.uuidp1])
 
-            self.assertEqualplayer1.start_of_game.call_count:3
-            self.assertEqualplayer2.start_of_game.call_count:3
-            self.assertEqualplayer1.endof_game.call_count:3
-            self.assertEqualplayer2.end_of_game.call_count:3
-            player1.end_of_game.assert_called_with("p1")
-            player2.end_of_game.assert_called_with("p1")
-            self.assertEqual(result, PlayerResult.OK,self.uuidp1)
-    """
+    def test_normal_run_n_games(self):
+        """test a normal game series between two good players
+        """
+
+        player1 = LegitPlayer()
+        player1.end_of_game = mock.MagicMock()
+        player1.get_name = mock.MagicMock(return_value="p1")
+
+        player2 = LegitPlayer()
+        player2.end_of_game = mock.MagicMock()
+        player2.get_name = mock.MagicMock(return_value="p2")
+
+        player1guard = PlayerGuard(player1)
+        player2guard = PlayerGuard(player2)
+
+        self.obs_man.add_observer(Observer())
+
+        uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
+        ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
+        bad_players, game_results= ref.run_n_games(3)
+
+        print("bad players", bad_players, "game_results", game_results)
+
+        self.assertEqual(player1.end_of_game.call_count, 3)
+        self.assertEqual(player2.end_of_game.call_count, 3)
+        player1.end_of_game.assert_called_with("p1")
+        player2.end_of_game.assert_called_with("p1")
+        self.assertEqual(bad_players, [])
+        self.assertEqual(game_results, [self.uuidp1, self.uuidp1, self.uuidp1])
+
     def test_game_invalid_placements(self):
         """test that a player who gives invalid placements loses
         test that end_of_game is called on both players
