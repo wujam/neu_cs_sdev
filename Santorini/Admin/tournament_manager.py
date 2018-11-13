@@ -52,7 +52,7 @@ class TournamentManager:
                                          Referee.NUM_PLAYERS)
 
         filtered_matches = itertools.filterfalse(
-                lambda match: any(True for player in match if player in self.nef_players),
+                lambda match: any(player in self.nef_players for player in match),
                 matches)
 
         for match in filtered_matches:
@@ -73,7 +73,7 @@ class TournamentManager:
                 self._filter_bad_meet_up_results()
                 continue
             else:
-                meet_up_winner = self._determine_meet_up_winner(game_winners)
+                meet_up_winner = max(match, key=game_winners.count)
 
             meet_up_result = self._winner_to_meet_up_result(match, meet_up_winner)
             self.meet_up_results.append(meet_up_result)
@@ -81,24 +81,6 @@ class TournamentManager:
         return [self.uuids_names[uuid] for uuid in self.nef_players], \
                [[self.uuids_names[uuid] for uuid in meet_up_result]
                        for meet_up_result in self.meet_up_results]
-
-    def _determine_meet_up_winner(self, game_winners):
-        """takes in the winners of games in a meet-up and returns a winner
-        :param list of UUID game_winners: a list of winners of individual games
-        :rtype winner of the meet-up
-        """
-        scores = {}
-        for winner in game_winners:
-            if winner in scores:
-                scores[winner] += 1
-            else:
-                scores[winner] = 1
-
-        max_score = max(scores.values())
-
-        for winner, score in scores.items():
-            if score == max_score:
-                return winner
 
     def _filter_bad_meet_up_results(self):
         """removes invalid meet_ups (meet_ups in which both players broke),

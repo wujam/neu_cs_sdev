@@ -90,7 +90,7 @@ class Referee:
 
                 evil_players, winner_list = self._end_game(winner, evil_players)
                 game_results = game_results + winner_list
-                if evil_players is not []:
+                if evil_players != []:
                     break
                 player_scores[player_ids.index(winner)] += 1
 
@@ -289,7 +289,8 @@ class Referee:
         else:
             result, player = result
             winner = [p_id for p_id in self.uuids_to_player if p_id is not player][0]
-            evil_players.append(player)
+            if result is not PlayerResult.GIVE_UP:
+                evil_players.append(player)
 
         return winner, evil_players
 

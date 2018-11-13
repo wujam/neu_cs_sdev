@@ -18,7 +18,7 @@ class LegitPlayer(AbstractPlayer):
         self._tree_strategy = TreeStrategy()
 
     def start_of_game(self):
-        pass
+        self._worker_count = 0
 
     def place_worker(self, cur_board):
         """Worker Placement.
