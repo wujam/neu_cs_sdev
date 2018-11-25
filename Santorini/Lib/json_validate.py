@@ -1,8 +1,10 @@
-def validate_json(name, data):
+import jsonschema
+from jsonschema import validate
+
+def validate_json(schema, data):
     """
-    Validates data with the given json schema.
-    :param str name: Name of the json schema to validate with
+    Validates the data with the given jsonschemas path
+    :param str schema: Name of the json schema to validate with
     :param Json data: Json object to validate
-    :rtype bool: True if data is valid, False if data is invalid
+    :rtype bool: True if data matches the schema, False otherwise
     """
-    pass
