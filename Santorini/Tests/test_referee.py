@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Admin.referee import Referee, PlayerResult
 from Santorini.Admin.observermanager import ObserverManager
 from Santorini.Observer.observer import Observer
-from Santorini.Admin.player_guard import PlayerGuard
+from Santorini.Common.player_guard import PlayerGuard
 #from Santorini.Player.player import Player
 from Santorini.Tests.player_mocks import *
 import uuid

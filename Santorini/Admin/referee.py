@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import Board, Worker
 from Santorini.Common import rulechecker
-from Santorini.Admin.player_guard import *
+from Santorini.Common.player_guard import *
 from Santorini.Admin.observermanager import ObserverManager
 import itertools
 import copy

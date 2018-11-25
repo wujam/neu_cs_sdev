@@ -4,8 +4,8 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from Santorini.Common.pieces import *
+from Santorini.Common.player_guard import *
 from Santorini.Tests.player_mocks import *
-from Santorini.Admin.player_guard import *
 import uuid
 
 class TestPlayerGuard(unittest.TestCase):

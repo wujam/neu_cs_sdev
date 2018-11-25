@@ -9,8 +9,8 @@ import inspect
 import importlib
 import importlib.util
 from Santorini.Admin.referee import Referee
-from Santorini.Admin.player_guard import *
 from Santorini.Admin.observermanager import ObserverManager
+from Santorini.Common.player_guard import *
 from Santorini.Common.observer_interface import AbstractObserver
 from Santorini.Common.player_interface import AbstractPlayer
 """A Tournament Manager for Santorini meet_ups"""
