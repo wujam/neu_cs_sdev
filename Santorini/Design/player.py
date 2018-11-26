@@ -21,7 +21,7 @@ class AbstractPlayer(ABC):
         """Initialize the player.
 
         Called once at the start of the game to do any needed
-        initializtion for the implementation of the player.
+        initialization for the implementation of the player.
         """
         pass
 
