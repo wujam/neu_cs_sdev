@@ -14,7 +14,7 @@ from Santorini.Common.player_guard import *
 from Santorini.Common.observer_interface import AbstractObserver
 from Santorini.Common.player_interface import AbstractPlayer
 from Santorini.Lib.json_validate import validate_json
-from Santorini.Admin.jsonschemas import PLAYER, OBSERVER, ADMIN_CONFIG
+from Santorini.Common.jsonschemas import PLAYER, OBSERVER, ADMIN_CONFIG
 """A Tournament Manager for Santorini meet_ups"""
 
 class TournamentManager:
