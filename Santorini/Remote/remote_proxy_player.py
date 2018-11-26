@@ -8,7 +8,7 @@ import Santorini.Common.rulechecker
 class RemoteProxyPlayer(AbstractPlayer):
     """ Communicates with a player across the network."""
 
-    def __init__(self, socket, timeout=5):
+    def __init__(self, socket):
         """ Create a Player.
         :param Socket socket: The Socket to send messages to and listen for messages from.
         """

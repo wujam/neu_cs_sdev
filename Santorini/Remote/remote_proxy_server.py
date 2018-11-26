@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import socket
 import uuid
 from Santorini.Common.pieces import *
-import Santorini.Common.player_guard import *
+from Santorini.Common.player_guard import *
 from Santorini.Remote.client_messager import ClientMessager
 
 class RemoteProxyServer:
@@ -64,7 +64,7 @@ class RemoteProxyServer:
                             # we received an "other" message" so break
                             playing_series = False
                             break
-                        elif #it's a placement:
+                        elif True: # TODO fix condition: it's a placement:
                             break
                         else:
                             current_board = self.board_to_board(next_msg)
@@ -94,7 +94,7 @@ class RemoteProxyServer:
         """
         current_board = Board(workers=workers)
         placement = self._player.place_worker(current_board)
-        self._client_msger.respond_placement_message(placement, self._player_name)
+        self._client_msger.respond_placement_message(placement)
 
     def placement_to_workers(self, placement):
         """

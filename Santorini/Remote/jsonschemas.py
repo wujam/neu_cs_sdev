@@ -58,12 +58,14 @@ NAME = {
     "pattern": "^[a-z]$"
 }
 
+PLAYING_AS_STR = "playing-as"
+
 PLAYING_AS = {
     "type": "array",
     "items": [
         {
             "type": "string",
-            "enum": ["playing-as"]
+            "enum": [PLAYING_AS_STR]
         },
         NAME
     ],
