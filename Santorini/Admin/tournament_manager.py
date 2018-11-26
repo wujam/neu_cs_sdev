@@ -13,6 +13,8 @@ from Santorini.Admin.observermanager import ObserverManager
 from Santorini.Common.player_guard import *
 from Santorini.Common.observer_interface import AbstractObserver
 from Santorini.Common.player_interface import AbstractPlayer
+from Santorini.Lib.json_validate import validate_json
+from Santorini.Admin.jsonschemas import PLAYER, OBSERVER, ADMIN_CONFIG
 """A Tournament Manager for Santorini meet_ups"""
 
 class TournamentManager:
@@ -33,11 +35,16 @@ class TournamentManager:
         in_str = file_in.read()
         in_json = json.loads(in_str)
 
+        if not validate_json(ADMIN_CONFIG, in_json):
+            raise ValueError("Bad Config, did not validate")
+
         for player_spec in in_json["players"]:
-            self._add_player(player_spec)
+            if validate_json(PLAYER, player_spec):
+                self._add_player(player_spec)
 
         for observer_spec in in_json["observers"]:
-            self._add_observer(observer_spec)
+            if validate_json(OBSERVER, observer_spec):
+                self._add_observer(observer_spec)
 
     def run_tournament(self):
         """Runs a round robin tournament with the configured players
@@ -52,8 +59,8 @@ class TournamentManager:
                                          Referee.NUM_PLAYERS)
 
         filtered_matches = itertools.filterfalse(
-                lambda match: any(player in self.nef_players for player in match),
-                matches)
+            lambda match: any(player in self.nef_players for player in match),
+            matches)
 
         for match in filtered_matches:
             match_uuids_players = {match[0] : self.uuids_players[match[0]],
@@ -80,7 +87,7 @@ class TournamentManager:
 
         return [self.uuids_names[uuid] for uuid in self.nef_players], \
                [[self.uuids_names[uuid] for uuid in meet_up_result]
-                       for meet_up_result in self.meet_up_results]
+                for meet_up_result in self.meet_up_results]
 
     def _filter_bad_meet_up_results(self):
         """removes invalid meet_ups (meet_ups in which both players broke),
@@ -113,7 +120,7 @@ class TournamentManager:
         :param [str, str] observer: the spec for an observer which is
                                     the name, and path to the observer
         """
-        kind, path = observer_spec
+        _, path = observer_spec
 
         observer_class = self._find_subclass_in_source(path, AbstractObserver)
 
@@ -125,7 +132,7 @@ class TournamentManager:
         :param [str, str, str] player: the spec for a player which is
                                        the kind, name, and path to the player
         """
-        kind, name, path = player_spec
+        _, name, path = player_spec
         if not self._validate_name(name):
             return
         name = self._gen_unique_name(name)
