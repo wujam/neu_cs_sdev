@@ -1,5 +1,8 @@
 """A wrapper around jsonschema to check if a given JSON is valid or not
 """
+#import os
+#import sys
+#sys.path.append(os.path.join(os.path.dirname(__file__), "../jsonschema"))
 from jsonschema import validate, ValidationError
 
 def validate_json(schema, data):
