@@ -204,7 +204,7 @@ class Board:
         worker_placements = []
         for w in self.workers:
             worker = w.dump_with_name(id_to_name)
-            row, col = self._workers(w)
+            row, col = self._workers[w]
             worker_placements.append([worker, row, col])
         return worker_placements
 

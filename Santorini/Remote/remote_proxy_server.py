@@ -30,12 +30,12 @@ class RemoteProxyServer:
         self._our_uuid = uuid.uuid4()
         self._player.set_id(self._our_uuid)
         # send name
-        self._client_msger.send_register_message(self._player_name) 
+        self._client_msger.send_register_message(self._player_name)
         # play game loop
         while(True):
             # make the uuids and the uuid map
             self.initialize_uuid_control()
-            # receive first message 
+            # receive first message
             next_msg = self._client_msger.receive_message()
             # figure out if it's the optional playing-as message, if so
             # use that name
@@ -117,9 +117,10 @@ class RemoteProxyServer:
         :param PlacementMsg placement: A list of [Worker, Coordinate, Coordinate]
         :rtype list(Workers): a list of Workers
         """
-        workers = []
+        workers = {}
         for workerplace in placement:
-            workers += self.worker_to_worker(workerplace)
+            worker, row, col = workerplace
+            workers[self.worker_to_worker(worker)] = (row, col)
         return workers
 
     def worker_to_worker(self, worker):
@@ -129,7 +130,7 @@ class RemoteProxyServer:
         :param WorkerMsg worker: a series of lowercase letters followed by either 1 or 2
         :rtype Worker worker: the Worker
         """
-        player, number = worker[:-1], worker[-1:]
+        player, number = worker[:-1], int(worker[-1:])
         player_uuid = self._our_uuid if self._player_name == player else self._opp_uuid
         return Worker(player_uuid, number)
 
@@ -148,7 +149,7 @@ class RemoteProxyServer:
                                              or a BuildingWorker, a Height followed by a Worker
         :rtype Board: a suitable board
         """
-        workers = []
+        workers = {}
         new_board_arr = []
         for row in range(len(board_arr)):
             current_row = board_arr[row]
@@ -160,7 +161,7 @@ class RemoteProxyServer:
                 else:
                     new_row += int(current_cell[0])
                     worker_str = current_cell[1:]
-                    workers += self.worker_to_worker(worker_str)
+                    workers[self.worker_to_worker(worker_str)] = (row, col)
             new_board_arr += new_row
 
         return Board(new_board_arr, workers)
