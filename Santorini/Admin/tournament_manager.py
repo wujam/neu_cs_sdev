@@ -142,7 +142,7 @@ class TournamentManager:
         if not self._validate_name(name):
             return
         uniq_name = self._gen_unique_name(name)
-        new_name = True if uniq_name == name else False
+        new_name = True if uniq_name != name else False
 
         player_class = self._find_subclass_in_source(path, AbstractPlayer)
         if player_class:
@@ -163,7 +163,7 @@ class TournamentManager:
         if not self._validate_name(name):
             return
         uniq_name = self._gen_unique_name(name)
-        new_name = True if uniq_name == name else False
+        new_name = True if uniq_name != name else False
 
         player_guard = PlayerGuard(player)
         player_uuid = uuid.uuid4()

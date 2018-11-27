@@ -39,7 +39,7 @@ class RemoteProxyServer:
             next_msg = self._client_msger.receive_message()
             # figure out if it's the optional playing-as message, if so
             # use that name
-            if validate_json(PLAYING_AS, next_msg)
+            if validate_json(PLAYING_AS, next_msg):
                 self._player_name = next_msg[1]
                 self._uuid_to_name[self._our_uuid] = self._player_name
                 # receive another message because there must be an "other" message
@@ -54,22 +54,26 @@ class RemoteProxyServer:
 
                 playing_series = True
                 while(playing_series):
+                    self._player.start_of_game()
                     # do placement phase
-                    for i in range(2):
+                    for i in range(2): #TODO constant 2 should reference pieces
                         next_msg = self._client_msger.receive_message()
-                        workers = self.placement_to_workers(next_msg)
-                        self.enact_placement(workers)
+                        if validate_json(PLACEMENT, next_msg):
+                            workers = self.placement_to_workers(next_msg)
+                            self.enact_placement(workers)
+                        else:
+                            raise ValueError("bad placements received: " + str(next_msg))
                     # do playing turns 
                     while(True):
                         # receive a message
                         next_msg = self._client_msger.receive_message()
-                        if json_validate(NAME, next_msg):
+                        if validate_json(NAME, next_msg):
                             # we received an "other" message" so break
                             playing_series = False
                             break
-                        elif json_validate(PLACEMENT, next_msg):
+                        elif validate_json(PLACEMENT, next_msg):
                             break
-                        elif json_validate(RESULTS, next_msg):
+                        elif validate_json(RESULTS, next_msg):
                             playing_series = False
                             playing_tournament = False
                             break
@@ -123,7 +127,7 @@ class RemoteProxyServer:
         """
         player, number = worker[:-1], worker[-1:]
         player_uuid = self._our_uuid if self._player_name == player else self._opp_uuid
-        return Worker(player_uuid, number - 1)
+        return Worker(player_uuid, number)
 
     def enact_turn(self, board):
         """

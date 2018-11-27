@@ -10,6 +10,9 @@ from multiprocessing import Process
 import importlib
 import importlib.util
 import inspect
+import time
+
+WAIT_BETWEEN_PLAYERS = 1
 
 config = json.loads(sys.stdin.read())
 
@@ -43,7 +46,13 @@ def start_rps(rps):
     """
     rps.start()
 
+player_procs = []
+
 for rps in player_components:
     p = Process(target=start_rps, args=[rps])
+    player_procs.append(p)
     p.start()
+    time.sleep(WAIT_BETWEEN_PLAYERS)
+
+for p in player_procs:
     p.join()

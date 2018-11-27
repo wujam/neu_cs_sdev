@@ -15,6 +15,7 @@ class ClientMessager:
         :rtype Json: the message received
         """
         message = self._socket.recv(4096).decode()
+        print("recv message", message)
         return json.loads(message)
 
     def send_register_message(self, name):

@@ -36,7 +36,7 @@ class RemoteProxyPlayer(AbstractPlayer):
 
     def set_opponent(self, opp_id, name):
         """ Set the opponent and send it to the remote Player
-        
+
         :param Uuid opp_id: opponent's id
         :param String name: opponent's name
         """
@@ -59,7 +59,7 @@ class RemoteProxyPlayer(AbstractPlayer):
 
         worker = Worker(self._player_id, self._worker_count)
 
-        return (worker, place)
+        return (worker, tuple(place))
 
     def play_turn(self, cur_board):
         """Regular Santorini turn.
