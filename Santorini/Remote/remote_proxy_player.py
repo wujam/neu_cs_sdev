@@ -50,6 +50,7 @@ class RemoteProxyPlayer(AbstractPlayer):
         :param Board cur_board: a copy of the current board
         :rtype tuple (Worker, (row, col)) placement: the placement
         """
+        self._worker_count += 1
         worker_placements = cur_board.dump_workers_as_json(self._uuid_to_name)
 
         self._send_json(worker_placements)
