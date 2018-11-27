@@ -49,6 +49,8 @@ class RemoteProxyServer:
             playing_tournament = True
             while(playing_tournament):
                 # receive the "other" message and set the opponent's name
+                if not validate_json(NAME, next_msg):
+                    raise ValueError("unexpected message, received:" + str(next_msg))
                 self._opponent_name = next_msg
                 self._uuid_to_name[self._opp_uuid] = self._opponent_name
 
@@ -61,6 +63,8 @@ class RemoteProxyServer:
                         if validate_json(PLACEMENT, next_msg):
                             workers = self.placement_to_workers(next_msg)
                             self.enact_placement(workers)
+                        elif validate_json(NAME, next_msg):
+                            break
                         else:
                             raise ValueError("bad placements received: " + str(next_msg))
                     # do playing turns 
