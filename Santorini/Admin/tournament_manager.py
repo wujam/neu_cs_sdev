@@ -14,7 +14,8 @@ from Santorini.Common.player_guard import *
 from Santorini.Common.observer_interface import AbstractObserver
 from Santorini.Common.player_interface import AbstractPlayer
 from Santorini.Lib.json_validate import validate_json
-from Santorini.Common.jsonschemas import PLAYER, OBSERVER, ADMIN_CONFIG
+from Santorini.Common.jsonschemas import PLAYER, OBSERVER
+from Santorini.Admin.jsonschemas import ADMIN_CONFIG
 """A Tournament Manager for Santorini meet_ups"""
 
 class TournamentManager:
@@ -67,6 +68,11 @@ class TournamentManager:
                                    match[1] : self.uuids_players[match[1]]}
             match_uuids_names = {match[0] : self.uuids_names[match[0]],
                                  match[1] : self.uuids_names[match[1]]}
+
+            self.uuids_players[match[0]].set_opponent(
+                match[1],self.uuids_names[match[1]])
+            self.uuids_players[match[1]].set_opponent(
+                match[0], self.uuids_names[match[0]])
 
             ref = Referee(match_uuids_players, match_uuids_names, self.observer_manager)
             nef_players, game_winners = ref.run_n_games(self.MEET_UP_GAMES)
@@ -128,14 +134,15 @@ class TournamentManager:
             self.observer_manager.add_observer(observer_class())
 
     def _add_player(self, player_spec):
-        """Adds a player to the tournament
+        """Adds a player to the tournament from a spec
         :param [str, str, str] player: the spec for a player which is
                                        the kind, name, and path to the player
         """
         _, name, path = player_spec
         if not self._validate_name(name):
             return
-        name = self._gen_unique_name(name)
+        uniq_name = self._gen_unique_name(name)
+        new_name = True if uniq_name == name else False
 
         player_class = self._find_subclass_in_source(path, AbstractPlayer)
         if player_class:
@@ -143,10 +150,30 @@ class TournamentManager:
             player_uuid = uuid.uuid4()
             try:
                 player_guard.set_id(player_uuid)
+                player_guard.set_name(uniq_name, new_name=new_name)
             except PlayerError:
                 return
             self.uuids_players[player_uuid] = player_guard
-            self.uuids_names[player_uuid] = name
+            self.uuids_names[player_uuid] = uniq_name
+
+    def _add_player_direct(self, player, name):
+        """Adds a player object directly to the tournament
+        :param Player player: the player to be added
+        """
+        if not self._validate_name(name):
+            return
+        uniq_name = self._gen_unique_name(name)
+        new_name = True if uniq_name == name else False
+
+        player_guard = PlayerGuard(player)
+        player_uuid = uuid.uuid4()
+        try:
+            player_guard.set_id(player_uuid)
+            player_guard.set_name(uniq_name, new_name=new_name)
+        except PlayerError:
+            return
+        self.uuids_players[player_uuid] = player_guard
+        self.uuids_names[player_uuid] = uniq_name
 
     def _find_subclass_in_source(self, path, parent):
         """Finds a subclass of parent in a source file
@@ -186,9 +213,9 @@ class TournamentManager:
         cur_names = self.uuids_names.values()
 
         new_name = name
-        suffix = 0
+        suffix = "a"
         while new_name in cur_names:
             new_name = name + str(suffix)
-            suffix += 1
+            suffix += "a"
 
         return new_name

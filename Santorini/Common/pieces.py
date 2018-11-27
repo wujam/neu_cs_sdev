@@ -178,7 +178,7 @@ class Board:
 
     def dump_as_json(self, id_to_name):
         """
-        Gives a string representation of the board in json.
+        Gives a Json representation of the board.
         :param map{Uuid -> String} id_to_name: map of uuids to player name
         :rtype 2D List of string or int: a 2D list representing the board
                                          which can be dumped to json
@@ -191,9 +191,22 @@ class Board:
 
         for w in self.workers:
             row, col = self.worker_position(w)
-            tiles[row][col] = str(tiles[row][col]) + w.dump_with_name(id_to_name) 
+            tiles[row][col] = str(tiles[row][col]) + w.dump_with_name(id_to_name)
 
         return tiles
+
+    def dump_workers_as_json(self, id_to_name):
+        """
+        Gives a Json representation of the workers on the board
+        :param map{Uuid -> String} id_to_name: map of uuids to player name
+        :rtype List of WorkerPlace: List of worker placements
+        """
+        worker_placements = []
+        for w in self.workers:
+            worker = w.dump_with_name(id_to_name)
+            row, col = self._workers(w)
+            worker_placements.append([worker, row, col])
+        return worker_placements
 
 
     def __str__(self):
@@ -359,3 +372,14 @@ class Direction(Enum):
         x, y = self.string_values()
 
         return x + "," + y
+
+
+DIR_TABLE = {("PUT", "NORTH"): Direction.NORTH,
+             ("PUT", "SOUTH"): Direction.SOUTH,
+             ("PUT", "PUT"): Direction.STAY,
+             ("EAST", "PUT"): Direction.EAST,
+             ("WEST", "PUT"): Direction.WEST,
+             ("EAST", "NORTH"): Direction.NORTHEAST,
+             ("WEST", "NORTH"): Direction.NORTHWEST,
+             ("EAST", "SOUTH"): Direction.SOUTHEAST,
+             ("WEST", "SOUTH"): Direction.SOUTHWEST}

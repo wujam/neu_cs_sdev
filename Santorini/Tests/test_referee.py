@@ -29,7 +29,6 @@ class TestReferee(unittest.TestCase):
     # test the outcome of a game between two players using the diagonal placement
     # and the tree strategy
 
-    @unittest.skip("take a while")
     def test_normal_game(self):
         """test a normal game between two good players
         """
@@ -73,8 +72,6 @@ class TestReferee(unittest.TestCase):
         player1guard = PlayerGuard(player1)
         player2guard = PlayerGuard(player2)
 
-        self.obs_man.add_observer(Observer())
-
         uuids_to_player = {self.uuidp1:player1guard, self.uuidp2:player2guard}
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
         bad_players, game_results= ref.run_n_games(3)
@@ -86,7 +83,7 @@ class TestReferee(unittest.TestCase):
         player1.end_of_game.assert_called_with("p1")
         player2.end_of_game.assert_called_with("p1")
         self.assertEqual(bad_players, [])
-        self.assertEqual(game_results, [self.uuidp1, self.uuidp1, self.uuidp1])
+        self.assertEqual(game_results, [self.uuidp1, self.uuidp2, self.uuidp1])
 
     def test_game_invalid_placements(self):
         """test that a player who gives invalid placements loses

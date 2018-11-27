@@ -7,12 +7,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 class AbstractPlayer(ABC):
     """Player interface."""
-    
+
     @abstractmethod
     def set_id(self, player_id):
         """Give a id for this Player.
-        
-        :param Uuid player_id, this player's uuid 
+
+        :param Uuid player_id, this player's uuid
         """
         pass
 
@@ -22,6 +22,25 @@ class AbstractPlayer(ABC):
 
         Called once at the start of the game to do any needed
         initializtion for the implementation of the player.
+        """
+        pass
+
+    @abstractmethod
+    def set_name(self, name, new_name=False):
+        """Informs the player of their name
+
+        Called to let the player know their name
+        :param String name: the name of the this player
+        :param Bool new_name: whether this name is a new name
+        """
+        pass
+
+    @abstractmethod
+    def set_opponent(self, opp_id, name):
+        """Informs the player of the opponent's name
+
+        Called at the start of a series of games to let player
+        know the opponent's name
         """
         pass
 

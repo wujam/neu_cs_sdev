@@ -72,7 +72,7 @@ class PlayerGuard():
         """
         :param Player player: the Player to wrap
         :param Board board: a Board reference to the current game
-        :param int timeout: the number of seconds that calls should timeout after 
+        :param int timeout: the number of seconds that calls should timeout after
         """
         self.player = player
         self.timeout = timeout
@@ -80,7 +80,7 @@ class PlayerGuard():
 
     def set_id(self, player_id):
         """Give a id for this Player.
-        :param Uuid player_id, this player's uuid 
+        :param Uuid player_id, this player's uuid
         """
 
         self._call_with_timeout(self.player.set_id, player_id)
@@ -93,9 +93,19 @@ class PlayerGuard():
         """
         self._call_with_timeout(self.player.start_of_game)
 
+    def set_name(self, name, new_name=False):
+        """Sets name of the player at the start of the tournament
+        """
+        self._call_with_timeout(self.player.set_name, name, new_name)
+
+    def set_opponent(self, opp_id, name):
+        """Sets the opponents id and name at the start of a meetup
+        """
+        self._call_with_timeout(self.player.set_opponent, opp_id, name)
+
     def place_worker(self, cur_board):
         """Worker Placement.
-        
+
         Run the place_worker method of a player and returns the data
         or raises a corresponding PlayerError
 

@@ -19,6 +19,12 @@ class ExceptionPlayer(AbstractPlayer):
     def start_of_game(self):
         raise Exception("foo")
 
+    def set_name(self, name, new_name=False):
+        pass
+
+    def set_opponent(self, opp_id, name):
+        pass
+
     def place_worker(self, cur_board):
         """Worker Placement.
         :param Board cur_board: a copy of the current board
