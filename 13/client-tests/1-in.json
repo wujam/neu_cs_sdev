@@ -3,4 +3,4 @@
 				 ["infinite", "loopturnplayer", "../Santorini/Tests/player_mocks/loop_turn_player.py"]],
   "observers" : [],
   "ip" : "localhost",
-  "port" : 51203}
+  "port" : 55556}

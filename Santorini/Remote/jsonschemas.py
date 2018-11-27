@@ -55,7 +55,7 @@ CLIENT_CONFIG = {
 
 NAME = {
     "type": "string",
-    "pattern": "^[a-z]$"
+    "pattern": "^[a-z]*$"
 }
 
 PLAYING_AS_STR = "playing-as"

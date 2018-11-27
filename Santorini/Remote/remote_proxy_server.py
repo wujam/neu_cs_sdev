@@ -36,14 +36,14 @@ class RemoteProxyServer:
             # make the uuids and the uuid map
             self.initialize_uuid_control()
             # receive first message 
-            next_msg = self.client_msger.receive_message()
+            next_msg = self._client_msger.receive_message()
             # figure out if it's the optional playing-as message, if so
             # use that name
             if validate_json(PLAYING_AS, next_msg)
                 self._player_name = next_msg[1]
                 self._uuid_to_name[self._our_uuid] = self._player_name
                 # receive another message because there must be an "other" message
-                next_msg = self.client_msger.receive_message()
+                next_msg = self._client_msger.receive_message()
 
             # start the tournament play phase
             playing_tournament = True
@@ -56,13 +56,13 @@ class RemoteProxyServer:
                 while(playing_series):
                     # do placement phase
                     for i in range(2):
-                        next_msg = self.client_msger.receive_message()
+                        next_msg = self._client_msger.receive_message()
                         workers = self.placement_to_workers(next_msg)
                         self.enact_placement(workers)
                     # do playing turns 
                     while(True):
                         # receive a message
-                        next_msg = self.client_msger.receive_message()
+                        next_msg = self._client_msger.receive_message()
                         if json_validate(NAME, next_msg):
                             # we received an "other" message" so break
                             playing_series = False

@@ -85,7 +85,7 @@ while not stopped:
     tcpServer.listen(1) 
     conn, _ = tcpServer.accept()
 
-    name = conn.recv(4096).decode()
+    name = json.loads(conn.recv(4096).decode())
     if validate_json(NAME, name):
         client_sockets.append(conn)
         rpp = RemoteProxyPlayer(conn)
