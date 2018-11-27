@@ -1,8 +1,8 @@
 import re
 
-from jsonschema import _utils
-from jsonschema.exceptions import FormatError, ValidationError
-from jsonschema.compat import iteritems
+from Santorini.Lib.jsonschema import _utils
+from Santorini.Lib.jsonschema.exceptions import FormatError, ValidationError
+from Santorini.Lib.jsonschema.compat import iteritems
 
 
 def patternProperties(validator, patternProperties, instance, schema):

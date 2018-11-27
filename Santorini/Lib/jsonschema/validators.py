@@ -9,13 +9,13 @@ try:
 except ImportError:
     requests = None
 
-from jsonschema import _utils, _validators
-from jsonschema.compat import (
+from Santorini.Lib.jsonschema import _utils, _validators
+from Santorini.Lib.jsonschema.compat import (
     Sequence, urljoin, urlsplit, urldefrag, unquote, urlopen,
     str_types, int_types, iteritems, lru_cache,
 )
-from jsonschema.exceptions import ErrorTree  # Backwards compat  # noqa: F401
-from jsonschema.exceptions import RefResolutionError, SchemaError, UnknownType
+from Santorini.Lib.jsonschema.exceptions import ErrorTree  # Backwards compat  # noqa: F401
+from Santorini.Lib.jsonschema.exceptions import RefResolutionError, SchemaError, UnknownType
 
 
 _unset = _utils.Unset()

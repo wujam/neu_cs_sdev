@@ -2,7 +2,8 @@
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "../jsonschema"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+from Santorini.Lib.jsonschema import validate, ValidationError
 
 def validate_json(schema, data):
     """
