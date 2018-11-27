@@ -140,3 +140,21 @@ In the Lib directory are all of the external methods that we've used to ease dev
 `echo.py` includes
 
 * The function `json_echo`, which we use to parse input to pass onto our test harness. 
+
+Remote
+---
+
+In the Remote directory are the files necessary for running components on different machines.
+
+'remote_proxy_player.py' includes:
+* A network abstraction to send messages to the player implementing the Santorini network protocol
+* Validates json messages received according the the message spec of the Santorini network protocol
+'remote_proxy_server.py' includes:
+* A program that receives network messages and gets information from a player to send back
+* Validates json messages received according the the message spec of the Santorini network protocol
+'client_messager.py' includes:
+* A component that receives messages from the server and converts output from a player to the expected message spec
+'jsonschemas.py' includes:
+* Json schemas objects for each message in the Santorini network message spec
+
+  implementing the Santorini network protocol.
