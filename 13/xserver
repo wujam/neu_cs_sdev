@@ -9,9 +9,9 @@ import json
 import socket
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
+from Santorini.Lib.json_validate import validate_json
 from Santorini.Admin.tournament_manager import TournamentManager
 from Santorini.Remote.remote_proxy_player import RemoteProxyPlayer
-from Santorini.Lib.json_validate import validate_json
 from Santorini.Remote.jsonschemas import NAME
 import socket
 
