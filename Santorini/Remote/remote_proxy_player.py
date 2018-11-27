@@ -3,8 +3,8 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import json
 from Santorini.Common.player_interface import AbstractPlayer
-from Santorini.Common.pieces import Worker
-from Santorini.Remote.jsonschemas import PLAYING_AS_STR, PLACE, ACTION, DIR_TABLE
+from Santorini.Common.pieces import Worker, DIR_TABLE
+from Santorini.Remote.jsonschemas import PLAYING_AS_STR, PLACE, ACTION
 from Santorini.Lib.json_validate import validate_json
 
 
