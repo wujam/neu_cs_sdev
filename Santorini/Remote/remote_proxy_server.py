@@ -6,6 +6,8 @@ import uuid
 from Santorini.Common.pieces import *
 from Santorini.Common.player_guard import *
 from Santorini.Remote.client_messager import ClientMessager
+from Santorini.Remote.jsonschemas import PLAYING_AS, NAME, PLACEMENT, RESULTS 
+from Santorini.Lib.json_validate import validate_json
 
 class RemoteProxyServer:
     def __init__(self, hostname, port, player, player_name):
@@ -37,14 +39,15 @@ class RemoteProxyServer:
             next_msg = self.client_msger.receive_message()
             # figure out if it's the optional playing-as message, if so
             # use that name
-            if next_msg[0] == "playing-as":
+            if validate_json(PLAYING_AS, next_msg)
                 self._player_name = next_msg[1]
                 self._uuid_to_name[self._our_uuid] = self._player_name
                 # receive another message because there must be an "other" message
                 next_msg = self.client_msger.receive_message()
 
             # start the tournament play phase
-            while(True):
+            playing_tournament = True
+            while(playing_tournament):
                 # receive the "other" message and set the opponent's name
                 self._opponent_name = next_msg
                 self._uuid_to_name[self._opp_uuid] = self._opponent_name
@@ -60,11 +63,15 @@ class RemoteProxyServer:
                     while(True):
                         # receive a message
                         next_msg = self.client_msger.receive_message()
-                        if instanceof(next_msg, str):
+                        if json_validate(NAME, next_msg):
                             # we received an "other" message" so break
                             playing_series = False
                             break
-                        elif True: # TODO fix condition: it's a placement:
+                        elif json_validate(PLACEMENT, next_msg):
+                            break
+                        elif json_validate(RESULTS, next_msg):
+                            playing_series = False
+                            playing_tournament = False
                             break
                         else:
                             current_board = self.board_to_board(next_msg)
