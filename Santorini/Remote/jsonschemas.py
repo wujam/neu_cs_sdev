@@ -196,7 +196,7 @@ ENCOUNTER_OUTCOME = {
                     "enum": ["irregular"]
                 }
             ],
-            "minItems": 3,
+            "minItems": 2,
             "additionalItems": False
         }
     ]
