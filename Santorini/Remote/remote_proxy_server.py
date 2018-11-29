@@ -56,7 +56,6 @@ class RemoteProxyServer:
         Receives a message from the server and handles it
         """
         message = self._client_msger.receive_message()
-        print(message)
 
         if self._relay_state == RelayState.REGISTRATION and \
                 validate_json(PLAYING_AS, message):

@@ -133,7 +133,6 @@ class RemoteProxyPlayer(AbstractPlayer):
 
     def _recv_json(self):
         message = self._socket.recv(4096).decode()
-        print ("received: ", json.loads(message))
         return json.loads(message)
 
     def _send_json(self, json_msg):
@@ -142,5 +141,4 @@ class RemoteProxyPlayer(AbstractPlayer):
         :param Json json: json to be sent
         """
         json_dump = json.dumps(json_msg)
-        print("sending: ", json_dump)
         self._socket.send(json_dump.encode())
