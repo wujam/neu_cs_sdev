@@ -1,0 +1,6 @@
+{ "players"   : [["good", "goodplayera", "../Santorini/Tests/player_mocks/legit_player.py"],
+				 ["good", "goodplayerb", "../Santorini/Tests/player_mocks/legit_player.py"],
+				 ["good", "goodplayerc", "../Santorini/Tests/player_mocks/legit_player.py"]],
+  "observers" : [],
+  "ip" : "localhost",
+  "port" : 55556}
