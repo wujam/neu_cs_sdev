@@ -285,7 +285,6 @@ class Worker:
         """Return the piece number of the worker."""
         return self._num
 
-
     def dump_with_name(self, id_to_name):
         """
         Gives a string representation of a worker in json.

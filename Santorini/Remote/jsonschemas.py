@@ -178,30 +178,17 @@ ACTION = {
 }
 
 ENCOUNTER_OUTCOME = {
-    "oneOf": [
+    "type": "array",
+    "items": [
+        NAME,
+        NAME,
         {
-            "type": "array",
-            "items": [
-                NAME,
-                NAME
-            ],
-            "minItems": 2,
-            "additionalItems": False
-        },
-        {
-            "type": "array",
-            "items": [
-                NAME,
-                NAME,
-                {
-                    "type": "string",
-                    "enum": ["irregular"]
-                }
-            ],
-            "minItems": 2,
-            "additionalItems": False
+            "type": "string",
+            "enum": ["irregular"]
         }
-    ]
+    ],
+    "minItems": 2,
+    "additionalItems": False
 }
 
 RESULTS = {

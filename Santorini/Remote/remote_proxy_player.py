@@ -97,7 +97,7 @@ class RemoteProxyPlayer(AbstractPlayer):
         player_name = worker_str[:-1]
         if player_name != self._uuid_to_name[self._player_id]:
             raise ValueError("malicious player name in worker")
-        worker_num = worker_str[-1]
+        worker_num = int(worker_str[-1])
         worker = None
         for w in cur_board.workers:
             if w.player == self._player_id and w.number == worker_num:

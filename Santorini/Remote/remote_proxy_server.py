@@ -33,10 +33,9 @@ class RemoteProxyServer:
         self._player_name = player_name
         self._client_msger = ClientMessager(hostname, port)
         self._relay_state = RelayState.REGISTRATION
-        self._uuid_to_name = {}
         self._our_uuid = uuid.uuid4()
         self._opp_uuid = uuid.uuid4()
-        # TODO wrap this call to catch exceptions
+        self._uuid_to_name = {self._our_uuid : player_name}
         self._player.set_id(self._our_uuid)
 
     def start(self):
@@ -67,7 +66,6 @@ class RemoteProxyServer:
             self._relay_state = RelayState.PLACEMENT1
 
         elif validate_json(RESULTS, message):
-            print("got results: ", message)
             self._relay_state = RelayState.FINISHED
 
         elif (self._relay_state == RelayState.PLACEMENT1 or \
@@ -126,8 +124,6 @@ class RemoteProxyServer:
         in self._uuid_to_name.
         """
         self._opp_uuid = uuid.uuid4()
-        self._uuid_to_name[self._opp_uuid] = self._player_name
-
 
     def enact_placement(self, workers):
         """
@@ -158,8 +154,15 @@ class RemoteProxyServer:
         :rtype Worker worker: the Worker
         """
         player, number = worker[:-1], int(worker[-1:])
-        player_uuid = self._our_uuid if self._player_name == player else self._opp_uuid
+        player_uuid = self.name_to_uuid(player)
         return Worker(player_uuid, number)
+
+    def name_to_uuid(self, name):
+        """
+        Get's a player's id from their name
+        :param String name: name of convert to a Uuid
+        """
+        return self._our_uuid if self._player_name == name else self._opp_uuid
 
     def enact_turn(self, board):
         """
@@ -167,7 +170,7 @@ class RemoteProxyServer:
         :param Board board: the current board
         """
         turn = self._player.play_turn(board)
-        self._client_msger.respond_turn_message(turn, self._player_name)
+        self._client_msger.respond_turn_message(turn, self._our_uuid, self._uuid_to_name)
 
     def board_to_board(self, board_arr):
         """
@@ -189,7 +192,7 @@ class RemoteProxyServer:
                     worker_str = cur_cell[1:]
                     worker_num = int(worker_str[-1:])
                     player_name = worker_str[:-1]
-                    cur_worker = Worker(player_name, worker_num)
+                    cur_worker = Worker(self.name_to_uuid(player_name), worker_num)
                     if cur_worker:
                         workers[cur_worker] = (row, col)
 
