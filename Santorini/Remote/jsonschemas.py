@@ -55,7 +55,7 @@ CLIENT_CONFIG = {
 
 NAME = {
     "type": "string",
-    "pattern": "^[a-z]*$"
+    "pattern": "^[a-z]+$"
 }
 
 OTHER = NAME
@@ -93,7 +93,7 @@ PLACE = {
 
 WORKER = {
     "type": "string",
-    "pattern": "^[a-z]*[12]$"
+    "pattern": "^[a-z]+[12]$"
 }
 
 WORKER_PLACE = {

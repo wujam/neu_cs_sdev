@@ -46,21 +46,20 @@ coordinates = [num for num in range(6)]
 invalid_coordinates = ["potato", 1.29495, -2.2323, -5, 192]
 
 # valid WorkerPlaces are (Worker, Coordinate, Coordinate)
-worker_places = list(itertools.product(workers, coordinates, coordinates))
+worker_places = [list(wp) for wp in itertools.product(workers, coordinates, coordinates)]
 # invalid WorkerPlaces are not that
 invalid_worker_places = [["blah", "blah", "blah"], ["worker1"], "(\"worker1\", 2, 2)", []]
-invalid_worker_places += list(itertools.product(invalid_workers, invalid_coordinates, invalid_coordinates))
+invalid_worker_places += [list(wp) for wp in itertools.product(invalid_workers, invalid_coordinates, invalid_coordinates)]
 
 # valid Places are (Coordinate, Coordinate)
-places = [p for p in itertools.product(coordinates, coordinates)]
+places = [list(p) for p in list(itertools.product(coordinates, coordinates))]
 # invalid Places are not that
-invalid_places = list(itertools.product(invalid_coordinates, invalid_coordinates))
+invalid_places = [list(p) for p in itertools.product(invalid_coordinates, invalid_coordinates)]
 
 # valid Placements are [WorkerPlace, ...] of up to 3 WorkerPlaces
 placements = [[]]
 placements += [[wp] for wp in worker_places]
-placements += list(itertools.product(worker_places, worker_places))
-placements += list(itertools.product(worker_places, worker_places, worker_places))
+placements += [worker_places[:2], worker_places[:3]] 
 # invalid Placements are not that
 invalid_placements = ["potato", [["potato", 2, 2], ["potato", 1, 1]], ["potato", "potato", "potato"]]
 invalid_placements += [[["potato", 2, 2], ["potato", 2, 2], ["potato", 2, 2], ["potato", 2, 2]]] 
@@ -73,9 +72,9 @@ encounter_outcomes = [["potato", "tomato"], ["potato", "tomato", "irregular"]]
 invalid_encounter_outcomes = [["potato"], ["potato", "tomato", "somewhat-irregular"], ["potato", "tomato", "irregular", "blah"]]
 
 # valid Results are arrrays of EncounterOutcomes
-resultss = [[]] + [[outcome] for outcome in encounter_outcomes]
-resultss += list(itertools.product(encounter_outcomes, encounter_outcomes))
-resultss += [["potato", "tomato"], ["potato", "tomato"], ["potato", "tomato", "irregular"]]
+resultss = [[outcome] for outcome in encounter_outcomes]
+resultss += [list(r) for r in itertools.product(encounter_outcomes, repeat=2)]
+resultss += [[["potato", "tomato"], ["potato", "tomato"], ["potato", "tomato", "irregular"]]]
 
 action_tests = \
     [("player", True),
@@ -102,13 +101,12 @@ name_tests = [(name, True) for name in names]
 name_tests += [(name, False) for name in invalid_names]
 observer_tests = []
 place_tests = [(place, True) for place in places] 
-place_tests += [(place, True) for place in invalid_places] 
+place_tests += [(place, False) for place in invalid_places] 
 placement_tests = [(placement, True) for placement in placements] 
 placement_tests += [(placement, False) for placement in invalid_placements] 
 player_tests = [] 
-playing_as_tests = [(pl, True) for pl in list(itertools.product(["playing-as"], names))]
-playing_as_tests += [(pl, False) for pl in list(itertools.product(["playing-as"], invalid_names))]
-playing_as_str_tests = [("playing-as", True), ("potato", False)] 
+playing_as_tests = [(list(pl), True) for pl in list(itertools.product(["playing-as"], names))]
+playing_as_tests += [(list(pl), False) for pl in list(itertools.product(["playing-as"], invalid_names))]
 results_tests = [(results, True) for results in resultss]
 server_config_tests = []
 worker_tests = [(worker, True) for worker in workers] 
@@ -133,7 +131,6 @@ json_schema_tests = [
     ["PLACEMENT", placement_tests],
     ["PLAYER", player_tests],
     ["PLAYING_AS", playing_as_tests],
-    ["PLAYING_AS_STR", playing_as_str_tests],
     ["RESULTS", results_tests],
     ["SERVER_CONFIG", server_config_tests],
     ["WORKER", worker_tests],
