@@ -15,10 +15,9 @@ class BadWorkerPlayer(AbstractPlayer):
         :param Uuid player_id, this player's uuid 
         """
         self._player_id = player_id
-        self._worker_count = 0
 
     def start_of_game(self):
-        pass
+        self._worker_count = 0
 
     def set_name(self, name, new_name=False):
         pass

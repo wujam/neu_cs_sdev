@@ -58,6 +58,8 @@ NAME = {
     "pattern": "^[a-z]*$"
 }
 
+OTHER = NAME
+
 PLAYING_AS_STR = "playing-as"
 
 PLAYING_AS = {
@@ -204,5 +206,6 @@ ENCOUNTER_OUTCOME = {
 
 RESULTS = {
     "type": "array",
-    "items": ENCOUNTER_OUTCOME
+    "items": ENCOUNTER_OUTCOME,
+    "minItems": 1
 }

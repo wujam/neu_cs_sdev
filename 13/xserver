@@ -80,17 +80,17 @@ def send_results(nef_players, meet_up_results):
 
 stopped = False
 while not stopped:
-  try:
-    tcpServer.settimeout(0.2) # timeout for listening
-    tcpServer.listen(1) 
-    conn, _ = tcpServer.accept()
+    try:
+        tcpServer.settimeout(0.2) # timeout for listening
+        tcpServer.listen(1)
+        conn, _ = tcpServer.accept()
 
-    name = json.loads(conn.recv(4096).decode())
-    if validate_json(NAME, name):
-        client_sockets.append(conn)
-        rpp = RemoteProxyPlayer(conn)
-        tm._add_player_direct(rpp, name)
-  except socket.timeout:
-    check_time()
-  except:
-    raise
+        name = json.loads(conn.recv(4096).decode())
+        if validate_json(NAME, name):
+            client_sockets.append(conn)
+            rpp = RemoteProxyPlayer(conn)
+            tm._add_player_direct(rpp, name)
+    except socket.timeout:
+        check_time()
+    except:
+        raise

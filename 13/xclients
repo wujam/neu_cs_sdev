@@ -12,7 +12,7 @@ import importlib.util
 import inspect
 import time
 
-WAIT_BETWEEN_PLAYERS = 1
+WAIT_BETWEEN_PLAYERS = 1 # in seconds
 
 config = json.loads(sys.stdin.read())
 
@@ -23,7 +23,7 @@ playerconfigs = config["players"]
 player_components = []
 for player_spec in playerconfigs:
     _, name, path = player_spec
-    
+
     spec = importlib.util.spec_from_file_location("mod", path)
     if spec is None:
         continue

@@ -38,7 +38,7 @@ class ClientMessager:
         :param String name: the name of the player
         """
         if all(element is None for element in turn):
-            action = json.dumps(name).encode()
+            action = name
         elif turn[2] is None:
             action = ([turn[0]] + turn[1].string_values())
         else:

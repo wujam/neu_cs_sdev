@@ -3,13 +3,24 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import socket
 import uuid
-from Santorini.Common.pieces import *
-from Santorini.Common.player_guard import *
+from enum import Enum, auto
+from Santorini.Common.pieces import Board, Worker
+from Santorini.Common.player_guard import PlayerGuard
 from Santorini.Remote.client_messager import ClientMessager
-from Santorini.Remote.jsonschemas import PLAYING_AS, NAME, PLACEMENT, RESULTS 
+from Santorini.Remote.jsonschemas import PLAYING_AS, NAME, PLACEMENT, RESULTS, OTHER, BOARD, RESULTS
 from Santorini.Lib.json_validate import validate_json
 
+class RelayState(Enum):
+    """ An Enum representing the states of the proxy server relay
+    """
+    REGISTRATION = auto()
+    PLACEMENT1 = auto()
+    PLACEMENT2 = auto()
+    TAKE_TURNS = auto()
+    FINISHED = auto()
+
 class RemoteProxyServer:
+
     def __init__(self, hostname, port, player, player_name):
         """ Create a connection to the server and setup PlayerGuard.
         :param String hostname: the name of the host
@@ -21,72 +32,90 @@ class RemoteProxyServer:
         self._player = PlayerGuard(player)
         self._player_name = player_name
         self._client_msger = ClientMessager(hostname, port)
+        self._relay_state = RelayState.REGISTRATION
+        self._uuid_to_name = {}
+        self._our_uuid = uuid.uuid4()
+        self._opp_uuid = uuid.uuid4()
+        # TODO wrap this call to catch exceptions
+        self._player.set_id(self._our_uuid)
 
     def start(self):
         """
         Begin protocol.
         """
-        # set their uuid
-        self._our_uuid = uuid.uuid4()
-        self._player.set_id(self._our_uuid)
+        # set relay state
+        self._relay_state = RelayState.REGISTRATION
         # send name
         self._client_msger.send_register_message(self._player_name)
-        # play game loop
-        while(True):
-            # make the uuids and the uuid map
-            self.initialize_uuid_control()
-            # receive first message
-            next_msg = self._client_msger.receive_message()
-            # figure out if it's the optional playing-as message, if so
-            # use that name
-            if validate_json(PLAYING_AS, next_msg):
-                self._player_name = next_msg[1]
-                self._uuid_to_name[self._our_uuid] = self._player_name
-                # receive another message because there must be an "other" message
-                next_msg = self._client_msger.receive_message()
 
-            # start the tournament play phase
-            playing_tournament = True
-            while(playing_tournament):
-                # receive the "other" message and set the opponent's name
-                if not validate_json(NAME, next_msg):
-                    raise ValueError("unexpected message, received:" + str(next_msg))
-                self._opponent_name = next_msg
-                self._uuid_to_name[self._opp_uuid] = self._opponent_name
+        while self._relay_state != RelayState.FINISHED:
+            self.handle_message()
 
-                playing_series = True
-                while(playing_series):
-                    self._player.start_of_game()
-                    # do placement phase
-                    for i in range(2): #TODO constant 2 should reference pieces
-                        next_msg = self._client_msger.receive_message()
-                        if validate_json(PLACEMENT, next_msg):
-                            workers = self.placement_to_workers(next_msg)
-                            self.enact_placement(workers)
-                        elif validate_json(NAME, next_msg):
-                            break
-                        else:
-                            raise ValueError("bad placements received: " + str(next_msg))
-                    # do playing turns 
-                    while(True):
-                        # receive a message
-                        next_msg = self._client_msger.receive_message()
-                        if validate_json(NAME, next_msg):
-                            # we received an "other" message" so break
-                            playing_series = False
-                            break
-                        elif validate_json(PLACEMENT, next_msg):
-                            break
-                        elif validate_json(RESULTS, next_msg):
-                            playing_series = False
-                            playing_tournament = False
-                            break
-                        else:
-                            current_board = self.board_to_board(next_msg)
-                            self.enact_turn(current_board)
+    def handle_message(self):
+        """
+        Receives a message from the server and handles it
+        """
+        message = self._client_msger.receive_message()
+        print(message)
 
+        if self._relay_state == RelayState.REGISTRATION and \
+                validate_json(PLAYING_AS, message):
+            _, new_name = message
+            self.set_new_name(new_name)
 
-    def initialize_uuid_control(self):
+        elif validate_json(OTHER, message):
+            self.set_opp()
+            self._relay_state = RelayState.PLACEMENT1
+
+        elif validate_json(RESULTS, message):
+            print("got results: ", message)
+            self._relay_state = RelayState.FINISHED
+
+        elif (self._relay_state == RelayState.PLACEMENT1 or \
+                self._relay_state == RelayState.TAKE_TURNS) and \
+                validate_json(PLACEMENT, message):
+            self._player.start_of_game()
+            self.handle_placement(message)
+            self._relay_state = RelayState.PLACEMENT2
+
+        elif self._relay_state == RelayState.PLACEMENT2 and \
+                validate_json(PLACEMENT, message):
+            self.handle_placement(message)
+            self._relay_state = RelayState.TAKE_TURNS
+
+        elif self._relay_state == RelayState.TAKE_TURNS and \
+                validate_json(BOARD, message):
+            self.handle_take_turn(message)
+
+        else:
+            raise ValueError("got message: " + str(message) +
+                             "in RelayState " + self._relay_state.name)
+
+    def set_new_name(self, new_name):
+        """
+        set's a new name for this player
+        :param String new_name: the player's new name
+        """
+        self._player_name = new_name
+        self._uuid_to_name[self._our_uuid] = new_name
+
+    def handle_placement(self, placement):
+        """
+        handles a placement request
+        :param Json Placement placement: the placement request
+        """
+        workers = self.placement_to_workers(placement)
+        self.enact_placement(workers)
+
+    def handle_take_turn(self, board):
+        """
+        handles a take_turn request
+        :param Json Board board: the board of the take_turn request
+        """
+        santorini_board = self.board_to_board(board)
+        self.enact_turn(santorini_board)
+
+    def set_opp(self):
         """
         Generate two uuids to represent this player and the opponent.
         This will be kept consistent for calls on this side of the
@@ -98,8 +127,7 @@ class RemoteProxyServer:
         in self._uuid_to_name.
         """
         self._opp_uuid = uuid.uuid4()
-        self._uuid_to_name = {}
-        self._uuid_to_name[self._our_uuid] = self._player_name
+        self._uuid_to_name[self._opp_uuid] = self._player_name
 
 
     def enact_placement(self, workers):
@@ -149,19 +177,22 @@ class RemoteProxyServer:
                                              or a BuildingWorker, a Height followed by a Worker
         :rtype Board: a suitable board
         """
+        new_board = [[0 for col in range(Board.BOARD_SIZE)] for row in
+                     range(Board.BOARD_SIZE)]
         workers = {}
-        new_board_arr = []
-        for row in range(len(board_arr)):
-            current_row = board_arr[row]
-            new_row = []
-            for col in range(len(current_row)):
-                current_cell = current_row[col]
-                if isinstance(current_cell, int):
-                    new_row += current_cell
-                else:
-                    new_row += int(current_cell[0])
-                    worker_str = current_cell[1:]
-                    workers[self.worker_to_worker(worker_str)] = (row, col)
-            new_board_arr += new_row
+        for (row, rows) in enumerate(board_arr):
+            for col in range(len(rows)):
+                cur_cell = board_arr[row][col]
+                if isinstance(cur_cell, int):
+                    new_board[row][col] = cur_cell
+                elif cur_cell:
+                    new_board[row][col] = int(cur_cell[0])
+                    worker_str = cur_cell[1:]
+                    worker_num = int(worker_str[-1:])
+                    player_name = worker_str[:-1]
+                    cur_worker = Worker(player_name, worker_num)
+                    if cur_worker:
+                        workers[cur_worker] = (row, col)
 
-        return Board(new_board_arr, workers)
+        cur_board = Board(new_board, workers)
+        return cur_board

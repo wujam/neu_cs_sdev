@@ -25,6 +25,7 @@ class SleepPlayer(AbstractPlayer):
         return "sleep player"
 
     def start_of_game(self):
+        self._worker_count = 0
         time.sleep(999999)
 
     def set_name(self, name, new_name=False):

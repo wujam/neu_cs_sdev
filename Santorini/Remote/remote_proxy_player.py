@@ -68,13 +68,14 @@ class RemoteProxyPlayer(AbstractPlayer):
         :param Board cur_board: a copy of the current state of the board
         :rtype Turn result_turn: the turn to be sent to the ref.
         """
-        board_json = cur_board.dump_as_json()
+        board_json = cur_board.dump_as_json(self._uuid_to_name)
 
         self._send_json(board_json)
         action = self._recv_json()
 
         if not validate_json(ACTION, action):
             raise ValueError("action didn't validate: " + str(action))
+
         # make Turn from action
         if isinstance(action, str):
             if action == self._uuid_to_name[self._player_id]:
@@ -132,6 +133,7 @@ class RemoteProxyPlayer(AbstractPlayer):
 
     def _recv_json(self):
         message = self._socket.recv(4096).decode()
+        print ("received: ", json.loads(message))
         return json.loads(message)
 
     def _send_json(self, json_msg):
@@ -140,4 +142,5 @@ class RemoteProxyPlayer(AbstractPlayer):
         :param Json json: json to be sent
         """
         json_dump = json.dumps(json_msg)
+        print("sending: ", json_dump)
         self._socket.send(json_dump.encode())
