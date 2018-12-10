@@ -14,6 +14,7 @@ from Santorini.Common.player_guard import *
 from Santorini.Common.observer_interface import AbstractObserver
 from Santorini.Common.player_interface import AbstractPlayer
 from Santorini.Lib.json_validate import validate_json
+from Santorini.Lib.dyn_import import find_subclass_in_source
 from Santorini.Common.jsonschemas import PLAYER, OBSERVER
 from Santorini.Admin.jsonschemas import ADMIN_CONFIG
 """A Tournament Manager for Santorini meet_ups"""
@@ -128,7 +129,7 @@ class TournamentManager:
         """
         _, path = observer_spec
 
-        observer_class = self._find_subclass_in_source(path, AbstractObserver)
+        observer_class = find_subclass_in_source(path, AbstractObserver)
 
         if observer_class:
             self.observer_manager.add_observer(observer_class())
@@ -144,7 +145,7 @@ class TournamentManager:
         uniq_name = self._gen_unique_name(name)
         new_name = True if uniq_name != name else False
 
-        player_class = self._find_subclass_in_source(path, AbstractPlayer)
+        player_class = find_subclass_in_source(path, AbstractPlayer)
         if player_class:
             player_guard = PlayerGuard(player_class())
             player_uuid = uuid.uuid4()
@@ -174,27 +175,6 @@ class TournamentManager:
             return
         self.uuids_players[player_uuid] = player_guard
         self.uuids_names[player_uuid] = uniq_name
-
-    def _find_subclass_in_source(self, path, parent):
-        """Finds a subclass of parent in a source file
-        :param path: path to the source file
-        :param Type parent: class to search for subclasses of
-        :rtype Type or bool: the subclass or False
-        """
-        spec = importlib.util.spec_from_file_location("mod", path)
-        # importlib returns None if the file isn't found
-        if spec is None:
-            return
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        found = inspect.getmembers(module,
-                                   predicate=lambda o: inspect.isclass(o) and \
-                                                       issubclass(o, parent) and \
-                                                       o != parent)
-        if len(found) > 0:
-            return found[0][1] #TODO explain this
-        return False
 
     def _validate_name(self, name):
         """validates that the string is lowercase and only has letter
