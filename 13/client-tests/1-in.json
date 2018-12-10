@@ -1,6 +1,6 @@
 { "players"   : [["good", "goodplayer", "../Santorini/Tests/player_mocks/legit_player.py"],
-				 ["breaker", "loopplacementplayer", "../Santorini/Tests/player_mocks/loop_placement_player.py"],
+				 ["infinite", "loopplacementplayer", "../Santorini/Tests/player_mocks/loop_placement_player.py"],
 				 ["infinite", "loopturnplayer", "../Santorini/Tests/player_mocks/loop_turn_player.py"]],
   "observers" : [],
-  "ip" : "localhost",
+  "ip" : "antartica.ccs.neu.edu",
   "port" : 55556}

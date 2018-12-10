@@ -1,7 +1,7 @@
 { "players"   : [["good", "goodplayera", "../Santorini/Tests/player_mocks/legit_player.py"],
 				 ["good", "goodplayerb", "../Santorini/Tests/player_mocks/legit_player.py"],
-				 ["good", "goodplayerc", "../Santorini/Tests/player_mocks/legit_player.py"],
-				 ["good", "goodplayerd", "../Santorini/Tests/player_mocks/legit_player.py"]],
+				 ["breaker", "breakerworker", "../Santorini/Tests/player_mocks/bad_worker_player.py"],
+				 ["breaker", "breakerturn", "../Santorini/Tests/player_mocks/bad_turn_player.py"]],
   "observers" : [],
   "ip" : "antarctica.ccs.neu.edu",
   "port" : 55556}
