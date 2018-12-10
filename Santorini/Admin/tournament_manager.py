@@ -23,12 +23,13 @@ class TournamentManager:
 
     MEET_UP_GAMES = 3
 
-    def __init__(self):
+    def __init__(self, timeout=10):
         self.uuids_players = collections.OrderedDict()
         self.uuids_names = collections.OrderedDict()
         self.observer_manager = ObserverManager()
         self.nef_players = []
         self.meet_up_results = []
+        self.timeout = timeout
 
     def read_config_from(self, file_in=sys.stdin):
         """Reads the tournament configuration from an input IO object
@@ -75,7 +76,8 @@ class TournamentManager:
             self.uuids_players[match[1]].set_opponent(
                 match[0], self.uuids_names[match[0]])
 
-            ref = Referee(match_uuids_players, match_uuids_names, self.observer_manager)
+            ref = Referee(match_uuids_players, match_uuids_names,
+                          self.observer_manager, timeout=self.timeout)
             nef_players, game_winners = ref.run_n_games(self.MEET_UP_GAMES)
 
             self.nef_players.extend(nef_players)
@@ -147,7 +149,7 @@ class TournamentManager:
 
         player_class = find_subclass_in_source(path, AbstractPlayer)
         if player_class:
-            player_guard = PlayerGuard(player_class())
+            player_guard = PlayerGuard(player_class(), timeout=self.timeout)
             player_uuid = uuid.uuid4()
             try:
                 player_guard.set_id(player_uuid)
@@ -166,7 +168,7 @@ class TournamentManager:
         uniq_name = self._gen_unique_name(name)
         new_name = True if uniq_name != name else False
 
-        player_guard = PlayerGuard(player)
+        player_guard = PlayerGuard(player, timeout=self.timeout)
         player_uuid = uuid.uuid4()
         try:
             player_guard.set_id(player_uuid)
