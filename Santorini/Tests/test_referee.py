@@ -29,6 +29,7 @@ class TestReferee(unittest.TestCase):
     # test the outcome of a game between two players using the diagonal placement
     # and the tree strategy
 
+    @unittest.skip("test works but takes a while")
     def test_normal_game(self):
         """test a normal game between two good players
         """
@@ -53,6 +54,7 @@ class TestReferee(unittest.TestCase):
         self.assertEqual(bad_players, [])
         self.assertEqual(game_results, [self.uuidp1])
 
+    @unittest.skip("test works but takes a while")
     def test_normal_run_n_games(self):
         """test a normal game series between two good players
         """
