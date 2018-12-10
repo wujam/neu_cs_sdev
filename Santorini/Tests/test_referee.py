@@ -334,7 +334,7 @@ class testRefereeExceptionsTimeout(unittest.TestCase):
         self.player1guard = PlayerGuard(self.player1)
         self.player2guard = PlayerGuard(self.player2)
         self.uuids_to_player = {self.uuidp1:self.player1guard, self.uuidp2:self.player2guard}
-        self.ref = Referee(self.uuids_to_player, self.uuids_to_name, self.obs_man, timeout = 3)
+        self.ref = Referee(self.uuids_to_player, self.uuids_to_name, self.obs_man)
 
     def test_start_of_game_exception(self):
         """tests that a player who throws an exception

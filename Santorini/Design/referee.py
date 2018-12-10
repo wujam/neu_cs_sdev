@@ -11,7 +11,7 @@ class PlayerResult(Enum):
 class AbstractReferee(ABC):
     """Interface for a Referee component in Santorini."""
 
-    def __init__(self, uuids_players, uuids_names, observer_manager, timeout=30):
+    def __init__(self, uuids_players, uuids_names, observer_manager):
         """Create a referee component with the associated list of players.
         :param dict[UUID -> Player] uuids_players: dictionary of UUIDs to players
         :param dict[UUID -> String] uuids_names: dictionary of UUIDs to player names
@@ -19,7 +19,6 @@ class AbstractReferee(ABC):
         :param int timeout: time in seconds allowed per player action
         """
         self.players = players
-        self.timeout = timeout
 
     @abstractmethod
     def run_game(self):
@@ -59,16 +58,6 @@ class AbstractReferee(ABC):
             The first list is a list of misbehaving players in order
             The second list contains the Uuid of the winner of each game played in order,
             if both players are disqualified this list is empty.
-        """
-        pass
-
-    @abstractmethod
-    def set_turn_timeout(self, timeout):
-        """Sets a the turn timeout in seconds for the game administrated
-        by this Referee.
-        :param int timeout: Positive integer number of seconds. Players
-                            who take longer than this to take an action
-                            will be killed and assigned a game loss.
         """
         pass
 

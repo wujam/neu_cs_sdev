@@ -24,7 +24,7 @@ class Referee:
     NUM_PLAYERS = 2
     NO_WINNER = -1
 
-    def __init__(self, uuids_players, uuids_names, observer_manager, timeout=30):
+    def __init__(self, uuids_players, uuids_names, observer_manager):
         """Create a referee component with the associated list of players.
         :param dict[UUID -> PlayerGuard] uuids_players: dictionary of UUIDs to players
         :param dict[UUID -> String] uuids_names: dictionary of UUIDs to player names
@@ -32,7 +32,6 @@ class Referee:
         :param int timeout: time in seconds allowed per player action
         """
         self.players = []
-        self.timeout = timeout
         self.uuids_to_player = {}
         for uuid, player_guard in uuids_players.items():
             self.uuids_to_player[uuid] = player_guard
@@ -103,14 +102,6 @@ class Referee:
             # if a player misbehaved during initialization, the other player wins
             winner, evil_players = self._determine_init_result(init_result)
             return self._end_game(winner, evil_players)
-
-    def set_turn_timeout(self, timeout):
-        """Sets a the turn timeout in seconds
-        :param int timeout: Positive integer number of seconds. Players
-                            who take longer than this to take an action
-                            will be killed and assigned a game loss.
-        """
-        self.timeout = timeout
 
     def add_observer(self, observer):
         """Adds an observer, which will be sent the board, placements,
