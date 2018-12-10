@@ -23,7 +23,7 @@ class TournamentManager:
 
     MEET_UP_GAMES = 3
 
-    def __init__(self, timeout=10):
+    def __init__(self, timeout=60):
         self.uuids_players = collections.OrderedDict()
         self.uuids_names = collections.OrderedDict()
         self.observer_manager = ObserverManager()
@@ -77,7 +77,7 @@ class TournamentManager:
                 match[0], self.uuids_names[match[0]])
 
             ref = Referee(match_uuids_players, match_uuids_names,
-                          self.observer_manager, timeout=self.timeout)
+                          self.observer_manager)
             nef_players, game_winners = ref.run_n_games(self.MEET_UP_GAMES)
 
             self.nef_players.extend(nef_players)
