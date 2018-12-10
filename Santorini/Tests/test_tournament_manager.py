@@ -192,13 +192,13 @@ class TestTournamentManager(unittest.TestCase):
 
     def test_add_player_bad_path(self):
         """Tests that _add_player doesn't add players with bad paths"""
-        self.tm._add_player(["good", "b0", "./Tests/player_mocks/legit_player.p"])
+        self.tm._add_player(["good", "bb", "./Tests/player_mocks/legit_player.p"])
         self.assertEqual(len(self.tm.uuids_players), 0)
 
     def test_add_observer_bad_path(self):
-        """Tests that _add_player doesn't add players with bad paths"""
-        self.tm._add_player(["good", "b0", "./Tests/player_mocks/legit_player.p"])
-        self.assertEqual(len(self.tm.uuids_players), 0)
+        """Tests that _add_observer doesn't add players with bad paths"""
+        self.tm._add_observer(["bob", "./Tests/player_mocks/legit_player.p"])
+        self.assertEqual(len(self.tm.observer_manager._observers), 0)
 
     def test_validate_name(self):
         """Tests that _validate_name returns true on good names"""

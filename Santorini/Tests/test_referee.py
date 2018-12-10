@@ -72,8 +72,6 @@ class TestReferee(unittest.TestCase):
         ref = Referee(uuids_to_player, self.uuids_to_name, self.obs_man)
         bad_players, game_results= ref.run_n_games(3)
 
-        print("bad players", bad_players, "game_results", game_results)
-
         self.assertEqual(player1.end_of_game.call_count, 3)
         self.assertEqual(player2.end_of_game.call_count, 3)
         player1.end_of_game.assert_called_with("p1")
