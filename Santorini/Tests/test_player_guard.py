@@ -44,6 +44,8 @@ class TestPlayerGuard(unittest.TestCase):
         board = Board()
         player1 = LegitPlayer()
         player2 = BadPlacementPlayer()
+        player1.start_of_game()
+        player2.start_of_game()
         player_guard1 = PlayerGuard(player1, timeout=3)
         player_guard2 = PlayerGuard(player2, timeout=3)
 
@@ -62,6 +64,8 @@ class TestPlayerGuard(unittest.TestCase):
         board = Board()
         player1 = LegitPlayer()
         player2 = BadTurnPlayer()
+        player1.start_of_game()
+        player2.start_of_game()
         player_guard1 = PlayerGuard(player1)
         player_guard2 = PlayerGuard(player2)
 
@@ -83,6 +87,8 @@ class TestPlayerGuard(unittest.TestCase):
         board = Board()
         player1 = LegitPlayer()
         player2 = BadWorkerPlayer()
+        player1.start_of_game()
+        player2.start_of_game()
         player_guard1 = PlayerGuard(player1, timeout=3)
         player_guard2 = PlayerGuard(player2, timeout=3)
 
