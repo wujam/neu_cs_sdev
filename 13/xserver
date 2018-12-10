@@ -92,5 +92,3 @@ while not stopped:
             tm._add_player_direct(rpp, name)
     except socket.timeout:
         check_time()
-    except:
-        raise
